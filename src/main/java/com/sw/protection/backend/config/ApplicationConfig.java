@@ -2,16 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sw.protection.backend.rest;
+package com.sw.protection.backend.config;
 
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
 /**
  *
- * @author Simon
+ * @author Dinuka
  */
-@javax.ws.rs.ApplicationPath("")
+@javax.ws.rs.ApplicationPath("webresources")
 public class ApplicationConfig extends Application {
     static {
         System.out.println("LOADING ApplicationConfig");

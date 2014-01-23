@@ -12,7 +12,7 @@
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>rest;com.wordnik.swagger.jaxrs.listing</param-value>
+            <param-value>com.sw.protection.backend.rest;com.wordnik.swagger.jaxrs.listing</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
