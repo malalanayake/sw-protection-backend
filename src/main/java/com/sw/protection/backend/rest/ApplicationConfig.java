@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package rest;
+package com.sw.protection.backend.rest;
 
 import java.util.Set;
 import javax.ws.rs.core.Application;
@@ -11,7 +11,7 @@ import javax.ws.rs.core.Application;
  *
  * @author Simon
  */
-@javax.ws.rs.ApplicationPath("webresources")
+@javax.ws.rs.ApplicationPath("")
 public class ApplicationConfig extends Application {
     static {
         System.out.println("LOADING ApplicationConfig");
@@ -36,8 +36,8 @@ public class ApplicationConfig extends Application {
      * given list with all resources defined in the project.
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(rest.GenericResource.class);
-        resources.add(rest.TestResource.class);
+        resources.add(com.sw.protection.backend.rest.GenericResource.class);
+        resources.add(com.sw.protection.backend.rest.TestResource.class);
     }
     
 }
