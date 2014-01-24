@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -43,7 +44,10 @@ public class AdminDAOImpl implements AdminDAO{
 
     @Override
     public void saveAdmin(Admin admin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Transaction tr= session.beginTransaction(); 
+        session.save(admin);
+        tr.commit();
     }
     
 }
