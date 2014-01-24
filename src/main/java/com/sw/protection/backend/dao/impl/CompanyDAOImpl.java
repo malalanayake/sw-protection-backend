@@ -35,5 +35,10 @@ public class CompanyDAOImpl implements CompanyDAO {
     public void deleteCompany(Company company) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void saveCompany(Company company) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

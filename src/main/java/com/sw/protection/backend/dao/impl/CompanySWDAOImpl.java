@@ -35,5 +35,10 @@ public class CompanySWDAOImpl implements CompanySWDAO{
     public void deleteCompanySW(CompanySW companySW) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void saveCompanySW(CompanySW companySW) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

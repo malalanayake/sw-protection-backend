@@ -36,5 +36,10 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO{
     public List<CompanySWCopy> getAllCompanySWCopies() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void saveCompanySWCopy(CompanySWCopy companySWCopy) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
