@@ -10,11 +10,6 @@ import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanySW;
 import com.sw.protection.backend.entity.CompanySWCopy;
 import com.sw.protection.backend.entity.User;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
-import javax.resource.spi.AuthenticationMechanism;
-import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -28,11 +23,11 @@ public class HibernateUtil {
     private static String host;
     private static String port;
     private static String username;
-    private static String password;  
+    private static String password;
     private static String dbname;
-    
+
     private static SessionFactory sessionFactory = null;
-    
+
     public static void init() {
         Logger log = Logger.getLogger(HibernateUtil.class.getName());
         try {
@@ -54,6 +49,12 @@ public class HibernateUtil {
             cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host +":" + port + "/" +dbname );
             cnf.setProperty("hibernate.connection.username", username);
             cnf.setProperty("hibernate.connection.password", password);
+            
+            //Connect to RH Cloud DB
+//            cnf.setProperty("hibernate.connection.url", "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
+//            cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
+//            cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
+
             cnf.setProperty("hibernate.connection.pool_size", "1");
             cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
             cnf.setProperty("hibernate.current_session_context_class", "thread");
@@ -113,6 +114,5 @@ public class HibernateUtil {
     public static void setPassword(String password) {
         HibernateUtil.password = password;
     }
-    
-    
+
 }
