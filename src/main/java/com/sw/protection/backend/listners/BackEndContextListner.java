@@ -15,7 +15,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- *
+ * Context listener which is going to initiate the database configuration
  * @author dinuka
  */
 public class BackEndContextListner implements ServletContextListener {
@@ -32,8 +32,8 @@ public class BackEndContextListner implements ServletContextListener {
         
         System.out.println("saveAdmin");
         Admin admin = new Admin();
-        admin.setUsername("dinuka");
-        admin.setPassword("test");
+        admin.setUser_name("dinuka");
+        admin.setPass_word("test");
         AdminDAO instance = new AdminDAOImpl();
         instance.saveAdmin(admin);
     }

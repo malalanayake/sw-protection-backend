@@ -5,6 +5,7 @@
 package com.sw.protection.backend.config;
 
 import com.sw.protection.backend.entity.Admin;
+import com.sw.protection.backend.entity.AdminScope;
 import com.sw.protection.backend.entity.Company;
 import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanySW;
@@ -15,8 +16,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
 /**
- *
- * @author SIT
+ * This is contain hibernate configurations.
+ * @author dinuka
  */
 public class HibernateUtil {
 
@@ -28,17 +29,16 @@ public class HibernateUtil {
 
     private static SessionFactory sessionFactory = null;
 
+    /**
+     * Initializing database configuration.
+    */
     public static void init() {
         Logger log = Logger.getLogger(HibernateUtil.class.getName());
         try {
-            //Properties prop = new Properties();
-            //System.out.println(""+HibernateUtil.class.getClassLoader().getResource("").getPath());
-            //Access the property file form root
-            //prop.load(new FileInputStream("/WEB-INF/db.properties"));
-            //  System.out.println(prop.getProperty("version"));
-
+            
             AnnotationConfiguration cnf = new AnnotationConfiguration();
             cnf.addAnnotatedClass(Admin.class);
+            cnf.addAnnotatedClass(AdminScope.class);
             cnf.addAnnotatedClass(Company.class);
             cnf.addAnnotatedClass(CompanyClient.class);
             cnf.addAnnotatedClass(CompanySW.class);

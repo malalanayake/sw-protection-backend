@@ -8,7 +8,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 /**
- *
+ * Declare the REST resources 
  * @author dinuka
  */
 @javax.ws.rs.ApplicationPath("webresources")

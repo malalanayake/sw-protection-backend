@@ -3,28 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sw.protection.backend.dao.impl;
 
+import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.DBTestProperties;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
+import com.sw.protection.backend.entity.AdminScope;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Declare AdminDAO tests
  * @author dinuka
  */
 public class AdminDAOImplNGTest {
-    
+
     public AdminDAOImplNGTest() {
+    }
+
+    @DataProvider(name = "adminData")
+    public Object[][] AdminData() {
+        Object[][] IndiaIncomeArray = {
+            {"Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com",APINames.USER,true,false,true,false},
+            {"Malinda", "malinda", "pw908", "malinda@yahoo.com",APINames.USER,false,true,false,true}
+        };
+        return (IndiaIncomeArray);
     }
 
     @BeforeClass
@@ -66,9 +81,9 @@ public class AdminDAOImplNGTest {
     /**
      * Test of getAdmin method, of class AdminDAOImpl.
      */
-    @Test
+    @Test(dependsOnMethods = {"testSaveAdmin"})
     public void testGetAdmin() {
-//        System.out.println("getAdmin");
+       System.out.println("Start Test Get Admin");
 //        String userName = "";
 //        AdminDAOImpl instance = new AdminDAOImpl();
 //        Admin expResult = null;
@@ -81,9 +96,9 @@ public class AdminDAOImplNGTest {
     /**
      * Test of updateAdmin method, of class AdminDAOImpl.
      */
-    @Test
+    @Test(dependsOnMethods = {"testGetAdmin"})
     public void testUpdateAdmin() {
-//        System.out.println("updateAdmin");
+        System.out.println("Start Test Update Admin");
 //        Admin admin = null;
 //        AdminDAOImpl instance = new AdminDAOImpl();
 //        instance.updateAdmin(admin);
@@ -94,9 +109,9 @@ public class AdminDAOImplNGTest {
     /**
      * Test of deleteAdmin method, of class AdminDAOImpl.
      */
-    @Test
+    @Test(dependsOnMethods = {"testUpdateAdmin"})
     public void testDeleteAdmin() {
-//        System.out.println("deleteAdmin");
+        System.out.println("Start Test Delete Admin");
 //        Admin admin = null;
 //        AdminDAOImpl instance = new AdminDAOImpl();
 //        instance.deleteAdmin(admin);
@@ -107,14 +122,32 @@ public class AdminDAOImplNGTest {
     /**
      * Test of saveAdmin method, of class AdminDAOImpl.
      */
-    @Test
-    public void testSaveAdmin() {
-        System.out.println("Test Save Admin");
+    @Test(dataProvider = "adminData")
+    public void testSaveAdmin(String name, String userName, String pw, String email,
+            String api_name,boolean get,boolean post, boolean put, boolean del) {
+        System.out.println("Start Test Save Admin");
         Admin admin = new Admin();
-        admin.setUsername("Test-User");
-        admin.setPassword("Test-Pw");
+        admin.setUser_name(userName);
+        admin.setPass_word(pw);
+        admin.setEmail(email);
+        admin.setName(name);
+        admin.setApi_key(UUID.randomUUID().toString());
+        admin.setDate_time(Formatters.formatDate(new Date()));
+
+        AdminScope adminScope = new AdminScope();
+        adminScope.setAdmin(admin);
+        adminScope.setApi_name(api_name);
+        adminScope.setDel(del);
+        adminScope.setGet(get);
+        adminScope.setPost(post);
+        adminScope.setPut(put);
+
+        Set<AdminScope> adminScopSet = admin.getAdminScopeSet();
+        adminScopSet.add(adminScope);
+        admin.setAdminScopeSet(adminScopSet);
         AdminDAO instance = new AdminDAOImpl();
+        System.out.print("" + admin.toString());
         instance.saveAdmin(admin);
     }
-    
+
 }
