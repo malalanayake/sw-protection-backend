@@ -10,32 +10,42 @@ import com.sw.protection.backend.entity.Admin;
 import java.util.List;
 
 /**
- *
+ * 
  * @author dinuka
  */
 public interface AdminDAO {
-   /*
-   Get all admin users
-    */
-   public List<Admin> getAllAdmins();
-   
-   /*
-   Get specific admin user
-   */
-   public Admin getAdmin(String userName);
-   
-   /*
-   Update admin user
-   */
-   public void updateAdmin(Admin admin);
-   
-   /*
-   Delete admin user
-   */
-   public void deleteAdmin(Admin admin);  
-   
-   /*
-   Save admin user
-   */
-   public void saveAdmin(Admin admin);
+    /*
+     * Get all admin users
+     */
+    public List<Admin> getAllAdmins();
+
+    /*
+     * Get specific admin user
+     */
+    public Admin getAdmin(String userName);
+
+    /*
+     * Load all properties of specific admin user
+     */
+    public Admin loadAllPropertiesOfAdmin(Long id);
+
+    /*
+     * Update admin user
+     */
+    public void updateAdmin(Admin admin);
+
+    /*
+     * Delete admin user
+     */
+    public void deleteAdmin(Admin admin);
+
+    /*
+     * Save admin user
+     */
+    public void saveAdmin(Admin admin);
+    
+    /*
+     * Check whether the admin user name exist
+     */
+    public boolean isAdminUserNameExist(String userName);
 }

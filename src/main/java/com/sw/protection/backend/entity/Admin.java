@@ -21,16 +21,15 @@ import javax.persistence.OneToMany;
 
 /**
  * Admin User Entity witch is going to store the admin user data in the system
- *
+ * 
  * @author dinuka
  */
 @Entity
-@NamedQueries({
-    @NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
-    @NamedQuery(name = "findByName", query = "select u from Admin u where u.name like:adminName"),
-    @NamedQuery(name = "findByUserName", query = "select u from Admin u where u.user_name=:userName"),
-    @NamedQuery(name = "findByAPIKey", query = "select u from Admin u where u.api_key=:apiKey")
-})
+@NamedQueries( {
+	@NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
+	@NamedQuery(name = "findByName", query = "select u from Admin u where u.name like:adminName"),
+	@NamedQuery(name = "findByUserName", query = "select u from Admin u where u.user_name=:userName"),
+	@NamedQuery(name = "findByAPIKey", query = "select u from Admin u where u.api_key=:apiKey") })
 public class Admin implements Serializable {
 
     /**
@@ -38,13 +37,13 @@ public class Admin implements Serializable {
      */
     public static interface Constants {
 
-        public static final String NAME_QUERY_FIND_ALL = "findAll";
-        public static final String NAME_QUERY_FIND_BY_NAME = "findByName";
-        public static final String PARAM_ADMIN_NAME = "adminName";
-        public static final String NAME_QUERY_FIND_BY_USER_NAME = "findByUserName";
-        public static final String NAME_QUERY_FIND_BY_API_KEY = "findByAPIKey";
-        public static final String PARAM_USER_NAME = "userName";
-        public static final String PARAM_API_KEY = "apiKey";
+	public static final String NAME_QUERY_FIND_ALL = "findAll";
+	public static final String NAME_QUERY_FIND_BY_NAME = "findByName";
+	public static final String PARAM_ADMIN_NAME = "adminName";
+	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findByUserName";
+	public static final String NAME_QUERY_FIND_BY_API_KEY = "findByAPIKey";
+	public static final String PARAM_USER_NAME = "userName";
+	public static final String PARAM_API_KEY = "apiKey";
     }
 
     private static final long serialVersionUID = 1L;
@@ -64,82 +63,90 @@ public class Admin implements Serializable {
     private Set<AdminScope> adminScopeSet = new HashSet<AdminScope>();
 
     public Set<AdminScope> getAdminScopeSet() {
-        return adminScopeSet;
+	return adminScopeSet;
     }
 
     public void setAdminScopeSet(Set<AdminScope> adminScopeSet) {
-        this.adminScopeSet = adminScopeSet;
+	this.adminScopeSet = adminScopeSet;
     }
 
     public Long getId() {
-        return id;
+	return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+	this.id = id;
     }
 
     public String getName() {
-        return name;
+	return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+	this.name = name;
     }
 
     public String getUser_name() {
-        return user_name;
+	return user_name;
     }
 
     public void setUser_name(String user_name) {
-        this.user_name = user_name;
+	this.user_name = user_name;
     }
 
     public String getPass_word() {
-        return pass_word;
+	return pass_word;
     }
 
     public void setPass_word(String pass_word) {
-        this.pass_word = pass_word;
+	this.pass_word = pass_word;
     }
 
     public String getApi_key() {
-        return api_key;
+	return api_key;
     }
 
     public void setApi_key(String api_key) {
-        this.api_key = api_key;
+	this.api_key = api_key;
     }
 
     public String getEmail() {
-        return email;
+	return email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+	this.email = email;
     }
 
     public String getDate_time() {
-        return date_time;
+	return date_time;
     }
 
     public void setDate_time(String date_time) {
-        this.date_time = date_time;
+	this.date_time = date_time;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+	return super.equals(obj); // To change body of generated methods, choose
+	// Tools | Templates.
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
+	return super.hashCode(); // To change body of generated methods, choose
+	// Tools | Templates.
     }
 
     @Override
     public String toString() {
-        return "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key + ", email=" + email + ", date_time=" + date_time;
+	String output = "id=" + id + ", name=" + name + ", user_name="
+		+ user_name + ", api_key=" + api_key + ", email=" + email
+		+ ", date_time=" + date_time;
+	for (AdminScope scop : adminScopeSet) {
+	    output = output + scop.getApi_name();
+	}
+	return output;
     }
 
 }

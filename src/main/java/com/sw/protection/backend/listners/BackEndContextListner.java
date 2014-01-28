@@ -30,12 +30,6 @@ public class BackEndContextListner implements ServletContextListener {
         HibernateUtil.setDbname(ctx.getInitParameter("db-name"));
         HibernateUtil.init();
         
-        System.out.println("saveAdmin");
-        Admin admin = new Admin();
-        admin.setUser_name("dinuka");
-        admin.setPass_word("test");
-        AdminDAO instance = new AdminDAOImpl();
-        instance.saveAdmin(admin);
     }
 
     @Override
