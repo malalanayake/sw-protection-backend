@@ -16,7 +16,7 @@ import javax.ws.rs.core.Request;
 
 /**
  * REST Web Service
- *
+ * 
  * @author Simon
  */
 @Path("test")
@@ -34,12 +34,13 @@ public class TestResource {
 
     /**
      * Retrieves representation of an instance of rest.TestResource
+     * 
      * @return an instance of java.lang.String
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = String.class)
     public String getXml() {
-        return "this works...";
+	return "this works...";
     }
 }

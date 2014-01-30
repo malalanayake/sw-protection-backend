@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- *
+ * 
  * @author dinuka
  */
 @Entity
@@ -24,26 +24,28 @@ public class User implements Serializable {
     private Long id;
 
     public Long getId() {
-        return id;
+	return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+	this.id = id;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+	return super.equals(obj); // To change body of generated methods, choose
+				  // Tools | Templates.
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
+	return super.hashCode(); // To change body of generated methods, choose
+				 // Tools | Templates.
     }
-    
+
     @Override
     public String toString() {
-        return "com.sw.protection.backend.entity.User[ id=" + id + " ]";
+	return "com.sw.protection.backend.entity.User[ id=" + id + " ]";
     }
-    
+
 }

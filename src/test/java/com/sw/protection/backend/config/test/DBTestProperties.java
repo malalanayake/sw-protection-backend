@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-package com.sw.protection.backend.config;
+package com.sw.protection.backend.config.test;
 
 /**
- * This class contain test database configuration. To run the tests on developer 
- * environment, developers need to setup the mysql database according to the 
- * following parameters. 
+ * This class contain test database configuration. To run the tests on developer
+ * environment, developers need to setup the mysql database according to the
+ * following parameters.
  * 
  * @author dinuka
  */

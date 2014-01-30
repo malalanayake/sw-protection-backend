@@ -8,6 +8,7 @@ package com.sw.protection.backend.config;
 
 /**
  * Declare all API names in the system
+ * 
  * @author dinuka
  */
 public interface APINames {

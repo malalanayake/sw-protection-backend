@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 /**
  * AdminScope entity is going to store the scope details of admin users in the
  * system
+ * 
  * @author dinuka
  */
 @Entity
@@ -36,74 +37,76 @@ public class AdminScope implements Serializable {
     private Admin admin;
 
     public Admin getAdmin() {
-        return admin;
+	return admin;
     }
 
     public void setAdmin(Admin admin) {
-        this.admin = admin;
+	this.admin = admin;
     }
 
     public String getApi_name() {
-        return api_name;
+	return api_name;
     }
 
     public void setApi_name(String api_name) {
-        this.api_name = api_name;
+	this.api_name = api_name;
     }
 
     public boolean isGet() {
-        return get;
+	return get;
     }
 
     public void setGet(boolean get) {
-        this.get = get;
+	this.get = get;
     }
 
     public boolean isPost() {
-        return post;
+	return post;
     }
 
     public void setPost(boolean post) {
-        this.post = post;
+	this.post = post;
     }
 
     public boolean isPut() {
-        return put;
+	return put;
     }
 
     public void setPut(boolean put) {
-        this.put = put;
+	this.put = put;
     }
 
     public boolean isDel() {
-        return del;
+	return del;
     }
 
     public void setDel(boolean del) {
-        this.del = del;
+	this.del = del;
     }
 
     public Long getId() {
-        return id;
+	return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+	this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o); //To change body of generated methods, choose Tools | Templates.
+	return super.equals(o); // To change body of generated methods, choose
+				// Tools | Templates.
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
+	return super.hashCode(); // To change body of generated methods, choose
+				 // Tools | Templates.
     }
 
     @Override
     public String toString() {
-        return "com.sw.protection.backend.entity.AdminScope[ id=" + id + " ]";
+	return "com.sw.protection.backend.entity.AdminScope[ id=" + id + " ]";
     }
 
 }

@@ -14,27 +14,32 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.log4j.Logger;
+
 /**
  * Context listener which is going to initiate the database configuration
+ * 
  * @author dinuka
  */
 public class BackEndContextListner implements ServletContextListener {
 
+    Logger log = Logger.getLogger(BackEndContextListner.class.getName());
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ServletContext ctx = sce.getServletContext();
-        HibernateUtil.setHost(ctx.getInitParameter("db-host"));
-        HibernateUtil.setPort(ctx.getInitParameter("db-port"));
-        HibernateUtil.setUsername(ctx.getInitParameter("db-user"));
-        HibernateUtil.setPassword(ctx.getInitParameter("db-pw"));
-        HibernateUtil.setDbname(ctx.getInitParameter("db-name"));
-        HibernateUtil.init();
-        
+	ServletContext ctx = sce.getServletContext();
+	HibernateUtil.setHost(ctx.getInitParameter("db-host"));
+	HibernateUtil.setPort(ctx.getInitParameter("db-port"));
+	HibernateUtil.setUsername(ctx.getInitParameter("db-user"));
+	HibernateUtil.setPassword(ctx.getInitParameter("db-pw"));
+	HibernateUtil.setDbname(ctx.getInitParameter("db-name"));
+	HibernateUtil.init();
+	log.error("Initalizing the hibernate");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        
+
     }
-    
+
 }

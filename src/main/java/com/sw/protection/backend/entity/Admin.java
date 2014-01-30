@@ -143,10 +143,13 @@ public class Admin implements Serializable {
 	String output = "id=" + id + ", name=" + name + ", user_name="
 		+ user_name + ", api_key=" + api_key + ", email=" + email
 		+ ", date_time=" + date_time;
-	for (AdminScope scop : adminScopeSet) {
-	    output = output + scop.getApi_name();
+	if (!adminScopeSet.isEmpty()) {
+	    for (AdminScope scop : adminScopeSet) {
+		output = output + scop.getApi_name();
+	    }
 	}
 	return output;
+
     }
 
 }

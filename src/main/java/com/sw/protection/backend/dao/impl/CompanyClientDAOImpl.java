@@ -11,34 +11,79 @@ import com.sw.protection.backend.entity.CompanyClient;
 import java.util.List;
 
 /**
- *
+ * 
  * @author dinuka
  */
-public class CompanyClientDAOImpl implements CompanyClientDAO{
+public class CompanyClientDAOImpl implements CompanyClientDAO {
 
     @Override
     public List<CompanyClient> getAllCompanyClients() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet."); // To
+								       // change
+								       // body
+								       // of
+								       // generated
+								       // methods,
+								       // choose
+								       // Tools
+								       // |
+								       // Templates.
     }
 
     @Override
     public CompanyClient getCompanyClient(int clientId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet."); // To
+								       // change
+								       // body
+								       // of
+								       // generated
+								       // methods,
+								       // choose
+								       // Tools
+								       // |
+								       // Templates.
     }
 
     @Override
     public void updateCompanyClient(CompanyClient companyClient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet."); // To
+								       // change
+								       // body
+								       // of
+								       // generated
+								       // methods,
+								       // choose
+								       // Tools
+								       // |
+								       // Templates.
     }
 
     @Override
     public void deleteCompanyClient(CompanyClient companyClient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet."); // To
+								       // change
+								       // body
+								       // of
+								       // generated
+								       // methods,
+								       // choose
+								       // Tools
+								       // |
+								       // Templates.
     }
 
     @Override
     public void saveCompanyClient(CompanyClient companyClient) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	throw new UnsupportedOperationException("Not supported yet."); // To
+								       // change
+								       // body
+								       // of
+								       // generated
+								       // methods,
+								       // choose
+								       // Tools
+								       // |
+								       // Templates.
     }
-    
+
 }

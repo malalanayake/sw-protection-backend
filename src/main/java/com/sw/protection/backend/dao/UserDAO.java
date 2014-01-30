@@ -10,32 +10,33 @@ import com.sw.protection.backend.entity.User;
 import java.util.List;
 
 /**
- *
+ * Interface which is provide the User operations.
+ * 
  * @author dinuka
  */
 public interface UserDAO {
-     /*
-   Get all Users 
-    */
-   public List<User> getAllUsers();
-   
-   /*
-   Get specific user
-   */
-   public User getUser(int companyId);
-   
-   /*
-   Update user
-   */
-   public void updateUser(User user);
-   
-   /*
-   Delete user
-   */
-   public void deleteUser(User user); 
-   
-   /*
-   Save user
-   */
-   public void saveUser(User user); 
+    /*
+     * Get all Users
+     */
+    public List<User> getAllUsers();
+
+    /*
+     * Get specific user
+     */
+    public User getUser(int companyId);
+
+    /*
+     * Update user
+     */
+    public void updateUser(User user);
+
+    /*
+     * Delete user
+     */
+    public void deleteUser(User user);
+
+    /*
+     * Save user
+     */
+    public void saveUser(User user);
 }

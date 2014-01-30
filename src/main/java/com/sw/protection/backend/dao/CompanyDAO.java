@@ -10,32 +10,33 @@ import com.sw.protection.backend.entity.Company;
 import java.util.List;
 
 /**
- *
+ * Interface which is provide the CompanyDAO operations.
+ * 
  * @author dinuka
  */
 public interface CompanyDAO {
-  /*
-   Get all companies 
-    */
-   public List<Company> getAllCompanies();
-   
-   /*
-   Get specific company
-   */
-   public Company getCompany(int companyId);
-   
-   /*
-   Update company
-   */
-   public void updateCompany(Company company);
-   
-   /*
-   Delete company
-   */
-   public void deleteCompany(Company company); 
-   
-   /*
-   Save company
-   */
-   public void saveCompany(Company company); 
+    /*
+     * Get all companies
+     */
+    public List<Company> getAllCompanies();
+
+    /*
+     * Get specific company
+     */
+    public Company getCompany(int companyId);
+
+    /*
+     * Update company
+     */
+    public void updateCompany(Company company);
+
+    /*
+     * Delete company
+     */
+    public void deleteCompany(Company company);
+
+    /*
+     * Save company
+     */
+    public void saveCompany(Company company);
 }

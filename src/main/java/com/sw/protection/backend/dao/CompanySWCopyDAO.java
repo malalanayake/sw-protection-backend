@@ -10,32 +10,33 @@ import com.sw.protection.backend.entity.CompanySWCopy;
 import java.util.List;
 
 /**
- *
+ * Interface which is provide the Company Software Copy operations.
+ * 
  * @author dinuka
  */
 public interface CompanySWCopyDAO {
-   /*
-   Get all company software copies 
-    */
-   public List<CompanySWCopy> getAllCompanySWCopies();
-   
-   /*
-   Get specific company software copy
-   */
-   public CompanySWCopy getCompanySWCopy(int companyId);
-   
-   /*
-   Update company software copy
-   */
-   public void updateCompanySWCopy(CompanySWCopy companySWCopy);
-   
-   /*
-   Delete company software copy
-   */
-   public void deleteCompanySWCopy(CompanySWCopy companySWCopy);  
-   
-   /*
-   Save company software copy
-   */
-   public void saveCompanySWCopy(CompanySWCopy companySWCopy); 
+    /*
+     * Get all company software copies
+     */
+    public List<CompanySWCopy> getAllCompanySWCopies();
+
+    /*
+     * Get specific company software copy
+     */
+    public CompanySWCopy getCompanySWCopy(int companyId);
+
+    /*
+     * Update company software copy
+     */
+    public void updateCompanySWCopy(CompanySWCopy companySWCopy);
+
+    /*
+     * Delete company software copy
+     */
+    public void deleteCompanySWCopy(CompanySWCopy companySWCopy);
+
+    /*
+     * Save company software copy
+     */
+    public void saveCompanySWCopy(CompanySWCopy companySWCopy);
 }

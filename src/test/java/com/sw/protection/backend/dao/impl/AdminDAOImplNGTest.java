@@ -5,24 +5,26 @@
  */
 package com.sw.protection.backend.dao.impl;
 
-import com.sw.protection.backend.common.Formatters;
-import com.sw.protection.backend.config.APINames;
-import com.sw.protection.backend.config.DBTestProperties;
-import com.sw.protection.backend.config.HibernateUtil;
-import com.sw.protection.backend.dao.AdminDAO;
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.entity.AdminScope;
+import static org.testng.Assert.assertEquals;
+
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import static org.testng.Assert.*;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.test.DBTestProperties;
+import com.sw.protection.backend.dao.AdminDAO;
+import com.sw.protection.backend.entity.Admin;
+import com.sw.protection.backend.entity.AdminScope;
 
 /**
  * Declare AdminDAO tests
@@ -93,26 +95,21 @@ public class AdminDAOImplNGTest {
 	Admin expResult = new Admin();
 	expResult.setUser_name("malalanayake");
 	expResult.setEmail("dinuka.malalanayake@gmail.com");
-	
-	Admin result = instance.getAdmin(userName);	
+
+	Admin result = instance.getAdmin(userName);
 	assertEquals(result.getUser_name(), expResult.getUser_name());
 	assertEquals(result.getEmail(), expResult.getEmail());
-	//Set<AdminScope> adminScopeSet =result.getAdminScopeSet();
-	//System.out.println(result.getAdminScopeSet().size());
-	//assertEquals(adminScopeSet,null);
-	
-	
+
 	result = instance.loadAllPropertiesOfAdmin(result.getId());
-	
+
 	System.out.println(result.getAdminScopeSet().size());
-	Set<AdminScope> adminScopeSet =result.getAdminScopeSet();
+	Set<AdminScope> adminScopeSet = result.getAdminScopeSet();
 	AdminScope firstAdminScope = new AdminScope();
-	for(AdminScope adminScope:adminScopeSet){
+	for (AdminScope adminScope : adminScopeSet) {
 	    firstAdminScope = adminScope;
 	}
-	assertEquals(firstAdminScope.getApi_name(),APINames.USER);
-	
-	
+	assertEquals(firstAdminScope.getApi_name(), APINames.USER);
+
     }
 
     /**
@@ -128,13 +125,13 @@ public class AdminDAOImplNGTest {
 	// fail.
 	// fail("The test case is a prototype.");
     }
-    
+
     @Test(dependsOnMethods = { "testUpdateAdmin" })
     public void isAdminUserNameExist() {
-	 System.out.println("getAllAdmins");
-	 AdminDAOImpl instance = new AdminDAOImpl();
-	 assertEquals(instance.isAdminUserNameExist("malalanayake"),true);
-	 assertEquals(instance.isAdminUserNameExist("dinuka"),false);
+	System.out.println("getAllAdmins");
+	AdminDAOImpl instance = new AdminDAOImpl();
+	assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
+	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
     }
 
     /**

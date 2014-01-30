@@ -17,6 +17,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 
 /**
  * This is contain hibernate configurations.
+ * 
  * @author dinuka
  */
 public class HibernateUtil {
@@ -31,88 +32,97 @@ public class HibernateUtil {
 
     /**
      * Initializing database configuration.
-    */
+     */
     public static void init() {
-        Logger log = Logger.getLogger(HibernateUtil.class.getName());
-        try {
-            
-            AnnotationConfiguration cnf = new AnnotationConfiguration();
-            cnf.addAnnotatedClass(Admin.class);
-            cnf.addAnnotatedClass(AdminScope.class);
-            cnf.addAnnotatedClass(Company.class);
-            cnf.addAnnotatedClass(CompanyClient.class);
-            cnf.addAnnotatedClass(CompanySW.class);
-            cnf.addAnnotatedClass(CompanySWCopy.class);
-            cnf.addAnnotatedClass(User.class);
-            cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-            cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-            cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host +":" + port + "/" +dbname );
-            cnf.setProperty("hibernate.connection.username", username);
-            cnf.setProperty("hibernate.connection.password", password);
-            
-            //Connect to RH Cloud DB
-//            cnf.setProperty("hibernate.connection.url", "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
-//            cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
-//            cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
+	Logger log = Logger.getLogger(HibernateUtil.class.getName());
+	try {
 
-            cnf.setProperty("hibernate.connection.pool_size", "1");
-            cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-            cnf.setProperty("hibernate.current_session_context_class", "thread");
-            cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
-            cnf.setProperty("hibernate.show_sql", "true");
-            cnf.setProperty("hibernate.hbm2ddl.auto", "update");
+	    AnnotationConfiguration cnf = new AnnotationConfiguration();
+	    cnf.addAnnotatedClass(Admin.class);
+	    cnf.addAnnotatedClass(AdminScope.class);
+	    cnf.addAnnotatedClass(Company.class);
+	    cnf.addAnnotatedClass(CompanyClient.class);
+	    cnf.addAnnotatedClass(CompanySW.class);
+	    cnf.addAnnotatedClass(CompanySWCopy.class);
+	    cnf.addAnnotatedClass(User.class);
+	    cnf.setProperty("hibernate.dialect",
+		    "org.hibernate.dialect.MySQLDialect");
+	    cnf.setProperty("hibernate.connection.driver_class",
+		    "com.mysql.jdbc.Driver");
+	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host
+		    + ":" + port + "/" + dbname);
+	    cnf.setProperty("hibernate.connection.username", username);
+	    cnf.setProperty("hibernate.connection.password", password);
 
-            // sessionFactory = new AnnotationConfiguration().configure("/hibernate.cfg.xml").buildSessionFactory();
-            sessionFactory = cnf.buildSessionFactory();
-        } catch (Throwable ex) {
-            // Log the exception.
-            log.error("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+	    // Connect to RH Cloud DB
+	    // cnf.setProperty("hibernate.connection.url",
+	    // "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
+	    // cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
+	    // cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
+
+	    cnf.setProperty("hibernate.connection.pool_size", "1");
+	    cnf.setProperty("hibernate.dialect",
+		    "org.hibernate.dialect.MySQLDialect");
+	    cnf
+		    .setProperty("hibernate.current_session_context_class",
+			    "thread");
+	    cnf.setProperty("hibernate.cache.provider_class",
+		    "org.hibernate.cache.NoCacheProvider");
+	    cnf.setProperty("hibernate.show_sql", "true");
+	    cnf.setProperty("hibernate.hbm2ddl.auto", "update");
+
+	    // sessionFactory = new
+	    // AnnotationConfiguration().configure("/hibernate.cfg.xml").buildSessionFactory();
+	    sessionFactory = cnf.buildSessionFactory();
+	} catch (Throwable ex) {
+	    // Log the exception.
+	    log.error("Initial SessionFactory creation failed." + ex);
+	    throw new ExceptionInInitializerError(ex);
+	}
     }
 
     public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+	return sessionFactory;
     }
 
     public static String getDbname() {
-        return dbname;
+	return dbname;
     }
 
     public static void setDbname(String dbname) {
-        HibernateUtil.dbname = dbname;
+	HibernateUtil.dbname = dbname;
     }
 
     public static String getHost() {
-        return host;
+	return host;
     }
 
     public static void setHost(String host) {
-        HibernateUtil.host = host;
+	HibernateUtil.host = host;
     }
 
     public static String getPort() {
-        return port;
+	return port;
     }
 
     public static void setPort(String port) {
-        HibernateUtil.port = port;
+	HibernateUtil.port = port;
     }
 
     public static String getUsername() {
-        return username;
+	return username;
     }
 
     public static void setUsername(String username) {
-        HibernateUtil.username = username;
+	HibernateUtil.username = username;
     }
 
     public static String getPassword() {
-        return password;
+	return password;
     }
 
     public static void setPassword(String password) {
-        HibernateUtil.password = password;
+	HibernateUtil.password = password;
     }
 
 }

@@ -20,11 +20,13 @@ public class Formatters {
 
     /**
      * Format the given date
-     * @param date - Date given by the runtime
+     * 
+     * @param date
+     *            - Date given by the runtime
      * @return - formatted date string.
      */
     public static String formatDate(Date date) {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        return dateFormat.format(date);
+	DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	return dateFormat.format(date);
     }
 }
