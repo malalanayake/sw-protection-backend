@@ -45,8 +45,7 @@ public class CompanyClient implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.CompanyClient[ id=" + id
-		+ " ]";
+	return "com.sw.protection.backend.entity.CompanyClient[ id=" + id + " ]";
     }
 
 }

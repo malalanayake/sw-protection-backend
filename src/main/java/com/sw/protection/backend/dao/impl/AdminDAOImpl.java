@@ -23,18 +23,17 @@ import com.sw.protection.backend.entity.Admin;
  */
 public class AdminDAOImpl implements AdminDAO {
     private Session session;
-    public static final Logger log = Logger.getLogger(AdminDAOImpl.class
-	    .getName());
+    public static final Logger log = Logger.getLogger(AdminDAOImpl.class.getName());
 
     @Override
     public Admin getAdmin(String userName) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
 	try {
-	    List<Admin> adminAll = session.getNamedQuery(
-		    Admin.Constants.NAME_QUERY_FIND_BY_USER_NAME).setParameter(
+	    List<Admin> adminAll = session.getNamedQuery(Admin.Constants.NAME_QUERY_FIND_BY_USER_NAME).setParameter(
 		    Admin.Constants.PARAM_USER_NAME, userName).list();
 	    tr.commit();
+
 	    if (adminAll.isEmpty()) {
 		if (log.isDebugEnabled()) {
 		    log.debug("Admin username: " + userName + " is not found");
@@ -56,30 +55,34 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public void updateAdmin(Admin admin) {
-	throw new UnsupportedOperationException("Not supported yet."); // To
-	// change
-	// body
-	// of
-	// generated
-	// methods,
-	// choose
-	// Tools
-	// |
-	// Templates.
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = session.beginTransaction();
+	try {
+	    session.merge(admin);
+	    tr.commit();
+	    if (log.isDebugEnabled()) {
+		log.debug("Update Admin" + admin.toString());
+	    }
+	} catch (RuntimeException ex) {
+	    tr.rollback();
+	    log.error(ex);
+	}
     }
 
     @Override
     public void deleteAdmin(Admin admin) {
-	throw new UnsupportedOperationException("Not supported yet."); // To
-	// change
-	// body
-	// of
-	// generated
-	// methods,
-	// choose
-	// Tools
-	// |
-	// Templates.
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = session.beginTransaction();
+	try {
+	    session.delete(admin);
+	    tr.commit();
+	    if (log.isDebugEnabled()) {
+		log.debug("Delete Admin" + admin.toString());
+	    }
+	} catch (RuntimeException ex) {
+	    tr.rollback();
+	    log.error(ex);
+	}
     }
 
     @Override
@@ -119,12 +122,12 @@ public class AdminDAOImpl implements AdminDAO {
     public boolean isAdminUserNameExist(String userName) {
 	if (this.getAdmin(userName) == null) {
 	    if (log.isDebugEnabled()) {
-		log.debug("Is Admin Exist: False");
+		log.debug("Is Admin " + userName + " Exist: False");
 	    }
 	    return false;
 	} else {
 	    if (log.isDebugEnabled()) {
-		log.debug("Is Admin Exist: True");
+		log.debug("Is Admin " + userName + " Exist: True");
 	    }
 	    return true;
 	}

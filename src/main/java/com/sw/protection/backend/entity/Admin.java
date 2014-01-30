@@ -25,8 +25,7 @@ import javax.persistence.OneToMany;
  * @author dinuka
  */
 @Entity
-@NamedQueries( {
-	@NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
+@NamedQueries( { @NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
 	@NamedQuery(name = "findByName", query = "select u from Admin u where u.name like:adminName"),
 	@NamedQuery(name = "findByUserName", query = "select u from Admin u where u.user_name=:userName"),
 	@NamedQuery(name = "findByAPIKey", query = "select u from Admin u where u.api_key=:apiKey") })
@@ -140,16 +139,15 @@ public class Admin implements Serializable {
 
     @Override
     public String toString() {
-	String output = "id=" + id + ", name=" + name + ", user_name="
-		+ user_name + ", api_key=" + api_key + ", email=" + email
-		+ ", date_time=" + date_time;
+	String output = "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key
+		+ ", email=" + email + ", date_time=" + date_time;
+	output = output + ", Admin ScopSet :";
 	if (!adminScopeSet.isEmpty()) {
 	    for (AdminScope scop : adminScopeSet) {
-		output = output + scop.getApi_name();
+		output = output + scop.getApi_name() + " ";
 	    }
 	}
 	return output;
 
     }
-
 }

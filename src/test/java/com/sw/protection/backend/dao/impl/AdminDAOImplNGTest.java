@@ -39,11 +39,9 @@ public class AdminDAOImplNGTest {
     @DataProvider(name = "adminData")
     public Object[][] AdminData() {
 	Object[][] IndiaIncomeArray = {
-		{ "Dinuka", "malalanayake", "pw",
-			"dinuka.malalanayake@gmail.com", APINames.USER, true,
-			false, true, false },
-		{ "Malinda", "malinda", "pw908", "malinda@yahoo.com",
-			APINames.USER, false, true, false, true } };
+		{ "Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com", APINames.USER, true, false, true,
+			false },
+		{ "Malinda", "malinda", "pw908", "malinda@yahoo.com", APINames.USER, false, true, false, true } };
 	return (IndiaIncomeArray);
     }
 
@@ -118,19 +116,30 @@ public class AdminDAOImplNGTest {
     @Test(dependsOnMethods = { "testGetAdmin" })
     public void testUpdateAdmin() {
 	System.out.println("Start Test Update Admin");
-	// Admin admin = null;
-	// AdminDAOImpl instance = new AdminDAOImpl();
-	// instance.updateAdmin(admin);
-	// // TODO review the generated test code and remove the default call to
-	// fail.
-	// fail("The test case is a prototype.");
+	String userName = "malalanayake";
+	AdminDAO instance = new AdminDAOImpl();
+	Admin expResult = new Admin();
+	Admin result = new Admin();
+	expResult = instance.getAdmin(userName);
+	expResult = instance.loadAllPropertiesOfAdmin(expResult.getId());
+	expResult.setEmail("testmail@yahoo.com");
+	expResult.setName("Kasuni");
+	expResult.setUser_name("kasuni");
+	instance.updateAdmin(expResult);
+
+	result = instance.getAdmin("kasuni");
+
+	assertEquals(result.getId(), expResult.getId());
+	assertEquals(result.getEmail(), expResult.getEmail());
+	assertEquals(result.getUser_name(), expResult.getUser_name());
+	assertEquals(result.getPass_word(), expResult.getPass_word());
     }
 
     @Test(dependsOnMethods = { "testUpdateAdmin" })
     public void isAdminUserNameExist() {
 	System.out.println("getAllAdmins");
 	AdminDAOImpl instance = new AdminDAOImpl();
-	assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
+	assertEquals(instance.isAdminUserNameExist("kasuni"), true);
 	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
     }
 
@@ -140,21 +149,28 @@ public class AdminDAOImplNGTest {
     @Test(dependsOnMethods = { "isAdminUserNameExist" })
     public void testDeleteAdmin() {
 	System.out.println("Start Test Delete Admin");
-	// Admin admin = null;
-	// AdminDAOImpl instance = new AdminDAOImpl();
-	// instance.deleteAdmin(admin);
-	// // TODO review the generated test code and remove the default call to
-	// fail.
-	// fail("The test case is a prototype.");
+	String userName1 = "malinda";
+	String userName2 = "kasuni";
+	AdminDAO instance = new AdminDAOImpl();
+	Admin admin1 = new Admin();
+	Admin admin2 = new Admin();
+	admin1 = instance.getAdmin(userName1);
+	admin2 = instance.getAdmin(userName2);
+	// admin1 = instance.loadAllPropertiesOfAdmin(admin1.getId());
+	// admin2 = instance.loadAllPropertiesOfAdmin(admin2.getId());
+
+	instance.deleteAdmin(admin1);
+	assertEquals(instance.isAdminUserNameExist(userName1), false);
+	instance.deleteAdmin(admin2);
+	assertEquals(instance.isAdminUserNameExist(userName2), false);
     }
 
     /**
      * Test of saveAdmin method, of class AdminDAOImpl.
      */
     @Test(dataProvider = "adminData")
-    public void testSaveAdmin(String name, String userName, String pw,
-	    String email, String api_name, boolean get, boolean post,
-	    boolean put, boolean del) {
+    public void testSaveAdmin(String name, String userName, String pw, String email, String api_name, boolean get,
+	    boolean post, boolean put, boolean del) {
 	System.out.println("Start Test Save Admin");
 	Admin admin = new Admin();
 	admin.setUser_name(userName);

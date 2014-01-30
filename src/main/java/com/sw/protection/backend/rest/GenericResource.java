@@ -57,11 +57,9 @@ public class GenericResource {
     @Produces("text/plain")
     @Consumes("application/json")
     @ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = Response.class)
-    @ApiResponses(value = {
-	    @ApiResponse(code = 400, message = "Invalid ID supplied"),
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied"),
 	    @ApiResponse(code = 404, message = "Pet not found") })
-    public Response getXml(
-	    @Context HttpServletRequest req,
+    public Response getXml(@Context HttpServletRequest req,
 	    @ApiParam(value = "ID of me to fetch", required = true) @PathParam("id") String id) {
 	// TODO return proper representation object
 	// Monitor mon = MonitorFactory.start(id);
@@ -92,9 +90,8 @@ public class GenericResource {
 	// UUID idTwo = UUID.fromString("9wXCEmkY-GcwA-Dofe-9uqc-A4ruMdG4bkYN");
 	// mon.stop();
 
-	return Response.ok().entity(
-		"getUserById are called by, ids test : " + ss + url + "/"
-			+ idOne + "/" + msg).build();
+	return Response.ok().entity("getUserById are called by, ids test : " + ss + url + "/" + idOne + "/" + msg)
+		.build();
 
     }
 

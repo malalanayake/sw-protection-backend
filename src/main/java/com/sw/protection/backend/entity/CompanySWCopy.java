@@ -45,8 +45,7 @@ public class CompanySWCopy implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.CompanySWCopy[ id=" + id
-		+ " ]";
+	return "com.sw.protection.backend.entity.CompanySWCopy[ id=" + id + " ]";
     }
 
 }
