@@ -23,12 +23,10 @@ public class ApplicationConfig extends Application {
 	Set<Class<?>> resources = new java.util.HashSet<Class<?>>();
 	// following code can be used to customize Jersey 1.x JSON provider:
 	try {
-	    Class jacksonProvider = Class
-		    .forName("com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider");
+	    Class jacksonProvider = Class.forName("com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider");
 	    resources.add(jacksonProvider);
 	} catch (ClassNotFoundException ex) {
-	    java.util.logging.Logger.getLogger(getClass().getName()).log(
-		    java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
 	addRestResourceClasses(resources);
 	return resources;

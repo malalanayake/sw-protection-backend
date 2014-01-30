@@ -45,12 +45,9 @@ public class HibernateUtil {
 	    cnf.addAnnotatedClass(CompanySW.class);
 	    cnf.addAnnotatedClass(CompanySWCopy.class);
 	    cnf.addAnnotatedClass(User.class);
-	    cnf.setProperty("hibernate.dialect",
-		    "org.hibernate.dialect.MySQLDialect");
-	    cnf.setProperty("hibernate.connection.driver_class",
-		    "com.mysql.jdbc.Driver");
-	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host
-		    + ":" + port + "/" + dbname);
+	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+	    cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + dbname);
 	    cnf.setProperty("hibernate.connection.username", username);
 	    cnf.setProperty("hibernate.connection.password", password);
 
@@ -61,13 +58,9 @@ public class HibernateUtil {
 	    // cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
 
 	    cnf.setProperty("hibernate.connection.pool_size", "1");
-	    cnf.setProperty("hibernate.dialect",
-		    "org.hibernate.dialect.MySQLDialect");
-	    cnf
-		    .setProperty("hibernate.current_session_context_class",
-			    "thread");
-	    cnf.setProperty("hibernate.cache.provider_class",
-		    "org.hibernate.cache.NoCacheProvider");
+	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+	    cnf.setProperty("hibernate.current_session_context_class", "thread");
+	    cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
 	    cnf.setProperty("hibernate.show_sql", "true");
 	    cnf.setProperty("hibernate.hbm2ddl.auto", "update");
 

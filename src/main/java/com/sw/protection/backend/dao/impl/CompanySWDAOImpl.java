@@ -19,71 +19,71 @@ public class CompanySWDAOImpl implements CompanySWDAO {
     @Override
     public List<CompanySW> getAllCompanySWs() {
 	throw new UnsupportedOperationException("Not supported yet."); // To
-								       // change
-								       // body
-								       // of
-								       // generated
-								       // methods,
-								       // choose
-								       // Tools
-								       // |
-								       // Templates.
+	// change
+	// body
+	// of
+	// generated
+	// methods,
+	// choose
+	// Tools
+	// |
+	// Templates.
     }
 
     @Override
     public CompanySW getCompanySW(int companyId) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
-								       // change
-								       // body
-								       // of
-								       // generated
-								       // methods,
-								       // choose
-								       // Tools
-								       // |
-								       // Templates.
+	// change
+	// body
+	// of
+	// generated
+	// methods,
+	// choose
+	// Tools
+	// |
+	// Templates.
     }
 
     @Override
     public void updateCompanySW(CompanySW companySW) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
-								       // change
-								       // body
-								       // of
-								       // generated
-								       // methods,
-								       // choose
-								       // Tools
-								       // |
-								       // Templates.
+	// change
+	// body
+	// of
+	// generated
+	// methods,
+	// choose
+	// Tools
+	// |
+	// Templates.
     }
 
     @Override
     public void deleteCompanySW(CompanySW companySW) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
-								       // change
-								       // body
-								       // of
-								       // generated
-								       // methods,
-								       // choose
-								       // Tools
-								       // |
-								       // Templates.
+	// change
+	// body
+	// of
+	// generated
+	// methods,
+	// choose
+	// Tools
+	// |
+	// Templates.
     }
 
     @Override
     public void saveCompanySW(CompanySW companySW) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
-								       // change
-								       // body
-								       // of
-								       // generated
-								       // methods,
-								       // choose
-								       // Tools
-								       // |
-								       // Templates.
+	// change
+	// body
+	// of
+	// generated
+	// methods,
+	// choose
+	// Tools
+	// |
+	// Templates.
     }
 
 }
