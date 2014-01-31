@@ -144,7 +144,7 @@ public class Admin implements Serializable {
 	output = output + ", Admin ScopSet :";
 	if (!adminScopeSet.isEmpty()) {
 	    for (AdminScope scop : adminScopeSet) {
-		output = output + scop.getApi_name() + " ";
+		output = output + scop.toString();
 	    }
 	}
 	return output;

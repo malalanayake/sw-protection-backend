@@ -6,6 +6,8 @@
 package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * AdminScope entity is going to store the scope details of admin users in the
@@ -21,7 +25,20 @@ import javax.persistence.ManyToOne;
  * @author dinuka
  */
 @Entity
+@NamedQueries( {
+	@NamedQuery(name = "findAdminScopeByUserName", query = "SELECT u FROM AdminScope u where u.admin.user_name=:userName"),
+	@NamedQuery(name = "findAdminScopeByUserNameAndAPIName", query = "select u from AdminScope u where u.admin.user_name=:userName and u.api_name=:apiName") })
 public class AdminScope implements Serializable {
+
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findAdminScopeByUserName";
+	public static final String NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME = "findAdminScopeByUserNameAndAPIName";
+	public static final String PARAM_USER_NAME = "userName";
+	public static final String PARAM_API_NAME = "apiName";
+    }
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,7 +50,7 @@ public class AdminScope implements Serializable {
     private boolean post;
     private boolean put;
     private boolean del;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Admin admin;
 
     public Admin getAdmin() {
@@ -106,7 +123,8 @@ public class AdminScope implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.AdminScope[ id=" + id + " ]";
+	return "ID:" + id + ", Api Name:" + api_name + ", GET:" + get + ", POST:" + post + ", PUT:" + put + ", DELETE:"
+		+ del + ", Admin ID:" + admin.getId();
     }
 
 }

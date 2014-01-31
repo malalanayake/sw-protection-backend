@@ -48,6 +48,7 @@ public class AdminDAOImpl implements AdminDAO {
 	} catch (RuntimeException ex) {
 	    tr.rollback(); // rall back the transaction due to runtime error
 	    log.error(ex);
+	    // TODO: Throw exception
 	    return null;
 	}
 
@@ -58,14 +59,17 @@ public class AdminDAOImpl implements AdminDAO {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
 	try {
-	    session.merge(admin);
-	    tr.commit();
-	    if (log.isDebugEnabled()) {
-		log.debug("Update Admin" + admin.toString());
+	    synchronized (admin.getId()) {
+		session.merge(admin);
+		tr.commit();
+		if (log.isDebugEnabled()) {
+		    log.debug("Update Admin" + admin.toString());
+		}
 	    }
 	} catch (RuntimeException ex) {
 	    tr.rollback();
 	    log.error(ex);
+	    // TODO: Throw exception
 	}
     }
 
@@ -82,6 +86,7 @@ public class AdminDAOImpl implements AdminDAO {
 	} catch (RuntimeException ex) {
 	    tr.rollback();
 	    log.error(ex);
+	    // TODO: Throw exception
 	}
     }
 
@@ -98,6 +103,7 @@ public class AdminDAOImpl implements AdminDAO {
 	} catch (RuntimeException ex) {
 	    tr.rollback();
 	    log.error(ex);
+	    // TODO: Throw exception
 	}
     }
 
@@ -113,6 +119,7 @@ public class AdminDAOImpl implements AdminDAO {
 	    return admin;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
+	    // TODO: Throw exception
 	    return null;
 	}
 

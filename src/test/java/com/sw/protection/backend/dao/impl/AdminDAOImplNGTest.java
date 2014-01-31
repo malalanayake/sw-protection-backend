@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -31,7 +32,9 @@ import com.sw.protection.backend.entity.AdminScope;
  * 
  * @author dinuka
  */
+@Test(groups = { "AdminDAOImplNGTest" })
 public class AdminDAOImplNGTest {
+    public static final Logger log = Logger.getLogger(AdminDAOImplNGTest.class.getName());
 
     public AdminDAOImplNGTest() {
     }
@@ -87,7 +90,7 @@ public class AdminDAOImplNGTest {
      */
     @Test(dependsOnMethods = { "testSaveAdmin" })
     public void testGetAdmin() {
-	System.out.println("Start Test Get Admin");
+	log.info("Start Test Get Admin");
 	String userName = "malalanayake";
 	AdminDAO instance = new AdminDAOImpl();
 	Admin expResult = new Admin();
@@ -100,7 +103,6 @@ public class AdminDAOImplNGTest {
 
 	result = instance.loadAllPropertiesOfAdmin(result.getId());
 
-	System.out.println(result.getAdminScopeSet().size());
 	Set<AdminScope> adminScopeSet = result.getAdminScopeSet();
 	AdminScope firstAdminScope = new AdminScope();
 	for (AdminScope adminScope : adminScopeSet) {
@@ -115,7 +117,7 @@ public class AdminDAOImplNGTest {
      */
     @Test(dependsOnMethods = { "testGetAdmin" })
     public void testUpdateAdmin() {
-	System.out.println("Start Test Update Admin");
+	log.info("Start Test Update Admin");
 	String userName = "malalanayake";
 	AdminDAO instance = new AdminDAOImpl();
 	Admin expResult = new Admin();
@@ -137,7 +139,7 @@ public class AdminDAOImplNGTest {
 
     @Test(dependsOnMethods = { "testUpdateAdmin" })
     public void isAdminUserNameExist() {
-	System.out.println("getAllAdmins");
+	log.info("getAllAdmins");
 	AdminDAOImpl instance = new AdminDAOImpl();
 	assertEquals(instance.isAdminUserNameExist("kasuni"), true);
 	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
@@ -148,7 +150,7 @@ public class AdminDAOImplNGTest {
      */
     @Test(dependsOnMethods = { "isAdminUserNameExist" })
     public void testDeleteAdmin() {
-	System.out.println("Start Test Delete Admin");
+	log.info("Start Test Delete Admin");
 	String userName1 = "malinda";
 	String userName2 = "kasuni";
 	AdminDAO instance = new AdminDAOImpl();
@@ -156,8 +158,6 @@ public class AdminDAOImplNGTest {
 	Admin admin2 = new Admin();
 	admin1 = instance.getAdmin(userName1);
 	admin2 = instance.getAdmin(userName2);
-	// admin1 = instance.loadAllPropertiesOfAdmin(admin1.getId());
-	// admin2 = instance.loadAllPropertiesOfAdmin(admin2.getId());
 
 	instance.deleteAdmin(admin1);
 	assertEquals(instance.isAdminUserNameExist(userName1), false);
@@ -171,7 +171,7 @@ public class AdminDAOImplNGTest {
     @Test(dataProvider = "adminData")
     public void testSaveAdmin(String name, String userName, String pw, String email, String api_name, boolean get,
 	    boolean post, boolean put, boolean del) {
-	System.out.println("Start Test Save Admin");
+	log.info("Start Test Save Admin");
 	Admin admin = new Admin();
 	admin.setUser_name(userName);
 	admin.setPass_word(pw);
@@ -192,7 +192,7 @@ public class AdminDAOImplNGTest {
 	adminScopSet.add(adminScope);
 	admin.setAdminScopeSet(adminScopSet);
 	AdminDAO instance = new AdminDAOImpl();
-	System.out.print("" + admin.toString());
+	log.info("" + admin.toString());
 	instance.saveAdmin(admin);
     }
 
