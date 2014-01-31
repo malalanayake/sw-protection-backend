@@ -94,7 +94,7 @@ public class AdminDAOImpl implements AdminDAO {
     public void saveAdmin(Admin admin) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
-	try {
+	try {//TODO:synchronize this
 	    session.save(admin);
 	    tr.commit();
 	    if (log.isDebugEnabled()) {

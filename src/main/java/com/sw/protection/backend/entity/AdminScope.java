@@ -27,7 +27,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries( {
 	@NamedQuery(name = "findAdminScopeByUserName", query = "SELECT u FROM AdminScope u where u.admin.user_name=:userName"),
-	@NamedQuery(name = "findAdminScopeByUserNameAndAPIName", query = "select u from AdminScope u where u.admin.user_name=:userName and u.api_name=:apiName") })
+	@NamedQuery(name = "findAdminScopeByUserNameAndAPIName", query = "select u from AdminScope u where u.admin.user_name=:userName and u.api_name=:apiName"), })
 public class AdminScope implements Serializable {
 
     /**
@@ -36,6 +36,7 @@ public class AdminScope implements Serializable {
     public static interface Constants {
 	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findAdminScopeByUserName";
 	public static final String NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME = "findAdminScopeByUserNameAndAPIName";
+
 	public static final String PARAM_USER_NAME = "userName";
 	public static final String PARAM_API_NAME = "apiName";
     }

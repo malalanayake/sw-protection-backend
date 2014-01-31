@@ -2,6 +2,8 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.entity.AdminScope;
 
 /**
@@ -53,5 +55,18 @@ public interface AdminScopeDAO {
      * @return - specific admin scope
      */
     public AdminScope getAdminScope(String userName, String apiName);
+
+    /**
+     * Check whether the admin has correct access
+     * 
+     * @param userName
+     *            - username
+     * @param apiName
+     *            - relevent API name
+     * @param operation
+     *            - operation such as GET,POST,PUT,DELETE
+     * @return
+     */
+    public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation);
 
 }

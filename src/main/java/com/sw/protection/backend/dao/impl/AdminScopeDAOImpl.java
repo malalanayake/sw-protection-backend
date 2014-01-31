@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.AdminScope;
@@ -52,7 +53,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     public void saveNewAdminScope(AdminScope adminScope) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
-	try {
+	try {//TODO: synchronize this
 	    session.save(adminScope);
 	    tr.commit();
 	    if (log.isDebugEnabled()) {
@@ -119,6 +120,40 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    // TODO: Throw exception
 	    return null;
 	}
+    }
+
+    @Override
+    public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation) {
+	AdminScope adminScope = null;
+	adminScope = getAdminScope(userName, apiName);
+	boolean result = false;
+	if (adminScope == null) {// User doesn't have scope recode for given API
+	    if (log.isDebugEnabled()) {
+		log.debug("Admin user " + userName + " doesn't have scope recode for API " + apiName);
+	    }
+	    return result;
+	}
+
+	switch (operation) {
+	case GET:
+	    result = adminScope.isGet();
+	    break;
+	case POST:
+	    result = adminScope.isPost();
+	    break;
+	case PUT:
+	    result = adminScope.isPut();
+	    break;
+	case DELETE:
+	    result = adminScope.isDel();
+	    break;
+	}
+
+	if (log.isDebugEnabled()) {
+	    log.debug("Admin user " + userName + " has scope recode for API " + apiName + " " + operation + "="
+		    + result);
+	}
+	return result;
     }
 
 }

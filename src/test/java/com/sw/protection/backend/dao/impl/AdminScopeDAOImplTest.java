@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.Admin;
@@ -134,6 +135,26 @@ public class AdminScopeDAOImplTest {
 	assertEquals(latest.isGet(), true);
 	assertEquals(latest.isPut(), true);
 	assertEquals(latest.isPost(), true);
+
+    }
+
+    @Test(dependsOnMethods = { "updateAdminScope" })
+    public void isAccessGrantedFor() {
+	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.GET), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.DELETE), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.POST), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.PUT), true);
+
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.GET), false);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.DELETE), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.POST), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.PUT), false);
+
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.GET), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.DELETE), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.POST), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.PUT), true);
 
     }
 }
