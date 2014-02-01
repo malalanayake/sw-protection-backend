@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.sw.protection.backend.common.ClearLocks;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
@@ -195,26 +193,7 @@ public class AdminScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "isAccessGrantedFor" })
     public void concurencyTesting() {
-	// AdminDAOImplMultithreadingTest adminDAOImplMultithreadingTest1 = new
-	// AdminDAOImplMultithreadingTest();
-	// AdminDAOImplMultithreadingTest adminDAOImplMultithreadingTest2 = new
-	// AdminDAOImplMultithreadingTest();
-	// AdminDAO adminDao = new AdminDAOImpl();
-	// Admin admin1 = adminDao.getAdmin("dinuka");
-	// admin1 = adminDao.loadAllPropertiesOfAdmin(admin1.getId());
-	// admin1.setEmail("thread1@gmail.com");
-	// adminDAOImplMultithreadingTest1.setAdmin(admin1);
-	// Thread one = new Thread(adminDAOImplMultithreadingTest1);
-	//
-	// // Admin admin2 = adminDao.getAdmin("dinuka");
-	// // admin2 = adminDao.loadAllPropertiesOfAdmin(admin2.getId());
-	// admin1.setEmail("thread2@gmail.com");
-	// adminDAOImplMultithreadingTest2.setAdmin(admin1);
-	// Thread two = new Thread(adminDAOImplMultithreadingTest2);
-	// for (int i = 0; i < 10; i++) {
-	// one.start();
-	// two.start();
-	// }
+
 	AdminDAO adminDao = new AdminDAOImpl();
 	ExecutorService executor = Executors.newFixedThreadPool(10);
 	Admin admin1 = adminDao.getAdmin("dinuka");
@@ -228,6 +207,21 @@ public class AdminScopeDAOImplTest {
 	    executor.execute(worker);
 	}
 	executor.shutdown();
+
+	// same recode access from different threads form different objects
+	AdminDAO adminDao3 = new AdminDAOImpl();
+	ExecutorService executor3 = Executors.newFixedThreadPool(10);
+	Admin admin13 = adminDao3.getAdmin("dinuka");
+
+	admin13 = adminDao3.loadAllPropertiesOfAdmin(admin13.getId());
+	for (int i = 0; i < 10; i++) {
+
+	    admin13.setEmail("thread" + i + "@gmail.com");
+	    Runnable worker = new AdminDAOImplMultithreadingTest(admin13);
+	    log.info("Start Editing thread " + i);
+	    executor3.execute(worker);
+	}
+	executor3.shutdown();
 
 	AdminDAO adminDao1 = new AdminDAOImpl();
 	ExecutorService executor1 = Executors.newFixedThreadPool(10);
@@ -243,9 +237,10 @@ public class AdminScopeDAOImplTest {
 	    executor1.execute(worker);
 	}
 	executor1.shutdown();
+
 	// Wait until all threads are finish
-	
-	Thread executeClearLocks = new Thread(new ClearLocks());
-	executeClearLocks.start();
+
+	// Thread executeClearLocks = new Thread(new ClearLocks());
+	// executeClearLocks.start();
     }
 }

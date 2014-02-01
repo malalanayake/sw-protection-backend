@@ -19,9 +19,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
@@ -56,6 +59,7 @@ public class AdminDAOImplNGTest {
 	HibernateUtil.setPassword(DBTestProperties.PW);
 	HibernateUtil.setDbname(DBTestProperties.DBNAME);
 	HibernateUtil.init();
+	SharedInMemoryData.getInstance();
     }
 
     @AfterClass
