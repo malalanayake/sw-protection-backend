@@ -7,6 +7,10 @@
 package com.sw.protection.backend.dao.impl;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -24,6 +28,8 @@ import com.sw.protection.backend.entity.Admin;
 public class AdminDAOImpl implements AdminDAO {
     private Session session;
     public static final Logger log = Logger.getLogger(AdminDAOImpl.class.getName());
+
+    private static volatile ConcurrentHashMap<Object, ReentrantLock> LOCKS = new ConcurrentHashMap<Object, ReentrantLock>();
 
     @Override
     public Admin getAdmin(String userName) {
@@ -59,17 +65,30 @@ public class AdminDAOImpl implements AdminDAO {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
 	try {
-	    synchronized (admin.getId()) {
-		session.merge(admin);
-		tr.commit();
-		if (log.isDebugEnabled()) {
-		    log.debug("Update Admin" + admin.toString());
-		}
+	    LOCKS.putIfAbsent(admin.getId(), new ReentrantLock());
+	    LOCKS.get(admin.getId()).lock(); // lock by Admin ID
+
+	    if (log.isDebugEnabled()) {
+		log.debug("Locked update operation by Admin ID " + admin.getId());
 	    }
+	    session.merge(admin);
+	    tr.commit();
+
+	    if (log.isDebugEnabled()) {
+		log.debug("Update Admin" + admin.toString());
+		log.debug("Estimated waiting number of threads " + LOCKS.get(admin.getId()).getQueueLength());
+	    }
+
 	} catch (RuntimeException ex) {
 	    tr.rollback();
 	    log.error(ex);
-	    // TODO: Throw exception
+	    // TODO: capture the exception
+	} finally {
+	    LOCKS.get(admin.getId()).unlock(); // Release by Admin ID
+	    if (log.isDebugEnabled()) {
+		log.debug("Released LOCK by Admin ID " + admin.getId());
+	    }
+	    // TODO: throw the captured exception
 	}
     }
 
@@ -94,7 +113,7 @@ public class AdminDAOImpl implements AdminDAO {
     public void saveAdmin(Admin admin) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
-	try {//TODO:synchronize this
+	try {// TODO:synchronize this
 	    session.save(admin);
 	    tr.commit();
 	    if (log.isDebugEnabled()) {
@@ -142,8 +161,59 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public List<Admin> getAllAdmins() {
-	// TODO Auto-generated method stub
-	return null;
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = session.beginTransaction();
+	try {
+	    List<Admin> adminAll = session.getNamedQuery(Admin.Constants.NAME_QUERY_FIND_ALL).list();
+	    tr.commit();
+
+	    if (adminAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin users are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + adminAll.size() + " Admin users");
+		}
+		return adminAll;
+	    }
+	} catch (RuntimeException ex) {
+	    tr.rollback(); // rall back the transaction due to runtime error
+	    log.error(ex);
+	    // TODO: Throw exception
+	    return null;
+	}
+    }
+
+    /**
+     * Clear all not useful locks from the LOCKS Concurrent HashMap
+     */
+    public void clearLocks() {
+	synchronized (AdminDAOImpl.class) {
+	    List<Admin> allAdmins = this.getAllAdmins();
+	    for (Admin admin : allAdmins) {
+		ReentrantLock lock = null;
+		lock = LOCKS.get(admin.getId());
+		if (lock != null) { // Check whether the lock initiated
+		    if (lock.getQueueLength() == 0) {
+			// Check is there any thread waiting for this lock
+			LOCKS.remove(admin.getId());
+			if (log.isDebugEnabled()) {
+			    log.debug("Removed Lock relevent to Admin " + admin.getId());
+			}
+		    } else {
+			if (log.isDebugEnabled()) {
+			    log.debug("Some Threads are waiting to Lock relevent to Admin " + admin.getId());
+			}
+		    }
+		} else {
+		    if (log.isDebugEnabled()) {
+			log.debug("Threads is no lock initiated relevent to Admin " + admin.getId());
+		    }
+		}
+	    }
+	}
     }
 
 }

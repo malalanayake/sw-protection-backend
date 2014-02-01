@@ -53,7 +53,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     public void saveNewAdminScope(AdminScope adminScope) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
-	try {//TODO: synchronize this
+	try {// TODO: synchronize this
 	    session.save(adminScope);
 	    tr.commit();
 	    if (log.isDebugEnabled()) {

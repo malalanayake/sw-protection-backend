@@ -6,11 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.ClearLocks;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
@@ -56,6 +60,37 @@ public class AdminScopeDAOImplTest {
 	admin.setAdminScopeSet(adminScopSet);
 	AdminDAO instance = new AdminDAOImpl();
 	instance.saveAdmin(admin);
+
+	Admin admin2 = new Admin();
+	admin2.setUser_name("malinda");
+	admin2.setPass_word("pw");
+	admin2.setEmail("malinda@234.com");
+	admin2.setName("Malinda");
+	admin2.setApi_key(UUID.randomUUID().toString());
+	admin2.setDate_time(Formatters.formatDate(new Date()));
+
+	Set<AdminScope> adminScopSet2 = admin2.getAdminScopeSet();
+	AdminScope adminScope12 = new AdminScope();
+	adminScope12.setAdmin(admin2);
+	adminScope12.setApi_name(APINames.ADMIN);
+	adminScope12.setDel(true);
+	adminScope12.setGet(true);
+	adminScope12.setPost(true);
+	adminScope12.setPut(true);
+
+	AdminScope adminScope22 = new AdminScope();
+	adminScope22.setAdmin(admin2);
+	adminScope22.setApi_name(APINames.COMPANY);
+	adminScope22.setDel(true);
+	adminScope22.setGet(false);
+	adminScope22.setPost(true);
+	adminScope22.setPut(false);
+
+	adminScopSet2.add(adminScope12);
+	adminScopSet2.add(adminScope22);
+	admin2.setAdminScopeSet(adminScopSet2);
+	AdminDAO instance2 = new AdminDAOImpl();
+	instance2.saveAdmin(admin2);
     }
 
     /**
@@ -156,5 +191,61 @@ public class AdminScopeDAOImplTest {
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.POST), true);
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.PUT), true);
 
+    }
+
+    @Test(dependsOnMethods = { "isAccessGrantedFor" })
+    public void concurencyTesting() {
+	// AdminDAOImplMultithreadingTest adminDAOImplMultithreadingTest1 = new
+	// AdminDAOImplMultithreadingTest();
+	// AdminDAOImplMultithreadingTest adminDAOImplMultithreadingTest2 = new
+	// AdminDAOImplMultithreadingTest();
+	// AdminDAO adminDao = new AdminDAOImpl();
+	// Admin admin1 = adminDao.getAdmin("dinuka");
+	// admin1 = adminDao.loadAllPropertiesOfAdmin(admin1.getId());
+	// admin1.setEmail("thread1@gmail.com");
+	// adminDAOImplMultithreadingTest1.setAdmin(admin1);
+	// Thread one = new Thread(adminDAOImplMultithreadingTest1);
+	//
+	// // Admin admin2 = adminDao.getAdmin("dinuka");
+	// // admin2 = adminDao.loadAllPropertiesOfAdmin(admin2.getId());
+	// admin1.setEmail("thread2@gmail.com");
+	// adminDAOImplMultithreadingTest2.setAdmin(admin1);
+	// Thread two = new Thread(adminDAOImplMultithreadingTest2);
+	// for (int i = 0; i < 10; i++) {
+	// one.start();
+	// two.start();
+	// }
+	AdminDAO adminDao = new AdminDAOImpl();
+	ExecutorService executor = Executors.newFixedThreadPool(10);
+	Admin admin1 = adminDao.getAdmin("dinuka");
+
+	admin1 = adminDao.loadAllPropertiesOfAdmin(admin1.getId());
+	for (int i = 0; i < 10; i++) {
+
+	    admin1.setEmail("thread" + i + "@gmail.com");
+	    Runnable worker = new AdminDAOImplMultithreadingTest(admin1);
+	    log.info("Start Editing thread " + i);
+	    executor.execute(worker);
+	}
+	executor.shutdown();
+
+	AdminDAO adminDao1 = new AdminDAOImpl();
+	ExecutorService executor1 = Executors.newFixedThreadPool(10);
+	Admin admin2 = adminDao1.getAdmin("malinda");
+
+	admin2 = adminDao1.loadAllPropertiesOfAdmin(admin2.getId());
+
+	for (int i = 0; i < 10; i++) {
+
+	    admin2.setEmail("thread" + i + "@gmail.com");
+	    Runnable worker = new AdminDAOImplMultithreadingTest(admin2);
+	    log.info("Start Editing thread " + i);
+	    executor1.execute(worker);
+	}
+	executor1.shutdown();
+	// Wait until all threads are finish
+	
+	Thread executeClearLocks = new Thread(new ClearLocks());
+	executeClearLocks.start();
     }
 }
