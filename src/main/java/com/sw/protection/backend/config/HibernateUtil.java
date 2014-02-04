@@ -47,15 +47,20 @@ public class HibernateUtil {
 	    cnf.addAnnotatedClass(User.class);
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 	    cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + dbname);
-	    cnf.setProperty("hibernate.connection.username", username);
-	    cnf.setProperty("hibernate.connection.password", password);
+//	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + dbname);
+//	    cnf.setProperty("hibernate.connection.username", username);
+//	    cnf.setProperty("hibernate.connection.password", password);
 
 	    // Connect to RH Cloud DB
-	    // cnf.setProperty("hibernate.connection.url",
-	    // "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
-	    // cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
-	    // cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
+	     cnf.setProperty("hibernate.connection.url",
+	     "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
+	     cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
+	     cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
+	    
+	    //Connect to jelastic
+//	    cnf.setProperty("hibernate.connection.url","jdbc:mysql://mysql-dinuka.jelastic.servint.net/sw");
+//	    cnf.setProperty("hibernate.connection.username", "root");
+//	    cnf.setProperty("hibernate.connection.password", "w6zEzxKm1F");
 
 	    cnf.setProperty("hibernate.connection.pool_size", "1");
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");

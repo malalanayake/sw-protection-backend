@@ -5,6 +5,9 @@
  */
 package com.sw.protection.backend.rest;
 
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.Member;
+import com.sw.protection.backend.config.SharedInMemoryData;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -37,7 +40,7 @@ public class GenericResource {
     @Context
     private UriInfo context;
 
-    private static ConcurrentHashMap<String, String> userData = new ConcurrentHashMap<String, String>();
+    public static volatile IMap<String, String> userData = SharedInMemoryData.getInstance().getMap(SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
 
     /**
      * Creates a new instance of GenericResource
@@ -82,8 +85,12 @@ public class GenericResource {
 	String ss = "";
 	if (!userData.isEmpty()) {
 	    for (String s : userData.keySet()) {
-		ss = ss + " " + s;
+		ss = ss + " " + s + "\n";
 	    }
+	}
+
+	for (Member m : SharedInMemoryData.getInstance().getCluster().getMembers()) {
+	    ss = ss + " Member - " + m.getInetSocketAddress();
 	}
 	URI url = context.getBaseUri();
 	UUID idOne = UUID.randomUUID();
