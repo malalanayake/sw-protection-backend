@@ -34,13 +34,14 @@ import javax.ws.rs.core.Response;
  */
 @Path("/me")
 @Api(value = "/me", description = "Me first swagger integration", produces = "text/plain")
-@Produces( { "application/json", "application/xml" })
+@Produces({ "application/json", "application/xml" })
 public class GenericResource {
 
     @Context
     private UriInfo context;
 
-    public static volatile IMap<String, String> userData = SharedInMemoryData.getInstance().getMap(SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
+    public static volatile IMap<String, String> userData = SharedInMemoryData.getInstance().getMap(
+	    SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
 
     /**
      * Creates a new instance of GenericResource

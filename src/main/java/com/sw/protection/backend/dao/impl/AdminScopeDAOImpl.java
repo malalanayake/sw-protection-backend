@@ -97,10 +97,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
 	try {
-	    List<AdminScope> adminScopes = session.getNamedQuery(
-		    AdminScope.Constants.NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME).setParameter(
-		    AdminScope.Constants.PARAM_USER_NAME, userName).setParameter(AdminScope.Constants.PARAM_API_NAME,
-		    apiName).list();
+	    List<AdminScope> adminScopes = session
+		    .getNamedQuery(AdminScope.Constants.NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME)
+		    .setParameter(AdminScope.Constants.PARAM_USER_NAME, userName)
+		    .setParameter(AdminScope.Constants.PARAM_API_NAME, apiName).list();
 	    tr.commit();
 
 	    if (adminScopes.isEmpty()) {

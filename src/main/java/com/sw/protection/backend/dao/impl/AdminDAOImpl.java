@@ -32,6 +32,9 @@ import com.sw.protection.backend.entity.Admin;
 public class AdminDAOImpl implements AdminDAO {
     private Session session;
     public static final Logger log = Logger.getLogger(AdminDAOImpl.class.getName());
+    /**
+     * Maintain Locks over the cluster
+     */
     private static volatile IMap<Long, Object> LOCK_MAP = SharedInMemoryData.getInstance().getMap(
 	    SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
 
@@ -40,8 +43,8 @@ public class AdminDAOImpl implements AdminDAO {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = session.beginTransaction();
 	try {
-	    List<Admin> adminAll = session.getNamedQuery(Admin.Constants.NAME_QUERY_FIND_BY_USER_NAME).setParameter(
-		    Admin.Constants.PARAM_USER_NAME, userName).list();
+	    List<Admin> adminAll = session.getNamedQuery(Admin.Constants.NAME_QUERY_FIND_BY_USER_NAME)
+		    .setParameter(Admin.Constants.PARAM_USER_NAME, userName).list();
 	    tr.commit();
 
 	    if (adminAll.isEmpty()) {

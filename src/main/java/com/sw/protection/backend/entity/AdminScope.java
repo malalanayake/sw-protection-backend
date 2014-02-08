@@ -25,7 +25,7 @@ import javax.persistence.NamedQuery;
  * @author dinuka
  */
 @Entity
-@NamedQueries( {
+@NamedQueries({
 	@NamedQuery(name = "findAdminScopeByUserName", query = "SELECT u FROM AdminScope u where u.admin.user_name=:userName"),
 	@NamedQuery(name = "findAdminScopeByUserNameAndAPIName", query = "select u from AdminScope u where u.admin.user_name=:userName and u.api_name=:apiName"), })
 public class AdminScope implements Serializable {

@@ -25,7 +25,7 @@ import javax.persistence.OneToMany;
  * @author dinuka
  */
 @Entity
-@NamedQueries( { @NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
+@NamedQueries({ @NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
 	@NamedQuery(name = "findByName", query = "select u from Admin u where u.name like:adminName"),
 	@NamedQuery(name = "findByUserName", query = "select u from Admin u where u.user_name=:userName"),
 	@NamedQuery(name = "findByAPIKey", query = "select u from Admin u where u.api_key=:apiKey") })
@@ -127,14 +127,12 @@ public class Admin implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-	return super.equals(obj); // To change body of generated methods, choose
-	// Tools | Templates.
+	return super.equals(obj);
     }
 
     @Override
     public int hashCode() {
-	return super.hashCode(); // To change body of generated methods, choose
-	// Tools | Templates.
+	return super.hashCode();
     }
 
     @Override

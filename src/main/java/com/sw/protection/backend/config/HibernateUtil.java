@@ -11,9 +11,12 @@ import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanySW;
 import com.sw.protection.backend.entity.CompanySWCopy;
 import com.sw.protection.backend.entity.User;
+import com.sw.protection.backend.listners.BackEndContextListner;
+
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
 /**
  * This is contain hibernate configurations.
@@ -37,7 +40,7 @@ public class HibernateUtil {
 	Logger log = Logger.getLogger(HibernateUtil.class.getName());
 	try {
 
-	    AnnotationConfiguration cnf = new AnnotationConfiguration();
+	    Configuration cnf = new Configuration();
 	    cnf.addAnnotatedClass(Admin.class);
 	    cnf.addAnnotatedClass(AdminScope.class);
 	    cnf.addAnnotatedClass(Company.class);
@@ -47,20 +50,24 @@ public class HibernateUtil {
 	    cnf.addAnnotatedClass(User.class);
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 	    cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-//	    cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + dbname);
-//	    cnf.setProperty("hibernate.connection.username", username);
-//	    cnf.setProperty("hibernate.connection.password", password);
 
-	    // Connect to RH Cloud DB
-	     cnf.setProperty("hibernate.connection.url",
-	     "jdbc:mysql://52e4250f500446b2d000007f-sysensor.rhcloud.com:38006/myapp");
-	     cnf.setProperty("hibernate.connection.username", "adminjIcrGZy");
-	     cnf.setProperty("hibernate.connection.password", "mRKGYUViRzR6");
-	    
-	    //Connect to jelastic
-//	    cnf.setProperty("hibernate.connection.url","jdbc:mysql://mysql-dinuka.jelastic.servint.net/sw");
-//	    cnf.setProperty("hibernate.connection.username", "root");
-//	    cnf.setProperty("hibernate.connection.password", "w6zEzxKm1F");
+	    if (BackEndContextListner.isLocalDeployment) {
+		cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + dbname);
+		cnf.setProperty("hibernate.connection.username", username);
+		cnf.setProperty("hibernate.connection.password", password);
+	    } else {
+		// Connect to RH Cloud DB
+		cnf.setProperty("hibernate.connection.url", "jdbc:mysql://" + System.getenv("OPENSHIFT_MYSQL_DB_HOST")
+			+ ":" + System.getenv("OPENSHIFT_MYSQL_DB_PORT") + "/sw");
+		cnf.setProperty("hibernate.connection.username", System.getenv("OPENSHIFT_MYSQL_DB_USERNAME"));
+		cnf.setProperty("hibernate.connection.password", System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD"));
+
+	    }
+
+	    // Connect to jelastic
+	    // cnf.setProperty("hibernate.connection.url","jdbc:mysql://mysql-dinuka.jelastic.servint.net/sw");
+	    // cnf.setProperty("hibernate.connection.username", "root");
+	    // cnf.setProperty("hibernate.connection.password", "w6zEzxKm1F");
 
 	    cnf.setProperty("hibernate.connection.pool_size", "1");
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");

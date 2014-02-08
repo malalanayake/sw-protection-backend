@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * @author dinuka
  */
 public class BackEndContextListner implements ServletContextListener {
-
+    public static boolean isLocalDeployment = true;
     Logger log = Logger.getLogger(BackEndContextListner.class.getName());
 
     @Override
@@ -32,6 +32,8 @@ public class BackEndContextListner implements ServletContextListener {
 	if (log.isDebugEnabled()) {
 	    log.debug("Initalizing the hibernate");
 	}
+	isLocalDeployment = Boolean.valueOf(ctx.getInitParameter("local-deployment"));
+
 	HibernateUtil.setHost(ctx.getInitParameter("db-host"));
 	HibernateUtil.setPort(ctx.getInitParameter("db-port"));
 	HibernateUtil.setUsername(ctx.getInitParameter("db-user"));

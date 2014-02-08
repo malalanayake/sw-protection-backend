@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
@@ -238,9 +239,16 @@ public class AdminScopeDAOImplTest {
 	}
 	executor1.shutdown();
 
+	// wait until thread shutdown
+	try {
+	    executor.awaitTermination(1, TimeUnit.MINUTES);
+	    executor1.awaitTermination(1, TimeUnit.MINUTES);
+	    executor3.awaitTermination(1, TimeUnit.MINUTES);
+	} catch (InterruptedException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	// Wait until all threads are finish
 
-	// Thread executeClearLocks = new Thread(new ClearLocks());
-	// executeClearLocks.start();
     }
 }
