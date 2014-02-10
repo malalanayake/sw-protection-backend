@@ -67,7 +67,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    if (this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()) == null) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
-		//set latest time on modification
+		// set latest time on modification
 		adminScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.save(adminScope);
 		tr.commit();
@@ -102,8 +102,8 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    if (log.isDebugEnabled()) {
 		log.debug("Locked update operation by Admin ID " + adminScope.getAdmin().getId());
 	    }
-	    
-	    //check the modification time
+
+	    // check the modification time
 	    if (adminScope.getLast_modified().equals(
 		    getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()).getLast_modified())) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();

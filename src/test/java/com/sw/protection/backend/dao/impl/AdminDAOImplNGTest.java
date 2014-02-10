@@ -164,8 +164,7 @@ public class AdminDAOImplNGTest {
 	admin1 = instance.getAdmin(userName1);
 	admin2 = instance.getAdmin(userName2);
 	admin3 = instance.getAdmin(userName3);
-	
-	
+
 	instance.deleteAdmin(admin1);
 	assertEquals(instance.isAdminUserNameExist(userName1), false);
 	instance.deleteAdmin(admin2);
@@ -209,7 +208,7 @@ public class AdminDAOImplNGTest {
      * Test Admin without saving the Scope set
      */
     @Test
-    public void testSaveAdminWithoutScope(){
+    public void testSaveAdminWithoutScope() {
 	log.info("Start Test Save Admin without scope");
 	Admin admin = new Admin();
 	admin.setUser_name("TestAdminWithoutScope");
@@ -217,10 +216,10 @@ public class AdminDAOImplNGTest {
 	admin.setEmail("dinuka@123.com");
 	admin.setName("Test Admin");
 	admin.setApi_key(UUID.randomUUID().toString());
-	
+
 	AdminDAO instance = new AdminDAOImpl();
 	log.info("" + admin.toString());
 	instance.saveAdmin(admin);
-		
+
     }
 }

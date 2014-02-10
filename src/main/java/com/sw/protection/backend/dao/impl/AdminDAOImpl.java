@@ -156,9 +156,9 @@ public class AdminDAOImpl implements AdminDAO {
 		String dateTime = Formatters.formatDate(new Date());
 		admin.setDate_time(dateTime);
 		admin.setLast_modified(dateTime);
-		//set last modified data if scope is not null
-		if(admin.getAdminScopeSet()!=null){
-		    for(AdminScope adminScp:admin.getAdminScopeSet()){
+		// set last modified data if scope is not null
+		if (admin.getAdminScopeSet() != null) {
+		    for (AdminScope adminScp : admin.getAdminScopeSet()) {
 			adminScp.setLast_modified(dateTime);
 		    }
 		}

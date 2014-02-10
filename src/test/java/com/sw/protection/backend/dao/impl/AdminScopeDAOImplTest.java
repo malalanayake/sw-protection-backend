@@ -52,7 +52,7 @@ public class AdminScopeDAOImplTest {
 	adminScope2.setGet(false);
 	adminScope2.setPost(true);
 	adminScope2.setPut(false);
-	
+
 	adminScopSet.add(adminScope1);
 	adminScopSet.add(adminScope2);
 	admin.setAdminScopeSet(adminScopSet);
@@ -159,7 +159,6 @@ public class AdminScopeDAOImplTest {
 	adminScope.setPut(true);
 	adminScope.setPost(true);
 	adminScope.setGet(true);
-
 
 	adminScopeDAO.updateAdminScope(adminScope);
 	AdminScope latest = adminScopeDAO.getAdminScope("dinuka", APINames.USER);

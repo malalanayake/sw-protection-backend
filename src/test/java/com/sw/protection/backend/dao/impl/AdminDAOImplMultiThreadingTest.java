@@ -96,8 +96,8 @@ public class AdminDAOImplMultiThreadingTest {
 	}
 	// Wait until all threads are finish
 
-    }    
-    
+    }
+
     @Test(dependsOnMethods = { "concurencyTesting" })
     public void testDeleteAllAdmins() {
 	log.info("Start Test Delete Admin");
