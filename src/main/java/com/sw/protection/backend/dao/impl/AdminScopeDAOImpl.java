@@ -1,13 +1,17 @@
 package com.sw.protection.backend.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.hazelcast.core.IMap;
+import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.AdminScope;
 
@@ -21,11 +25,18 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     private Session session;
     public static final Logger log = Logger.getLogger(AdminScopeDAOImpl.class.getName());
 
+    /**
+     * Maintain Locks over the cluster
+     */
+    private static volatile IMap<Long, Object> LOCK_MAP = SharedInMemoryData.getInstance().getMap(
+	    SharedInMemoryData.DB_LOCKS.ADMIN_SCOPE_DAO);
+
     @Override
     public List<AdminScope> getAllAdminScopes(String userName) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
-	Transaction tr = session.beginTransaction();
+	Transaction tr = null;
 	try {
+	    tr = session.beginTransaction();
 	    List<AdminScope> adminScopes = session.getNamedQuery(AdminScope.Constants.NAME_QUERY_FIND_BY_USER_NAME)
 		    .setParameter(AdminScope.Constants.PARAM_USER_NAME, userName).list();
 	    tr.commit();
@@ -51,13 +62,23 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 
     @Override
     public void saveNewAdminScope(AdminScope adminScope) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
-	Transaction tr = session.beginTransaction();
-	try {// TODO: synchronize this
-	    session.save(adminScope);
-	    tr.commit();
-	    if (log.isDebugEnabled()) {
-		log.debug("Save Admin scope" + adminScope.toString());
+	Transaction tr = null;
+	try {
+	    if (this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()) == null) {
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		tr = session.beginTransaction();
+		//set latest time on modification
+		adminScope.setLast_modified(Formatters.formatDate(new Date()));
+		session.save(adminScope);
+		tr.commit();
+		if (log.isDebugEnabled()) {
+		    log.debug("Save Admin scope" + adminScope.toString());
+		}
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin scope" + adminScope.toString() + " already exist");
+		}
+		// TODO: Create Exception
 	    }
 	} catch (RuntimeException ex) {
 	    tr.rollback();
@@ -74,20 +95,48 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 
     @Override
     public void updateAdminScope(AdminScope adminScope) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
-	Transaction tr = session.beginTransaction();
+	Transaction tr = null;
 	try {
-	    synchronized (adminScope.getAdmin().getId()) {
+	    // Lock by admin ID
+	    LOCK_MAP.lock(adminScope.getAdmin().getId());
+	    if (log.isDebugEnabled()) {
+		log.debug("Locked update operation by Admin ID " + adminScope.getAdmin().getId());
+	    }
+	    
+	    //check the modification time
+	    if (adminScope.getLast_modified().equals(
+		    getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()).getLast_modified())) {
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		tr = session.beginTransaction();
+
+		// set the latest date and time
+		adminScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(adminScope);
 		tr.commit();
+
 		if (log.isDebugEnabled()) {
 		    log.debug("Update admin scope to " + adminScope.toString());
 		}
+
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("This is not the latest admin scope:" + adminScope.toString()
+			    + " so this is not going to upate");
+		}
+		// TODO: create the exception
 	    }
+
 	} catch (RuntimeException ex) {
 	    tr.rollback();
 	    log.error(ex);
 	    // TODO: Throw exception
+	} finally {
+	    if (log.isDebugEnabled()) {
+		log.debug("Releasing LOCK by Admin ID " + adminScope.getAdmin().getId());
+	    }
+	    // Unlock the lock by admin ID
+	    LOCK_MAP.unlock(adminScope.getAdmin().getId());
+	    // TODO: throw the captured exception
 	}
 
     }
@@ -95,8 +144,9 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     @Override
     public AdminScope getAdminScope(String userName, String apiName) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
-	Transaction tr = session.beginTransaction();
+	Transaction tr = null;
 	try {
+	    tr = session.beginTransaction();
 	    List<AdminScope> adminScopes = session
 		    .getNamedQuery(AdminScope.Constants.NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME)
 		    .setParameter(AdminScope.Constants.PARAM_USER_NAME, userName)

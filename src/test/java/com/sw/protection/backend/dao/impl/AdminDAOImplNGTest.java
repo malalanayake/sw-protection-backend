@@ -130,10 +130,9 @@ public class AdminDAOImplNGTest {
 	expResult = instance.loadAllPropertiesOfAdmin(expResult.getId());
 	expResult.setEmail("testmail@yahoo.com");
 	expResult.setName("Kasuni");
-	expResult.setUser_name("kasuni");
 	instance.updateAdmin(expResult);
 
-	result = instance.getAdmin("kasuni");
+	result = instance.getAdmin("malalanayake");
 
 	assertEquals(result.getId(), expResult.getId());
 	assertEquals(result.getEmail(), expResult.getEmail());
@@ -145,7 +144,7 @@ public class AdminDAOImplNGTest {
     public void isAdminUserNameExist() {
 	log.info("getAllAdmins");
 	AdminDAOImpl instance = new AdminDAOImpl();
-	assertEquals(instance.isAdminUserNameExist("kasuni"), true);
+	assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
 	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
     }
 
@@ -156,7 +155,7 @@ public class AdminDAOImplNGTest {
     public void testDeleteAdmin() {
 	log.info("Start Test Delete Admin");
 	String userName1 = "malinda";
-	String userName2 = "kasuni";
+	String userName2 = "malalanayake";
 	String userName3 = "TestAdminWithoutScope";
 	AdminDAO instance = new AdminDAOImpl();
 	Admin admin1 = new Admin();
@@ -188,7 +187,6 @@ public class AdminDAOImplNGTest {
 	admin.setEmail(email);
 	admin.setName(name);
 	admin.setApi_key(UUID.randomUUID().toString());
-	admin.setDate_time(Formatters.formatDate(new Date()));
 
 	AdminScope adminScope = new AdminScope();
 	adminScope.setAdmin(admin);
@@ -219,7 +217,7 @@ public class AdminDAOImplNGTest {
 	admin.setEmail("dinuka@123.com");
 	admin.setName("Test Admin");
 	admin.setApi_key(UUID.randomUUID().toString());
-	admin.setDate_time(Formatters.formatDate(new Date()));
+	
 	AdminDAO instance = new AdminDAOImpl();
 	log.info("" + admin.toString());
 	instance.saveAdmin(admin);

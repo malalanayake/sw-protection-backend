@@ -35,7 +35,6 @@ public class AdminScopeDAOImplTest {
 	admin.setEmail("dinuka@234.com");
 	admin.setName("Dinuka");
 	admin.setApi_key(UUID.randomUUID().toString());
-	admin.setDate_time(Formatters.formatDate(new Date()));
 
 	Set<AdminScope> adminScopSet = admin.getAdminScopeSet();
 	AdminScope adminScope1 = new AdminScope();
@@ -53,7 +52,7 @@ public class AdminScopeDAOImplTest {
 	adminScope2.setGet(false);
 	adminScope2.setPost(true);
 	adminScope2.setPut(false);
-
+	
 	adminScopSet.add(adminScope1);
 	adminScopSet.add(adminScope2);
 	admin.setAdminScopeSet(adminScopSet);
@@ -66,7 +65,6 @@ public class AdminScopeDAOImplTest {
 	admin2.setEmail("malinda@234.com");
 	admin2.setName("Malinda");
 	admin2.setApi_key(UUID.randomUUID().toString());
-	admin2.setDate_time(Formatters.formatDate(new Date()));
 
 	Set<AdminScope> adminScopSet2 = admin2.getAdminScopeSet();
 	AdminScope adminScope12 = new AdminScope();
@@ -161,6 +159,7 @@ public class AdminScopeDAOImplTest {
 	adminScope.setPut(true);
 	adminScope.setPost(true);
 	adminScope.setGet(true);
+
 
 	adminScopeDAO.updateAdminScope(adminScope);
 	AdminScope latest = adminScopeDAO.getAdminScope("dinuka", APINames.USER);

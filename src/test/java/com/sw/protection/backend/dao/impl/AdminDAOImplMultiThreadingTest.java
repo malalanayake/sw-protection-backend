@@ -15,9 +15,9 @@ import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
 
-@Test(groups = { "AdminDaoMultiThreadingTest" }, dependsOnGroups = { "AdminScopeDAOImplTest" })
-public class AdminDaoMultiThreadingTest {
-    public Logger log = Logger.getLogger(AdminDaoMultiThreadingTest.class.getName());
+@Test(groups = { "AdminDAOImplMultiThreadingTest" }, dependsOnGroups = { "AdminScopeDAOImplTest" })
+public class AdminDAOImplMultiThreadingTest {
+    public Logger log = Logger.getLogger(AdminDAOImplMultiThreadingTest.class.getName());
 
     public void concurencyTesting() {
 	Admin pre_admin = new Admin();
@@ -27,6 +27,7 @@ public class AdminDaoMultiThreadingTest {
 	pre_admin.setName("Dinuka");
 	pre_admin.setApi_key(UUID.randomUUID().toString());
 	pre_admin.setDate_time(Formatters.formatDate(new Date()));
+	pre_admin.setLast_modified(Formatters.formatDate(new Date()));
 
 	Admin pre_admin2 = new Admin();
 	pre_admin2.setUser_name("malinda");
@@ -35,6 +36,7 @@ public class AdminDaoMultiThreadingTest {
 	pre_admin2.setName("Malinda");
 	pre_admin2.setApi_key(UUID.randomUUID().toString());
 	pre_admin2.setDate_time(Formatters.formatDate(new Date()));
+	pre_admin2.setLast_modified(Formatters.formatDate(new Date()));
 
 	AdminDAO adminDao = new AdminDAOImpl();
 	adminDao.saveAdmin(pre_admin);
@@ -47,7 +49,7 @@ public class AdminDaoMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin1.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOImplMultithreadingTest(admin1);
+	    Runnable worker = new AdminDAOThread(admin1);
 	    log.info("Start Editing thread " + i);
 	    executor.execute(worker);
 	}
@@ -62,7 +64,7 @@ public class AdminDaoMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin13.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOImplMultithreadingTest(admin13);
+	    Runnable worker = new AdminDAOThread(admin13);
 	    log.info("Start Editing thread " + i);
 	    executor3.execute(worker);
 	}
@@ -77,7 +79,7 @@ public class AdminDaoMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin2.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOImplMultithreadingTest(admin2);
+	    Runnable worker = new AdminDAOThread(admin2);
 	    log.info("Start Editing thread " + i);
 	    executor1.execute(worker);
 	}

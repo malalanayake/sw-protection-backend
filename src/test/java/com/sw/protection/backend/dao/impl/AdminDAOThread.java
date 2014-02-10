@@ -13,10 +13,10 @@ import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
 
-public class AdminDAOImplMultithreadingTest implements Runnable {
+public class AdminDAOThread implements Runnable {
     Admin admin = new Admin();
 
-    public AdminDAOImplMultithreadingTest(Admin newAdmin) {
+    public AdminDAOThread(Admin newAdmin) {
 	admin = newAdmin;
     }
 

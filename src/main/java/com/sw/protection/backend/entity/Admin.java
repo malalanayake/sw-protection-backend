@@ -50,17 +50,31 @@ public class Admin implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(nullable = false)
     private String name;
     @Column(unique = true, nullable = false)
     private String user_name;
+    @Column(nullable = false)
     private String pass_word;
+    @Column(nullable = false)
     private String api_key;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String date_time;
+    @Column(nullable = false)
+    private String last_modified;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "admin")
     private Set<AdminScope> adminScopeSet = new HashSet<AdminScope>();
+
+    public String getLast_modified() {
+	return last_modified;
+    }
+
+    public void setLast_modified(String last_modified) {
+	this.last_modified = last_modified;
+    }
 
     public Set<AdminScope> getAdminScopeSet() {
 	return adminScopeSet;

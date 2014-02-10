@@ -51,8 +51,18 @@ public class AdminScope implements Serializable {
     private boolean post;
     private boolean put;
     private boolean del;
+    @Column(nullable = false)
+    private String last_modified;
     @ManyToOne(fetch = FetchType.EAGER)
     private Admin admin;
+
+    public String getLast_modified() {
+	return last_modified;
+    }
+
+    public void setLast_modified(String last_modified) {
+	this.last_modified = last_modified;
+    }
 
     public Admin getAdmin() {
 	return admin;

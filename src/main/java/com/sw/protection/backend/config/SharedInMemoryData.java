@@ -39,6 +39,7 @@ public class SharedInMemoryData {
      */
     public static interface DB_LOCKS {
 	public static final String ADMIN_DAO = "ADMIN";
+	public static final String ADMIN_SCOPE_DAO = "ADMIN_SCOPE";
     }
 
     public static final Logger log = Logger.getLogger(SharedInMemoryData.class.getName());
