@@ -20,7 +20,7 @@ import javax.persistence.NamedQuery;
 
 /**
  * AdminScope entity is going to store the scope details of admin users in the
- * system
+ * system and this would be used to authorization process.
  * 
  * @author dinuka
  */
@@ -112,14 +112,12 @@ public class AdminScope implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-	return super.equals(o); // To change body of generated methods, choose
-	// Tools | Templates.
+	return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-	return super.hashCode(); // To change body of generated methods, choose
-	// Tools | Templates.
+	return super.hashCode();
     }
 
     @Override

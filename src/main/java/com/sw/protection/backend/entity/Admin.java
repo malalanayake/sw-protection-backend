@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 
 /**
  * Admin User Entity witch is going to store the admin user data in the system
+ * and this would be used in authentication process
  * 
  * @author dinuka
  */

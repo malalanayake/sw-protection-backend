@@ -157,16 +157,22 @@ public class AdminDAOImplNGTest {
 	log.info("Start Test Delete Admin");
 	String userName1 = "malinda";
 	String userName2 = "kasuni";
+	String userName3 = "TestAdminWithoutScope";
 	AdminDAO instance = new AdminDAOImpl();
 	Admin admin1 = new Admin();
 	Admin admin2 = new Admin();
+	Admin admin3 = new Admin();
 	admin1 = instance.getAdmin(userName1);
 	admin2 = instance.getAdmin(userName2);
-
+	admin3 = instance.getAdmin(userName3);
+	
+	
 	instance.deleteAdmin(admin1);
 	assertEquals(instance.isAdminUserNameExist(userName1), false);
 	instance.deleteAdmin(admin2);
 	assertEquals(instance.isAdminUserNameExist(userName2), false);
+	instance.deleteAdmin(admin3);
+	assertEquals(instance.isAdminUserNameExist(userName3), false);
     }
 
     /**
@@ -198,6 +204,25 @@ public class AdminDAOImplNGTest {
 	AdminDAO instance = new AdminDAOImpl();
 	log.info("" + admin.toString());
 	instance.saveAdmin(admin);
+
     }
 
+    /**
+     * Test Admin without saving the Scope set
+     */
+    @Test
+    public void testSaveAdminWithoutScope(){
+	log.info("Start Test Save Admin without scope");
+	Admin admin = new Admin();
+	admin.setUser_name("TestAdminWithoutScope");
+	admin.setPass_word("Test");
+	admin.setEmail("dinuka@123.com");
+	admin.setName("Test Admin");
+	admin.setApi_key(UUID.randomUUID().toString());
+	admin.setDate_time(Formatters.formatDate(new Date()));
+	AdminDAO instance = new AdminDAOImpl();
+	log.info("" + admin.toString());
+	instance.saveAdmin(admin);
+		
+    }
 }
