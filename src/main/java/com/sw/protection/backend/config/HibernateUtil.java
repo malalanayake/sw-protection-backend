@@ -10,7 +10,11 @@ import com.sw.protection.backend.entity.Company;
 import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanySW;
 import com.sw.protection.backend.entity.CompanySWCopy;
-import com.sw.protection.backend.entity.User;
+import com.sw.protection.backend.entity.CompanyUserScope;
+import com.sw.protection.backend.entity.SuperAdmin;
+import com.sw.protection.backend.entity.CompanyUser;
+import com.sw.protection.backend.entity.Trace;
+import com.sw.protection.backend.entity.Usage;
 import com.sw.protection.backend.listners.BackEndContextListner;
 
 import org.apache.log4j.Logger;
@@ -47,7 +51,11 @@ public class HibernateUtil {
 	    cnf.addAnnotatedClass(CompanyClient.class);
 	    cnf.addAnnotatedClass(CompanySW.class);
 	    cnf.addAnnotatedClass(CompanySWCopy.class);
-	    cnf.addAnnotatedClass(User.class);
+	    cnf.addAnnotatedClass(CompanyUser.class);
+	    cnf.addAnnotatedClass(SuperAdmin.class);
+	    cnf.addAnnotatedClass(CompanyUserScope.class);
+	    cnf.addAnnotatedClass(Usage.class);
+	    cnf.addAnnotatedClass(Trace.class);
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 	    cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
 

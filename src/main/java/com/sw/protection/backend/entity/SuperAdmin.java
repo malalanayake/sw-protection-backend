@@ -3,13 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,19 +15,42 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
+ * Admin User Entity witch is going to store the admin user data in the system
+ * and this would be used in authentication process
  * 
  * @author dinuka
  */
 @Entity
-public class Company implements Serializable {
+@NamedQueries({
+	@NamedQuery(name = "findSuperAdminAll", query = "SELECT u FROM SuperAdmin u"),
+	@NamedQuery(name = "findByNameSuperAdmin", query = "select u from SuperAdmin u where u.name like:adminName"),
+	@NamedQuery(name = "findBySuperAdminUserName", query = "select u from SuperAdmin u where u.user_name=:userName"),
+	@NamedQuery(name = "findBySuperAdminAPIKey", query = "select u from SuperAdmin u where u.api_key=:apiKey") })
+public class SuperAdmin implements Serializable {
+
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_SUPER_ADMIN_ALL = "findSuperAdminAll";
+	public static final String NAME_QUERY_FIND_BY_SUPER_ADMIN_NAME = "findByNameSuperAdmin";
+	public static final String PARAM_SUPER_ADMIN_NAME = "adminName";
+	public static final String NAME_QUERY_FIND_BY_SUPER_ADMIN_USER_NAME = "findBySuperAdminUserName";
+	public static final String NAME_QUERY_FIND_BY_SUPER_ADMIN_API_KEY = "findBySuperAdminAPIKey";
+	public static final String PARAM_SUPER_ADMIN_USER_NAME = "userName";
+	public static final String PARAM_SUPER_ADMIN_API_KEY = "apiKey";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column(nullable = false)
     private String name;
     @Column(unique = true, nullable = false)
@@ -45,29 +66,12 @@ public class Company implements Serializable {
     @Column(nullable = false)
     private String last_modified;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanyUser> companyUserSet = new HashSet<CompanyUser>();
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanySW> companySWSet = new HashSet<CompanySW>();
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanyClient> companyClientSet = new HashSet<CompanyClient>();
-
     public String getLast_modified() {
 	return last_modified;
     }
 
     public void setLast_modified(String last_modified) {
 	this.last_modified = last_modified;
-    }
-
-    public Set<CompanyUser> getAdminScopeSet() {
-	return companyUserSet;
-    }
-
-    public void setAdminScopeSet(Set<CompanyUser> adminScopeSet) {
-	this.companyUserSet = adminScopeSet;
     }
 
     public Long getId() {
@@ -141,13 +145,8 @@ public class Company implements Serializable {
 	String output = "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key
 		+ ", email=" + email + ", date_time=" + date_time;
 	output = output + ", Admin ScopSet :";
-	if (!companyUserSet.isEmpty()) {
-	    for (CompanyUser user : companyUserSet) {
-		output = output + user.toString();
-	    }
-	}
+
 	return output;
 
     }
-
 }

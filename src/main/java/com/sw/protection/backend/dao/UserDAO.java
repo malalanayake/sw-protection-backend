@@ -6,7 +6,7 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.User;
+import com.sw.protection.backend.entity.CompanyUser;
 import java.util.List;
 
 /**
@@ -18,25 +18,25 @@ public interface UserDAO {
     /*
      * Get all Users
      */
-    public List<User> getAllUsers();
+    public List<CompanyUser> getAllUsers();
 
     /*
      * Get specific user
      */
-    public User getUser(int companyId);
+    public CompanyUser getUser(int companyId);
 
     /*
      * Update user
      */
-    public void updateUser(User user);
+    public void updateUser(CompanyUser user);
 
     /*
      * Delete user
      */
-    public void deleteUser(User user);
+    public void deleteUser(CompanyUser user);
 
     /*
      * Save user
      */
-    public void saveUser(User user);
+    public void saveUser(CompanyUser user);
 }

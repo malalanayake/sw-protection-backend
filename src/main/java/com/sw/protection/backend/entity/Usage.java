@@ -21,60 +21,54 @@ import javax.persistence.ManyToOne;
  * @author dinuka
  */
 @Entity
-public class CompanySWCopy implements Serializable {
+public class Usage implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private String mother_board;
+    private String operation;
     @Column(nullable = false)
-    private String hd;
+    private String api_name;
     @Column(nullable = false)
-    private String mac;
+    private Long type_id;
     @Column(nullable = false)
-    private String expire_date;
+    private String type;
     @Column(nullable = false)
     private String date_time;
     @Column(nullable = false)
     private String last_modified;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private CompanySW company_sw;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private CompanySW company_client;
-
-    public String getMother_board() {
-	return mother_board;
+    public String getOperation() {
+	return operation;
     }
 
-    public void setMother_board(String mother_board) {
-	this.mother_board = mother_board;
+    public void setOperation(String operation) {
+	this.operation = operation;
     }
 
-    public String getHd() {
-	return hd;
+    public String getApi_name() {
+	return api_name;
     }
 
-    public void setHd(String hd) {
-	this.hd = hd;
+    public void setApi_name(String api_name) {
+	this.api_name = api_name;
     }
 
-    public String getMac() {
-	return mac;
+    public Long getType_id() {
+	return type_id;
     }
 
-    public void setMac(String mac) {
-	this.mac = mac;
+    public void setType_id(Long type_id) {
+	this.type_id = type_id;
     }
 
-    public String getExpire_date() {
-	return expire_date;
+    public String getType() {
+	return type;
     }
 
-    public void setExpire_date(String expire_date) {
-	this.expire_date = expire_date;
+    public void setType(String type) {
+	this.type = type;
     }
 
     public String getDate_time() {
@@ -91,22 +85,6 @@ public class CompanySWCopy implements Serializable {
 
     public void setLast_modified(String last_modified) {
 	this.last_modified = last_modified;
-    }
-
-    public CompanySW getCompany_sw() {
-	return company_sw;
-    }
-
-    public void setCompany_sw(CompanySW company_sw) {
-	this.company_sw = company_sw;
-    }
-
-    public CompanySW getCompany_client() {
-	return company_client;
-    }
-
-    public void setCompany_client(CompanySW company_client) {
-	this.company_client = company_client;
     }
 
     public Long getId() {

@@ -17,6 +17,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -24,7 +27,26 @@ import javax.persistence.OneToMany;
  * @author dinuka
  */
 @Entity
-public class Company implements Serializable {
+@NamedQueries({
+	@NamedQuery(name = "findCompanyUserAll", query = "SELECT u FROM CompanyUser u"),
+	@NamedQuery(name = "findByCompanyUserName", query = "select u from CompanyUser u where u.name like:adminName"),
+	@NamedQuery(name = "findByCompanyUserUserName", query = "select u from CompanyUser u where u.user_name=:userName"),
+	@NamedQuery(name = "findByCompanyUserAPIKey", query = "select u from CompanyUser u where u.api_key=:apiKey") })
+public class CompanyUser implements Serializable {
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_COMPANY_USER_ALL = "findCompanyUserAll";
+	public static final String NAME_QUERY_FIND_BY_NAME = "findByCompanyUserName";
+	public static final String PARAM_NAME = "adminName";
+	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findByCompanyUserUserName";
+	public static final String NAME_QUERY_FIND_BY_API_KEY = "findByCompanyUserAPIKey";
+	public static final String PARAM_USER_NAME = "userName";
+	public static final String PARAM_API_KEY = "apiKey";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,14 +67,27 @@ public class Company implements Serializable {
     @Column(nullable = false)
     private String last_modified;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanyUser> companyUserSet = new HashSet<CompanyUser>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Company company;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanySW> companySWSet = new HashSet<CompanySW>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "companyUser")
+    private Set<CompanyUserScope> userScopeSet = new HashSet<CompanyUserScope>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
-    private Set<CompanyClient> companyClientSet = new HashSet<CompanyClient>();
+    public Company getCompany() {
+	return company;
+    }
+
+    public void setCompany(Company company) {
+	this.company = company;
+    }
+
+    public Set<CompanyUserScope> getUserScopeSet() {
+	return userScopeSet;
+    }
+
+    public void setUserScopeSet(Set<CompanyUserScope> userScopeSet) {
+	this.userScopeSet = userScopeSet;
+    }
 
     public String getLast_modified() {
 	return last_modified;
@@ -60,14 +95,6 @@ public class Company implements Serializable {
 
     public void setLast_modified(String last_modified) {
 	this.last_modified = last_modified;
-    }
-
-    public Set<CompanyUser> getAdminScopeSet() {
-	return companyUserSet;
-    }
-
-    public void setAdminScopeSet(Set<CompanyUser> adminScopeSet) {
-	this.companyUserSet = adminScopeSet;
     }
 
     public Long getId() {
@@ -141,9 +168,9 @@ public class Company implements Serializable {
 	String output = "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key
 		+ ", email=" + email + ", date_time=" + date_time;
 	output = output + ", Admin ScopSet :";
-	if (!companyUserSet.isEmpty()) {
-	    for (CompanyUser user : companyUserSet) {
-		output = output + user.toString();
+	if (!userScopeSet.isEmpty()) {
+	    for (CompanyUserScope scop : userScopeSet) {
+		output = output + scop.toString();
 	    }
 	}
 	return output;

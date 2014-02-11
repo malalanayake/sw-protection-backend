@@ -7,7 +7,7 @@
 package com.sw.protection.backend.dao.impl;
 
 import com.sw.protection.backend.dao.UserDAO;
-import com.sw.protection.backend.entity.User;
+import com.sw.protection.backend.entity.CompanyUser;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ import java.util.List;
 public class UserDAOImpl implements UserDAO {
 
     @Override
-    public List<User> getAllUsers() {
+    public List<CompanyUser> getAllUsers() {
 	throw new UnsupportedOperationException("Not supported yet."); // To
 	// change
 	// body
@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getUser(int companyId) {
+    public CompanyUser getUser(int companyId) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
 	// change
 	// body
@@ -45,7 +45,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(CompanyUser user) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
 	// change
 	// body
@@ -59,7 +59,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(CompanyUser user) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
 	// change
 	// body
@@ -73,7 +73,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void saveUser(User user) {
+    public void saveUser(CompanyUser user) {
 	throw new UnsupportedOperationException("Not supported yet."); // To
 	// change
 	// body
