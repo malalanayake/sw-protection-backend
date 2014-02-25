@@ -31,6 +31,7 @@ public class SharedInMemoryData {
 	public static final String ADMIN_DAO = "ADMIN";
 	public static final String ADMIN_SCOPE_DAO = "ADMIN_SCOPE";
 	public static final String COMPANY_USER_DAO = "COMPANY_USER";
+	public static final String COMPANY_USER_SCOPE_DAO = "COMPANY_USER_SCOPE";
 	public static final String SUPER_ADMIN_DAO = "SUPER_ADMIN";
 	public static final String COMPANY_DAO = "COMPANY";
     }
