@@ -40,14 +40,14 @@ public class CompanyUserDAOImplTest {
 	log.info("Start Test save Company user");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = new Company();
-	
+
 	company.setName("Sysensor IT Solutions");
 	company.setUser_name("sysensor");
 	company.setPass_word("test1");
 	company.setEmail("sysensor@gmail.com");
 	company.setApi_key(UUID.randomUUID().toString());
 	companyDAO.saveCompany(company);
-	
+
 	company = companyDAO.getCompany("sysensor");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
 	CompanyUser companyUser = new CompanyUser();
@@ -57,7 +57,7 @@ public class CompanyUserDAOImplTest {
 	companyUser.setEmail("dinuka@gmail.com");
 	companyUser.setApi_key(UUID.randomUUID().toString());
 	companyUser.setCompany(company);
-	
+
 	Set<CompanyUserScope> companyUserScopeSet = companyUser.getUserScopeSet();
 	CompanyUserScope companyUserScope = new CompanyUserScope();
 	companyUserScope.setApi_name(APINames.SOFTWARE);
@@ -68,7 +68,7 @@ public class CompanyUserDAOImplTest {
 	companyUserScope.setCompanyUser(companyUser);
 	companyUserScopeSet.add(companyUserScope);
 	companyUser.setUserScopeSet(companyUserScopeSet);
-	
+
 	companyUserDAO.saveUser(companyUser);
 
     }
@@ -76,24 +76,24 @@ public class CompanyUserDAOImplTest {
     @Test(dependsOnMethods = { "saveUser" })
     public void getAllUsers() {
 	log.info("Start Test get All Company user");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();	
+	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
 	assertEquals(companyUserDAO.getAllUsers().size(), 1);
-	
+
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser.getCompany().getName(), "Sysensor IT Solutions");
 	assertEquals(companyUser.getCompany().getUser_name(), "sysensor");
 	assertEquals(companyUser.getCompany().getPass_word(), "test1");
 	assertEquals(companyUser.getCompany().getEmail(), "sysensor@gmail.com");
-	
+
 	assertEquals(companyUser.getName(), "Dinuka Malalanayake");
 	assertEquals(companyUser.getPass_word(), "test1");
 	assertEquals(companyUser.getEmail(), "dinuka@gmail.com");
-	
+
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
 	company = companyDAO.loadAllPropertiesOfCompany(company.getId());
 	assertEquals(company.getCompanyUserSet().size(), 1);
-	
+
     }
 
     @Test(dependsOnMethods = { "getAllUsers" })
@@ -115,17 +115,17 @@ public class CompanyUserDAOImplTest {
 	assertEquals(companyUser.getCompany().getUser_name(), "sysensor");
 	assertEquals(companyUser.getCompany().getPass_word(), "test1");
 	assertEquals(companyUser.getCompany().getEmail(), "sysensor@gmail.com");
-	
+
 	assertEquals(companyUser.getName(), "Dinuka Malalanayake");
 	assertEquals(companyUser.getPass_word(), "test1");
 	assertEquals(companyUser.getEmail(), "dinuka@gmail.com");
-	
+
 	companyUser.setName("Dinuka");
 	companyUser.setPass_word("test2");
 	companyUser.setEmail("dinukanew@gmail.com");
 	companyUserDAO.updateUser(companyUser);
-	
-	CompanyUser companyUser1 = companyUserDAO.getUser("dinuka"); 	
+
+	CompanyUser companyUser1 = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser1.getName(), "Dinuka");
 	assertEquals(companyUser1.getPass_word(), "test2");
 	assertEquals(companyUser1.getEmail(), "dinukanew@gmail.com");
@@ -138,7 +138,7 @@ public class CompanyUserDAOImplTest {
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 	companyUserDAO.deleteUser(companyUser);
 	assertEquals(companyUserDAO.getUser("dinuka"), null);
-	
+
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
 	assertEquals(company.getUser_name(), "sysensor");

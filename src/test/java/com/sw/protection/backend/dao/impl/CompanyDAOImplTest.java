@@ -23,7 +23,7 @@ import com.sw.protection.backend.entity.CompanyUser;
 public class CompanyDAOImplTest {
 
     public static final Logger log = Logger.getLogger(CompanyUserDAOImplTest.class.getName());
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
 	HibernateUtil.setHost(DBTestProperties.HOST);
@@ -40,13 +40,13 @@ public class CompanyDAOImplTest {
 	log.info("Start Test save company");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = new Company();
-	
+
 	company.setName("Sysensor IT Solutions");
 	company.setUser_name("sysensor");
 	company.setPass_word("test1");
 	company.setEmail("sysensor@gmail.com");
 	company.setApi_key(UUID.randomUUID().toString());
-	
+
 	Set<CompanyUser> companyUserSet = company.getCompanyUserSet();
 	CompanyUser companyUser = new CompanyUser();
 	companyUser.setName("Dinuka Malalanayake");
@@ -57,7 +57,7 @@ public class CompanyDAOImplTest {
 	companyUser.setCompany(company);
 	companyUserSet.add(companyUser);
 	company.setCompanyUserSet(companyUserSet);
-	
+
 	Set<CompanyClient> companyClientSet = company.getCompanyClientSet();
 	CompanyClient companyClient = new CompanyClient();
 	companyClient.setName("Client Dinuka");
@@ -67,7 +67,7 @@ public class CompanyDAOImplTest {
 	companyClient.setCompany(company);
 	companyClientSet.add(companyClient);
 	company.setCompanyClientSet(companyClientSet);
-	
+
 	Set<CompanySW> companySWSet = company.getCompanySWSet();
 	CompanySW companySW = new CompanySW();
 	companySW.setName("Application 1");
@@ -75,23 +75,22 @@ public class CompanyDAOImplTest {
 	companySW.setCompany(company);
 	companySWSet.add(companySW);
 	company.setCompanySWSet(companySWSet);
-	
+
 	companyDAO.saveCompany(company);
     }
-    
+
     @Test(dependsOnMethods = { "saveCompany" })
     public void getAllCompanies() {
 	log.info("Start Test get all companies");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
-	
+
 	assertEquals(company.getName(), "Sysensor IT Solutions");
 	assertEquals(company.getUser_name(), "sysensor");
 	assertEquals(company.getPass_word(), "test1");
 	assertEquals(company.getEmail(), "sysensor@gmail.com");
 
     }
-      
 
     @Test(dependsOnMethods = { "getAllCompanies" })
     public void loadAllPropertiesOfCompany() {
@@ -99,16 +98,16 @@ public class CompanyDAOImplTest {
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
 	Company company1 = companyDAO.loadAllPropertiesOfCompany(company.getId());
-	
+
 	assertEquals(company1.getName(), "Sysensor IT Solutions");
 	assertEquals(company1.getUser_name(), "sysensor");
 	assertEquals(company1.getPass_word(), "test1");
 	assertEquals(company1.getEmail(), "sysensor@gmail.com");
 	assertEquals(company1.getCompanyUserSet().size(), 1);
 	assertEquals(company1.getCompanyClientSet().size(), 1);
-	assertEquals(company1.getCompanySWSet().size(), 1);	
-	
-    }    
+	assertEquals(company1.getCompanySWSet().size(), 1);
+
+    }
 
     @Test(dependsOnMethods = { "loadAllPropertiesOfCompany" })
     public void updateCompany() {
@@ -116,19 +115,19 @@ public class CompanyDAOImplTest {
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
 	company = companyDAO.loadAllPropertiesOfCompany(company.getId());
-	
+
 	assertEquals(company.getName(), "Sysensor IT Solutions");
 	assertEquals(company.getUser_name(), "sysensor");
 	assertEquals(company.getPass_word(), "test1");
 	assertEquals(company.getEmail(), "sysensor@gmail.com");
-	
+
 	company.setName("Sysensor IT");
 	company.setPass_word("test2");
-	company.setEmail("sysensorit@gmail.com");	
+	company.setEmail("sysensorit@gmail.com");
 	String api_key = UUID.randomUUID().toString();
-	company.setApi_key(api_key);	
+	company.setApi_key(api_key);
 	companyDAO.updateCompany(company);
-	
+
 	Company company1 = companyDAO.getCompany("sysensor");
 	assertEquals(company1.getName(), "Sysensor IT");
 	assertEquals(company1.getUser_name(), "sysensor");
@@ -136,7 +135,7 @@ public class CompanyDAOImplTest {
 	assertEquals(company1.getEmail(), "sysensorit@gmail.com");
 	assertEquals(company1.getApi_key(), api_key);
     }
-    
+
     @Test(dependsOnMethods = { "updateCompany" })
     public void deleteCompany() {
 	log.info("Start Test delete Company");

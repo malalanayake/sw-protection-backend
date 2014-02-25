@@ -189,13 +189,13 @@ public class AdminScopeDAOImplTest {
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.ADMIN, APIOperations.PUT), true);
 
     }
-    
+
     @Test(dependsOnMethods = { "isAccessGrantedFor" })
-    public void testDeleteAdminScope(){
+    public void testDeleteAdminScope() {
 	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
 	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
 	adminScopeDAO.deleteAdminScope(adminScope);
-	
+
 	AdminScope afterAdminScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
 	assertEquals(afterAdminScope, null);
     }
@@ -216,7 +216,5 @@ public class AdminScopeDAOImplTest {
 	instance.deleteAdmin(admin2);
 	assertEquals(instance.isAdminUserNameExist(userName2), false);
     }
-    
-    
 
 }

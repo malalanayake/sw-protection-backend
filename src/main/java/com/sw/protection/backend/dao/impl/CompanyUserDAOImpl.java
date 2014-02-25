@@ -167,7 +167,8 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		}
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("This is not the latest modification of company user " + user.toString() + " so cannot delete");
+		    log.debug("This is not the latest modification of company user " + user.toString()
+			    + " so cannot delete");
 		}
 		// TODO:Create Exception
 	    }

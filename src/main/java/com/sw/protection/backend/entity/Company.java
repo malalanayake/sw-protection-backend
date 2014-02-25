@@ -77,27 +77,27 @@ public class Company implements Serializable {
     private Set<CompanyClient> companyClientSet = new HashSet<CompanyClient>();
 
     public Set<CompanyUser> getCompanyUserSet() {
-        return companyUserSet;
+	return companyUserSet;
     }
 
     public void setCompanyUserSet(Set<CompanyUser> companyUserSet) {
-        this.companyUserSet = companyUserSet;
+	this.companyUserSet = companyUserSet;
     }
 
     public Set<CompanySW> getCompanySWSet() {
-        return companySWSet;
+	return companySWSet;
     }
 
     public void setCompanySWSet(Set<CompanySW> companySWSet) {
-        this.companySWSet = companySWSet;
+	this.companySWSet = companySWSet;
     }
 
     public Set<CompanyClient> getCompanyClientSet() {
-        return companyClientSet;
+	return companyClientSet;
     }
 
     public void setCompanyClientSet(Set<CompanyClient> companyClientSet) {
-        this.companyClientSet = companyClientSet;
+	this.companyClientSet = companyClientSet;
     }
 
     public String getLast_modified() {

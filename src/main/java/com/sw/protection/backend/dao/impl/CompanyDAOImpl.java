@@ -92,7 +92,8 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("This is not the latest modification of company " + company.toString() + " so cannot update");
+		    log.debug("This is not the latest modification of company " + company.toString()
+			    + " so cannot update");
 		}
 		// TODO:Create Exception
 	    }
@@ -134,7 +135,8 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("This is not the latest modification of company " + company.toString() + " so cannot delete");
+		    log.debug("This is not the latest modification of company " + company.toString()
+			    + " so cannot delete");
 		}
 		// TODO:Create Exception
 	    }
@@ -177,21 +179,21 @@ public class CompanyDAOImpl implements CompanyDAO {
 			companyUserScp.setLast_modified(dateTime);
 		    }
 		}
-		//set last modified data if client set is not null
+		// set last modified data if client set is not null
 		if (company.getCompanyClientSet() != null) {
 		    for (CompanyClient companyClientScp : company.getCompanyClientSet()) {
 			companyClientScp.setDate_time(dateTime);
 			companyClientScp.setLast_modified(dateTime);
 		    }
 		}
-		//set last modified data if software set is not null
+		// set last modified data if software set is not null
 		if (company.getCompanySWSet() != null) {
 		    for (CompanySW companySW : company.getCompanySWSet()) {
 			companySW.setDate_time(dateTime);
 			companySW.setLast_modified(dateTime);
 		    }
 		}
-		
+
 		session.save(company);
 		tr.commit();
 		if (log.isDebugEnabled()) {
