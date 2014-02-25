@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.sw.protection.backend.dao;
 
 import java.util.List;
@@ -24,7 +18,7 @@ public interface CompanyClientDAO {
     /*
      * Get specific company client
      */
-    public CompanyClient getCompanyClient(int clientId);
+    public CompanyClient getCompanyClient(String userName);
 
     /*
      * Update company client

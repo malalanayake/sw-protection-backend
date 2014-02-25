@@ -14,6 +14,12 @@ import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.SuperAdminDAO;
 import com.sw.protection.backend.entity.SuperAdmin;
 
+/**
+ * Super Admin operation implementation
+ * 
+ * @author dinuka
+ * 
+ */
 public class SuperAdminDAOImpl implements SuperAdminDAO {
     private Session session;
     public static final Logger log = Logger.getLogger(SuperAdminDAOImpl.class.getName());

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
@@ -15,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
+ * This is an Entity which is holding the data of user tracing operations
  * 
  * @author dinuka
  */

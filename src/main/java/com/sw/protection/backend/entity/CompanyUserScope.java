@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
@@ -18,8 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 /**
- * AdminScope entity is going to store the scope details of admin users in the
- * system and this would be used to authorization process.
+ * CompanyUserScope entity is going to store the scope details of company users
+ * in the system and this would be used to authorization process.
  * 
  * @author dinuka
  */

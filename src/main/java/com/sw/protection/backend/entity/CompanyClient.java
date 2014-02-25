@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
@@ -18,14 +12,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
+ * This is an Entity which is going to hold the company client data
  * 
  * @author dinuka
  */
 @Entity
+@NamedQueries({
+	@NamedQuery(name = "findCompanyClientAll", query = "SELECT u FROM CompanyClient u"),
+	@NamedQuery(name = "findByNameCompanyClient", query = "select u from CompanyClient u where u.name like:companyClientName"),
+	@NamedQuery(name = "findByCompanyClientUserName", query = "select u from CompanyClient u where u.user_name=:companyUserName") })
 public class CompanyClient implements Serializable {
+
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_COMPANY_CLIENT_ALL = "findCompanyClientAll";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_CLIENT_NAME = "findByNameCompanyClient";
+	public static final String PARAM_COMPANY_CLIENT_NAME = "companyClientName";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_CLIENT_USER_NAME = "findByCompanyClientUserName";
+	public static final String PARAM_COMPANY_CLIENT_USER_NAME = "companyUserName";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

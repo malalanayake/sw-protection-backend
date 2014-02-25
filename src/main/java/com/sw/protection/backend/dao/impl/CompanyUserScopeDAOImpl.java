@@ -15,6 +15,12 @@ import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanyUserScopeDAO;
 import com.sw.protection.backend.entity.CompanyUserScope;
 
+/**
+ * Company User Scope operation implementation
+ * 
+ * @author dinuka
+ * 
+ */
 public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 
     private Session session;
