@@ -7,7 +7,6 @@ package com.sw.protection.backend.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,11 +33,11 @@ public class CompanyUserScope implements Serializable {
      * interface provides the name queries and parameters
      */
     public static interface Constants {
-	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findCompanyUserScopeByUserName";
-	public static final String NAME_QUERY_FIND_BY_USER_NAME_AND_API_NAME = "findCompanyUserScopeByUserNameAndAPIName";
+	public static final String NAME_QUERY_FIND_USER_SCOPE_BY_USER_NAME = "findCompanyUserScopeByUserName";
+	public static final String NAME_QUERY_FIND_USER_SCOPE_BY_USER_NAME_AND_API_NAME = "findCompanyUserScopeByUserNameAndAPIName";
 
-	public static final String PARAM_USER_NAME = "userName";
-	public static final String PARAM_API_NAME = "apiName";
+	public static final String PARAM_USER_SCOPE_USER_NAME = "userName";
+	public static final String PARAM_USER_SCOPE_API_NAME = "apiName";
     }
 
     private static final long serialVersionUID = 1L;

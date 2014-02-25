@@ -1,8 +1,8 @@
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.Admin;
-
 import java.util.List;
+
+import com.sw.protection.backend.entity.Admin;
 
 /**
  * Interface which is provide the Admin operations.

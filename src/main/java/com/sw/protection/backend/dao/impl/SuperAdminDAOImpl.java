@@ -12,8 +12,6 @@ import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.SuperAdminDAO;
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.entity.AdminScope;
 import com.sw.protection.backend.entity.SuperAdmin;
 
 public class SuperAdminDAOImpl implements SuperAdminDAO {

@@ -1,23 +1,13 @@
 package com.sw.protection.backend.config;
 
-import java.awt.List;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
-import java.util.Collection;
-
 import org.apache.log4j.Logger;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.config.InterfacesConfig;
 import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.ManagementCenterConfig;
-import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import com.sw.protection.backend.dao.impl.AdminDAOImpl;
 import com.sw.protection.backend.listners.BackEndContextListner;
 
 /**

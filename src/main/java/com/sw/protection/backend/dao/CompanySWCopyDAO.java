@@ -6,8 +6,9 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.CompanySWCopy;
 import java.util.List;
+
+import com.sw.protection.backend.entity.CompanySWCopy;
 
 /**
  * Interface which is provide the Company Software Copy operations.

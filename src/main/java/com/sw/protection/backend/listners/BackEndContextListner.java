@@ -6,16 +6,14 @@
 
 package com.sw.protection.backend.listners;
 
-import com.sw.protection.backend.config.HibernateUtil;
-import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.dao.AdminDAO;
-import com.sw.protection.backend.dao.impl.AdminDAOImpl;
-import com.sw.protection.backend.entity.Admin;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+
+import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.SharedInMemoryData;
 
 /**
  * Context listener which is going to initiate the database configuration

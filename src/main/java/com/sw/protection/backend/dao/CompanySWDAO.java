@@ -6,8 +6,9 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.CompanySW;
 import java.util.List;
+
+import com.sw.protection.backend.entity.CompanySW;
 
 /**
  * Interface which is provide the Company Software operations.

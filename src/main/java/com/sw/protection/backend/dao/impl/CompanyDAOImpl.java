@@ -6,24 +6,22 @@
 
 package com.sw.protection.backend.dao.impl;
 
-import com.hazelcast.core.IMap;
-import com.sw.protection.backend.common.Formatters;
-import com.sw.protection.backend.config.HibernateUtil;
-import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.dao.CompanyDAO;
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.entity.AdminScope;
-import com.sw.protection.backend.entity.Company;
-import com.sw.protection.backend.entity.CompanyClient;
-import com.sw.protection.backend.entity.CompanySW;
-import com.sw.protection.backend.entity.CompanyUser;
-
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import com.hazelcast.core.IMap;
+import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.SharedInMemoryData;
+import com.sw.protection.backend.dao.CompanyDAO;
+import com.sw.protection.backend.entity.Company;
+import com.sw.protection.backend.entity.CompanyClient;
+import com.sw.protection.backend.entity.CompanySW;
+import com.sw.protection.backend.entity.CompanyUser;
 
 /**
  * 

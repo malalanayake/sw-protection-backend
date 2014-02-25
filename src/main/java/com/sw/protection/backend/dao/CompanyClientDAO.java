@@ -6,8 +6,9 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.CompanyClient;
 import java.util.List;
+
+import com.sw.protection.backend.entity.CompanyClient;
 
 /**
  * Interface which is provide the ComapanyClient operations.

@@ -2,7 +2,6 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
-import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.entity.AdminScope;
 

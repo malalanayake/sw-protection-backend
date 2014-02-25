@@ -7,7 +7,6 @@ package com.sw.protection.backend.dao.impl;
 
 import static org.testng.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,9 +18,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;

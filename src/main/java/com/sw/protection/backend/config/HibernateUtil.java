@@ -4,23 +4,22 @@
  */
 package com.sw.protection.backend.config;
 
+import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.AdminScope;
 import com.sw.protection.backend.entity.Company;
 import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanySW;
 import com.sw.protection.backend.entity.CompanySWCopy;
+import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.CompanyUserScope;
 import com.sw.protection.backend.entity.SuperAdmin;
-import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.Trace;
 import com.sw.protection.backend.entity.Usage;
 import com.sw.protection.backend.listners.BackEndContextListner;
-
-import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Configuration;
 
 /**
  * This is contain hibernate configurations.

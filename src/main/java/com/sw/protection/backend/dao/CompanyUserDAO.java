@@ -6,9 +6,9 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.entity.CompanyUser;
 import java.util.List;
+
+import com.sw.protection.backend.entity.CompanyUser;
 
 /**
  * Interface which is provide the Company User operations.

@@ -2,19 +2,14 @@ package com.sw.protection.backend.dao.impl;
 
 import static org.testng.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.dao.AdminDAO;

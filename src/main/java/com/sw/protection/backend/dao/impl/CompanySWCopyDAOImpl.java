@@ -6,9 +6,10 @@
 
 package com.sw.protection.backend.dao.impl;
 
+import java.util.List;
+
 import com.sw.protection.backend.dao.CompanySWCopyDAO;
 import com.sw.protection.backend.entity.CompanySWCopy;
-import java.util.List;
 
 /**
  * 

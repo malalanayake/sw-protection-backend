@@ -6,9 +6,9 @@
 
 package com.sw.protection.backend.dao;
 
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.entity.Company;
 import java.util.List;
+
+import com.sw.protection.backend.entity.Company;
 
 /**
  * Interface which is provide the CompanyDAO operations.
