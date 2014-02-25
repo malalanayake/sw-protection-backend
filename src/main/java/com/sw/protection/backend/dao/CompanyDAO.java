@@ -6,6 +6,7 @@
 
 package com.sw.protection.backend.dao;
 
+import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.Company;
 import java.util.List;
 
@@ -15,28 +16,61 @@ import java.util.List;
  * @author dinuka
  */
 public interface CompanyDAO {
-    /*
-     * Get all companies
+    /**
+     * Get All company data
+     * 
+     * @return - List of all company objects
      */
     public List<Company> getAllCompanies();
 
-    /*
-     * Get specific company
+    /**
+     * Get specific company data
+     * 
+     * @param companyUserName
+     *            - Company user name
+     * @return - specific company object
      */
-    public Company getCompany(int companyId);
+    public Company getCompany(String companyUserName);
 
-    /*
+    /**
      * Update company
+     * 
+     * @param company
+     *            - Company object with updated values
      */
     public void updateCompany(Company company);
 
-    /*
-     * Delete company
+    /**
+     * Delete specific company
+     * 
+     * @param company
+     *            - Company object to be deleted
      */
     public void deleteCompany(Company company);
 
-    /*
-     * Save company
+    /**
+     * Save company data
+     * 
+     * @param company
+     *            - New company object to be saved
      */
     public void saveCompany(Company company);
+
+    /**
+     * Load all properties of company
+     * 
+     * @param id
+     *            - specific company object
+     * @return - Company object with all related data
+     */
+    public Company loadAllPropertiesOfCompany(Long id);
+
+    /**
+     * Check whether the company user name already exist
+     * 
+     * @param userName
+     *            - user name
+     * @return - true/false
+     */
+    public boolean isCompanyUserNameExist(String userName);
 }

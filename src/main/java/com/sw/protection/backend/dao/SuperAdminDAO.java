@@ -25,7 +25,7 @@ public interface SuperAdminDAO {
      *            - Super Admin user name
      * @return - Specific Super Admin
      */
-    public Admin getSuperAdmin(String userName);
+    public SuperAdmin getSuperAdmin(String userName);
 
     /**
      * Update super admin user

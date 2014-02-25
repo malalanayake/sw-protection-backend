@@ -17,6 +17,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -24,7 +26,27 @@ import javax.persistence.OneToMany;
  * @author dinuka
  */
 @Entity
+@NamedQueries({
+	@NamedQuery(name = "findAllCompanies", query = "SELECT u FROM Company u"),
+	@NamedQuery(name = "findByCompanyName", query = "select u from Company u where u.name like:companyName"),
+	@NamedQuery(name = "findByCompanyUsersName", query = "select u from Company u where u.user_name=:companyUserName"),
+	@NamedQuery(name = "findByCompanyAPIKey", query = "select u from Company u where u.api_key=:companyApiKey") })
 public class Company implements Serializable {
+
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_COMPANY_ALL = "findAllCompanies";
+	public static final String NAME_QUERY_FIND_COMPANY_BY_NAME = "findByCompanyName";
+	public static final String PARAM_COMPANY_NAME = "like:companyName";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_USER_NAME = "findByCompanyUsersName";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_API_KEY = "findByCompanyAPIKey";
+	public static final String PARAM_COMPANY_USER_NAME = "companyUserName";
+	public static final String PARAM_COMPANY_API_KEY = "companyApiKey";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,20 +76,36 @@ public class Company implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
     private Set<CompanyClient> companyClientSet = new HashSet<CompanyClient>();
 
+    public Set<CompanyUser> getCompanyUserSet() {
+        return companyUserSet;
+    }
+
+    public void setCompanyUserSet(Set<CompanyUser> companyUserSet) {
+        this.companyUserSet = companyUserSet;
+    }
+
+    public Set<CompanySW> getCompanySWSet() {
+        return companySWSet;
+    }
+
+    public void setCompanySWSet(Set<CompanySW> companySWSet) {
+        this.companySWSet = companySWSet;
+    }
+
+    public Set<CompanyClient> getCompanyClientSet() {
+        return companyClientSet;
+    }
+
+    public void setCompanyClientSet(Set<CompanyClient> companyClientSet) {
+        this.companyClientSet = companyClientSet;
+    }
+
     public String getLast_modified() {
 	return last_modified;
     }
 
     public void setLast_modified(String last_modified) {
 	this.last_modified = last_modified;
-    }
-
-    public Set<CompanyUser> getAdminScopeSet() {
-	return companyUserSet;
-    }
-
-    public void setAdminScopeSet(Set<CompanyUser> adminScopeSet) {
-	this.companyUserSet = adminScopeSet;
     }
 
     public Long getId() {

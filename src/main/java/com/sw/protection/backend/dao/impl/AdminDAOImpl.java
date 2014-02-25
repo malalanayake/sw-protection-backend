@@ -63,8 +63,10 @@ public class AdminDAOImpl implements AdminDAO {
 		return adminAll.get(0);
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback(); // rall back the transaction due to runtime error
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	    return null;
 	}
@@ -102,7 +104,9 @@ public class AdminDAOImpl implements AdminDAO {
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    tr.rollback();
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
@@ -118,6 +122,12 @@ public class AdminDAOImpl implements AdminDAO {
     public void deleteAdmin(Admin admin) {
 	Transaction tr = null;
 	try {
+	    // Lock by admin ID
+	    LOCK_MAP.lock(admin.getId());
+	    if (log.isDebugEnabled()) {
+		log.debug("Locked delete operation by Admin ID " + admin.getId());
+	    }
+
 	    // check last modification
 	    if (admin.getLast_modified().equals(this.getAdmin(admin.getUser_name()).getLast_modified())) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -134,9 +144,18 @@ public class AdminDAOImpl implements AdminDAO {
 		// TODO:Create Exception
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback();
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
+	} finally {
+	    if (log.isDebugEnabled()) {
+		log.debug("Releasing LOCK by Admin ID " + admin.getId());
+	    }
+	    // Unlock the lock by admin ID
+	    LOCK_MAP.unlock(admin.getId());
+	    // TODO: throw the captured exception
 	}
     }
 
@@ -170,7 +189,9 @@ public class AdminDAOImpl implements AdminDAO {
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    tr.rollback();
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	}
     }
@@ -229,8 +250,10 @@ public class AdminDAOImpl implements AdminDAO {
 		return adminAll;
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback(); // rall back the transaction due to runtime error
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	    return null;
 	}

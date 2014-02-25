@@ -53,8 +53,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		return adminScopes;
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback(); // rall back the transaction due to runtime error
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	    return null;
 	}
@@ -81,15 +83,56 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		// TODO: Create Exception
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback();
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	}
     }
 
     @Override
     public void deleteAdminScope(AdminScope adminScope) {
-	// TODO Auto-generated method stub
+	Transaction tr = null;
+	try {
+	    // Lock by adminScope ID
+	    LOCK_MAP.lock(adminScope.getId());
+	    if (log.isDebugEnabled()) {
+		log.debug("Locked delete operation by Admin ID " + adminScope.getId());
+	    }
+
+	    // check last modification
+	    if (adminScope.getLast_modified().equals(
+		    this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name())
+			    .getLast_modified())) {
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		tr = session.beginTransaction();
+		session.delete(adminScope);
+		tr.commit();
+		if (log.isDebugEnabled()) {
+		    log.debug("Delete AdminScope" + adminScope.toString());
+		}
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("This is not the latest modification of admin scope " + adminScope.toString()
+			    + " so cannot delete");
+		}
+		// TODO:Create Exception
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
+	    // TODO: Throw exception
+	} finally {
+	    if (log.isDebugEnabled()) {
+		log.debug("Releasing LOCK by Admin ID " + adminScope.getId());
+	    }
+	    // Unlock the lock by admin ID
+	    LOCK_MAP.unlock(adminScope.getId());
+	    // TODO: throw the captured exception
+	}
 
     }
 
@@ -127,8 +170,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    }
 
 	} catch (RuntimeException ex) {
-	    tr.rollback();
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
@@ -165,8 +210,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		return adminScopes.get(0);
 	    }
 	} catch (RuntimeException ex) {
-	    tr.rollback(); // rall back the transaction due to runtime error
 	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    // TODO: Throw exception
 	    return null;
 	}
