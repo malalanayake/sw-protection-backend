@@ -17,7 +17,7 @@ import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.AdminScope;
 
-@Test(groups = { "AdminScopeDAOImplTest" }, dependsOnGroups = { "AdminDAOImplNGTest" })
+@Test(groups = { "AdminScopeDAOImplTest" }, dependsOnGroups = { "AdminDAOImplTest" })
 public class AdminScopeDAOImplTest {
     public static final Logger log = Logger.getLogger(AdminScopeDAOImplTest.class.getName());
 

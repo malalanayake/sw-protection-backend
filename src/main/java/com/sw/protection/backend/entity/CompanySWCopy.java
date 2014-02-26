@@ -38,7 +38,7 @@ public class CompanySWCopy implements Serializable {
     private CompanySW company_sw;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private CompanySW company_client;
+    private CompanyClient company_client;
 
     public String getMother_board() {
 	return mother_board;
@@ -96,11 +96,11 @@ public class CompanySWCopy implements Serializable {
 	this.company_sw = company_sw;
     }
 
-    public CompanySW getCompany_client() {
+    public CompanyClient getCompany_client() {
 	return company_client;
     }
 
-    public void setCompany_client(CompanySW company_client) {
+    public void setCompany_client(CompanyClient company_client) {
 	this.company_client = company_client;
     }
 

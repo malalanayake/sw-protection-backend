@@ -31,11 +31,11 @@ import com.sw.protection.backend.entity.AdminScope;
  * 
  * @author dinuka
  */
-@Test(groups = { "AdminDAOImplNGTest" })
-public class AdminDAOImplNGTest {
-    public static final Logger log = Logger.getLogger(AdminDAOImplNGTest.class.getName());
+@Test(groups = { "AdminDAOImplTest" })
+public class AdminDAOImplTest {
+    public static final Logger log = Logger.getLogger(AdminDAOImplTest.class.getName());
 
-    public AdminDAOImplNGTest() {
+    public AdminDAOImplTest() {
     }
 
     @DataProvider(name = "adminData")
