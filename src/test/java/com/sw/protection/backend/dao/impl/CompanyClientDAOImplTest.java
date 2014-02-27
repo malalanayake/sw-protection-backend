@@ -34,7 +34,7 @@ public class CompanyClientDAOImplTest {
 
     @Test
     public void saveCompanyClient() {
-	log.info("Start Test save Company user");
+	log.info("Start Test save Company client");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = new Company();
 
@@ -59,6 +59,7 @@ public class CompanyClientDAOImplTest {
 
     @Test(dependsOnMethods = { "saveCompanyClient" })
     public void getAllCompanyClients() {
+	log.info("Start Test get all Company client");
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	List<CompanyClient> companyClients = companyClientDAO.getAllCompanyClients();
 	assertEquals(companyClients.size(), 1);
@@ -72,6 +73,7 @@ public class CompanyClientDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllCompanyClients" })
     public void updateCompanyClient() {
+	log.info("Start Test update Company client");
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
 	companyClient.setName("Client Malinda");
@@ -88,6 +90,7 @@ public class CompanyClientDAOImplTest {
 
     @Test(dependsOnMethods = { "updateCompanyClient" })
     public void deleteCompanyClient() {
+	log.info("Start Test delete Company client");
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
 	companyClientDAO.deleteCompanyClient(companyClient);

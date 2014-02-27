@@ -35,7 +35,7 @@ public class Company implements Serializable {
 
 	public static final String NAME_QUERY_FIND_COMPANY_ALL = "findAllCompanies";
 	public static final String NAME_QUERY_FIND_COMPANY_BY_NAME = "findByCompanyName";
-	public static final String PARAM_COMPANY_NAME = "like:companyName";
+	public static final String PARAM_COMPANY_NAME = "companyName";
 	public static final String NAME_QUERY_FIND_BY_COMPANY_USER_NAME = "findByCompanyUsersName";
 	public static final String NAME_QUERY_FIND_BY_COMPANY_API_KEY = "findByCompanyAPIKey";
 	public static final String PARAM_COMPANY_USER_NAME = "companyUserName";

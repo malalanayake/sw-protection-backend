@@ -46,7 +46,7 @@ public class CompanyClient implements Serializable {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String user_name;
     @Column(nullable = false)
     private String pass_word;

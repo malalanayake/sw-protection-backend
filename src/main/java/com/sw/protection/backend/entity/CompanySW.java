@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -20,7 +22,23 @@ import javax.persistence.OneToMany;
  * @author dinuka
  */
 @Entity
+@NamedQueries({
+	@NamedQuery(name = "findCompanySWAll", query = "SELECT u FROM CompanySW u"),
+	@NamedQuery(name = "findByNameOfCompanySWAndCompanyUserName", query = "select u from CompanySW u where u.name=:companySWName and u.company.user_name=:companyUserName"),
+	@NamedQuery(name = "findByCompanySWName", query = "select u from CompanySW u where u.name=:companySWName") })
 public class CompanySW implements Serializable {
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_COMPANY_SW_ALL = "findCompanySWAll";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_SW_NAME_AND_COMPANY_USER_NAME = "findByNameOfCompanySWAndCompanyUserName";
+	public static final String PARAM_COMPANY_SW_NAME = "companySWName";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_SW_NAME = "findByCompanySWName";
+	public static final String PARAM_COMPANY_USER_NAME = "companyUserName";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

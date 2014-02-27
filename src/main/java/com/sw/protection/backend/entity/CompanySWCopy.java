@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * This is an Entity which is going to hold the data for company software copies
@@ -16,7 +18,24 @@ import javax.persistence.ManyToOne;
  * @author dinuka
  */
 @Entity
+@NamedQueries({
+	@NamedQuery(name = "findCompanySWCopyAll", query = "SELECT u FROM CompanySWCopy u"),
+	@NamedQuery(name = "findByCompanySoftwareNameAndClientUNwithProperties", query = "select u from CompanySWCopy u where u.company_sw.name=:companySWName and u.company_client.user_name=:companyClientUserName and u.mother_board=:mBoard and u.hd=:hDrive and u.mac=:macAddress") })
 public class CompanySWCopy implements Serializable {
+    /**
+     * interface provides the name queries and parameters
+     */
+    public static interface Constants {
+
+	public static final String NAME_QUERY_FIND_COMPANY_SW_COPY_ALL = "findCompanySWCopyAll";
+	public static final String NAME_QUERY_FIND_BY_COMPANY_SW_NAME_AND_CLIENT_USER_NAME_WITH_PROPERTIES = "findByCompanySoftwareNameAndClientUNwithProperties";
+	public static final String PARAM_COMPANY_SW_NAME = "companySWName";
+	public static final String PARAM_CLIENT_USER_NAME = "companyClientUserName";
+	public static final String PARAM_MOTHER_BOARD = "mBoard";
+	public static final String PARAM_HARD_DRIVE = "hDrive";
+	public static final String PARAM_MAC_ADDRESS = "macAddress";
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

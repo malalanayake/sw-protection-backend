@@ -33,6 +33,8 @@ public class SharedInMemoryData {
 	public static final String COMPANY_USER_DAO = "COMPANY_USER";
 	public static final String COMPANY_USER_SCOPE_DAO = "COMPANY_USER_SCOPE";
 	public static final String COMPANY_CLIENT_DAO = "COMPANY_CLIENT";
+	public static final String COMPANY_SW_DAO = "COMPANY_SW";
+	public static final String COMPANY_SW_COPY_DAO = "COMPANY_SW_COPY";
 	public static final String SUPER_ADMIN_DAO = "SUPER_ADMIN";
 	public static final String COMPANY_DAO = "COMPANY";
     }
