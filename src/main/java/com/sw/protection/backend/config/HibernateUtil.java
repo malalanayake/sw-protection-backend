@@ -14,7 +14,7 @@ import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.CompanyUserScope;
 import com.sw.protection.backend.entity.SuperAdmin;
 import com.sw.protection.backend.entity.Trace;
-import com.sw.protection.backend.entity.Usage;
+import com.sw.protection.backend.entity.UsageData;
 import com.sw.protection.backend.listners.BackEndContextListner;
 
 /**
@@ -49,7 +49,7 @@ public class HibernateUtil {
 	    cnf.addAnnotatedClass(CompanyUser.class);
 	    cnf.addAnnotatedClass(SuperAdmin.class);
 	    cnf.addAnnotatedClass(CompanyUserScope.class);
-	    cnf.addAnnotatedClass(Usage.class);
+	    cnf.addAnnotatedClass(UsageData.class);
 	    cnf.addAnnotatedClass(Trace.class);
 	    cnf.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 	    cnf.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");

@@ -1,0 +1,160 @@
+package com.sw.protection.backend.dao.impl;
+
+import static org.testng.Assert.assertEquals;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.APIOperations;
+import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.SharedInMemoryData;
+import com.sw.protection.backend.config.Types;
+import com.sw.protection.backend.config.test.DBTestProperties;
+import com.sw.protection.backend.dao.UsageDAO;
+import com.sw.protection.backend.entity.UsageData;
+
+@Test(groups = { "UsageDAOImplTest" }, dependsOnGroups = { "TraceDAOImplTest" })
+public class UsageDAOImplTest {
+    public static final Logger log = Logger.getLogger(UsageDAOImplTest.class.getName());
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+	HibernateUtil.setHost(DBTestProperties.HOST);
+	HibernateUtil.setPort(DBTestProperties.PORT);
+	HibernateUtil.setUsername(DBTestProperties.USER);
+	HibernateUtil.setPassword(DBTestProperties.PW);
+	HibernateUtil.setDbname(DBTestProperties.DBNAME);
+	HibernateUtil.init();
+	SharedInMemoryData.getInstance();
+    }
+
+    @Test
+    public void saveUsage() {
+	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageData usage = new UsageData();
+	usage.setApi_name(APINames.ADMIN);
+	usage.setOperation(APIOperations.GET);
+	usage.setType(Types.ADMIN);
+	usage.setType_id(1l);
+	usage.setDate_time(Formatters.formatDate(new Date()));
+	usage.setLast_modified(Formatters.formatDate(new Date()));
+	usage.setAccess_count("100");
+	usage.setDecline_count("0");
+
+	usageDAO.saveUsage(usage);
+
+	UsageData usage2 = new UsageData();
+	usage2.setApi_name(APINames.USER);
+	usage2.setOperation(APIOperations.POST);
+	usage2.setType(Types.ADMIN);
+	usage2.setType_id(1l);
+	usage2.setDate_time(Formatters.formatDate(new Date()));
+	usage2.setLast_modified(Formatters.formatDate(new Date()));
+	usage2.setAccess_count("200");
+	usage2.setDecline_count("0");
+
+	usageDAO.saveUsage(usage2);
+
+	UsageData usage3 = new UsageData();
+	usage3.setApi_name(APINames.SOFTWARE);
+	usage3.setOperation(APIOperations.PUT);
+	usage3.setType(Types.COMPANY);
+	usage3.setType_id(1l);
+	usage3.setDate_time(Formatters.formatDate(new Date()));
+	usage3.setLast_modified(Formatters.formatDate(new Date()));
+	usage3.setAccess_count("0");
+	usage3.setDecline_count("10");
+
+	usageDAO.saveUsage(usage3);
+
+	UsageData usage4 = new UsageData();
+	usage4.setApi_name(APINames.COMPANY);
+	usage4.setOperation(APIOperations.DELETE);
+	usage4.setType(Types.COMPANY_USER);
+	usage4.setType_id(1l);
+	usage4.setDate_time(Formatters.formatDate(new Date()));
+	usage4.setLast_modified(Formatters.formatDate(new Date()));
+	usage4.setAccess_count("200");
+	usage4.setDecline_count("20");
+
+	usageDAO.saveUsage(usage4);
+
+    }
+
+    @Test(dependsOnMethods = { "saveUsage" })
+    public void getAllUsagesByAPIName() {
+	UsageDAO usageDAO = new UsageDAOImpl();
+	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	assertEquals(usageList1.size(), 1);
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
+	assertEquals(usageList2.size(), 1);
+	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
+	assertEquals(usageList3.size(), 1);
+	List<UsageData> usageList4 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY);
+	assertEquals(usageList4.size(), 1);
+    }
+
+    @Test(dependsOnMethods = { "getAllUsagesByAPIName" })
+    public void getAllUsagesByTypeAndID() {
+	UsageDAO usageDAO = new UsageDAOImpl();
+	List<UsageData> usageList1 = usageDAO.getAllUsagesByTypeAndID(Types.ADMIN, 1l);
+	assertEquals(usageList1.size(), 2);
+
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByTypeAndID(Types.SUPER_ADMIN, 1l);
+	assertEquals(usageList2, null);
+    }
+
+    @Test(dependsOnMethods = { "getAllUsagesByTypeAndID" })
+    public void updateUsage() {
+	UsageDAO usageDAO = new UsageDAOImpl();
+	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	assertEquals(usageList1.size(), 1);
+	UsageData usageData = usageList1.get(0);
+	assertEquals(usageData.getApi_name(), APINames.ADMIN);
+	assertEquals(usageData.getOperation(), APIOperations.GET);
+	assertEquals(usageData.getType(), Types.ADMIN);
+	assertEquals(usageData.getAccess_count(), "100");
+	assertEquals(usageData.getDecline_count(), "0");
+
+	usageData.setAccess_count("200");
+	usageData.setDecline_count("12");
+	usageDAO.updateUsage(usageData);
+
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	assertEquals(usageList2.size(), 1);
+	UsageData usageData2 = usageList2.get(0);
+	assertEquals(usageData2.getApi_name(), APINames.ADMIN);
+	assertEquals(usageData2.getOperation(), APIOperations.GET);
+	assertEquals(usageData2.getType(), Types.ADMIN);
+	assertEquals(usageData2.getAccess_count(), "200");
+	assertEquals(usageData2.getDecline_count(), "12");
+
+    }
+
+    @Test(dependsOnMethods = { "updateUsage" })
+    public void deleteUsage() {
+	UsageDAO usageDAO = new UsageDAOImpl();
+	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	for (UsageData usage : usageList1) {
+	    usageDAO.deleteUsage(usage);
+	}
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
+	for (UsageData usage : usageList2) {
+	    usageDAO.deleteUsage(usage);
+	}
+	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
+	for (UsageData usage : usageList3) {
+	    usageDAO.deleteUsage(usage);
+	}
+	List<UsageData> usageList4 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY);
+	for (UsageData usage : usageList4) {
+	    usageDAO.deleteUsage(usage);
+	}
+    }
+}

@@ -37,6 +37,8 @@ public class SharedInMemoryData {
 	public static final String COMPANY_SW_COPY_DAO = "COMPANY_SW_COPY";
 	public static final String SUPER_ADMIN_DAO = "SUPER_ADMIN";
 	public static final String COMPANY_DAO = "COMPANY";
+	public static final String TRACE_DAO = "TRACE";
+	public static final String USAGE_DAO = "USAGE";
     }
 
     public static final Logger log = Logger.getLogger(SharedInMemoryData.class.getName());
