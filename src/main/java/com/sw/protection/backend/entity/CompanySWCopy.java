@@ -143,7 +143,9 @@ public class CompanySWCopy implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.CompanySWCopy[ id=" + id + " ]";
+	String output = "Software Copy ID:" + id + ", MB:" + mother_board + ", HD:" + hd + ", MAC:" + mac + ", EDate:"
+		+ expire_date + ", Date:" + date_time + ", LM:" + last_modified;
+	return output;
     }
 
 }

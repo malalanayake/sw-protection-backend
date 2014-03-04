@@ -13,7 +13,6 @@ import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.Types;
 import com.sw.protection.backend.dao.UsageDAO;
-import com.sw.protection.backend.entity.Trace;
 import com.sw.protection.backend.entity.UsageData;
 
 public class UsageDAOImpl implements UsageDAO {
@@ -116,7 +115,7 @@ public class UsageDAOImpl implements UsageDAO {
 	    if (log.isDebugEnabled()) {
 		log.debug("Locked update operation by Usage ID " + usage.getId());
 	    }
-	    
+
 	    // check last modification
 	    if (getUsage(usage.getId()) != null) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();

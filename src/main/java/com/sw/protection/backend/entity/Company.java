@@ -173,12 +173,6 @@ public class Company implements Serializable {
     public String toString() {
 	String output = "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key
 		+ ", email=" + email + ", date_time=" + date_time;
-	output = output + ", Admin ScopSet :";
-	if (!companyUserSet.isEmpty()) {
-	    for (CompanyUser user : companyUserSet) {
-		output = output + user.toString();
-	    }
-	}
 	return output;
 
     }

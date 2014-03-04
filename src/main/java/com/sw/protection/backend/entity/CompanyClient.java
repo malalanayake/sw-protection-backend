@@ -147,7 +147,9 @@ public class CompanyClient implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.CompanyClient[ id=" + id + " ]";
+	String output = "Client ID:" + id + ", Name:" + name + ", UserName:" + user_name + ", Email:" + email
+		+ ", Date:" + date_time + ", LM:" + last_modified;
+	return output;
     }
 
 }

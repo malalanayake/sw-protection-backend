@@ -126,7 +126,9 @@ public class CompanySW implements Serializable {
 
     @Override
     public String toString() {
-	return "com.sw.protection.backend.entity.CompanySW[ id=" + id + " ]";
+	String output = "Software ID:" + id + ", Name:" + name + ", Description:" + description + ", Date:" + date_time
+		+ ", LM:" + last_modified;
+	return output;
     }
 
 }
