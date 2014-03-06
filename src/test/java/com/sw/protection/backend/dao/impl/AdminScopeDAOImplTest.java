@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.dao.AdminDAO;
@@ -118,7 +120,20 @@ public class AdminScopeDAOImplTest {
 	adminScope.setPost(false);
 	adminScope.setPut(false);
 	adminScope.setDel(false);
-	adminScopeDAO.saveNewAdminScope(adminScope);
+	try {
+	    adminScopeDAO.saveNewAdminScope(adminScope);
+	} catch (Exception ex) {
+
+	}
+
+	// Check DuplicateRecordException
+	String checkException = "";
+	try {
+	    adminScopeDAO.saveNewAdminScope(adminScope);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, DuplicateRecordException.class.toString());
 
 	List<AdminScope> list = adminScopeDAO.getAllAdminScopes("dinuka");
 	log.info("Admin Scope List size:" + list.size());
@@ -144,6 +159,7 @@ public class AdminScopeDAOImplTest {
 	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
 
 	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
+	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
 	log.info("Admin Scope :" + adminScope.toString());
 	assertEquals(adminScope.isDel(), false);
 	assertEquals(adminScope.isGet(), false);
@@ -154,8 +170,21 @@ public class AdminScopeDAOImplTest {
 	adminScope.setPut(true);
 	adminScope.setPost(true);
 	adminScope.setGet(true);
+	try {
+	    adminScopeDAO.updateAdminScope(adminScope);
+	} catch (Exception ex) {
 
-	adminScopeDAO.updateAdminScope(adminScope);
+	}
+
+	// Check RecordAlreadyModifiedException
+	String checkException = "";
+	try {
+	    adminScopeDAO.updateAdminScope(adminAlredayModifiedScope);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, RecordAlreadyModifiedException.class.toString());
+
 	AdminScope latest = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
 	log.info("Uptodate admin Scope :" + latest.toString());
 	assertEquals(latest.isDel(), true);
@@ -189,7 +218,25 @@ public class AdminScopeDAOImplTest {
     public void testDeleteAdminScope() {
 	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
 	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
-	adminScopeDAO.deleteAdminScope(adminScope);
+	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
+	adminAlredayModifiedScope.setDel(false);
+
+	// Check RecordAlreadyModifiedException
+	String checkException = "";
+	try {
+	    adminScopeDAO.updateAdminScope(adminAlredayModifiedScope);
+	    adminScopeDAO.deleteAdminScope(adminScope);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, RecordAlreadyModifiedException.class.toString());
+
+	AdminScope adminTObeDeletedScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
+	try {
+	    adminScopeDAO.deleteAdminScope(adminTObeDeletedScope);
+	} catch (Exception ex) {
+
+	}
 
 	AdminScope afterAdminScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
 	assertEquals(afterAdminScope, null);

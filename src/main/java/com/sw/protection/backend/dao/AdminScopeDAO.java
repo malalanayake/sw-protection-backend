@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.entity.AdminScope;
 
@@ -26,7 +29,7 @@ public interface AdminScopeDAO {
      * @param adminScope
      *            - the admin scope going to be save
      */
-    public void saveNewAdminScope(AdminScope adminScope);
+    public void saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Delete admin scope data
@@ -34,7 +37,8 @@ public interface AdminScopeDAO {
      * @param adminScope
      *            - the admin scope to be deleted
      */
-    public void deleteAdminScope(AdminScope adminScope);
+    public void deleteAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Update admin scope data
@@ -42,7 +46,8 @@ public interface AdminScopeDAO {
      * @param adminScope
      *            - edited admin scope
      */
-    public void updateAdminScope(AdminScope adminScope);
+    public void updateAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Get specific admin scope data

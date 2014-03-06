@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
@@ -40,7 +42,20 @@ public class SuperAdminDAOImplTest {
 	superAdmin1.setPass_word("test1");
 	superAdmin1.setEmail("dinuka@gmail.com");
 	superAdmin1.setApi_key(UUID.randomUUID().toString());
-	superAdminDao.saveSuperAdmin(superAdmin1);
+	try {
+	    superAdminDao.saveSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
+
+	}
+
+	// Check DuplicateRecordException
+	String checkException = "";
+	try {
+	    superAdminDao.saveSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, DuplicateRecordException.class.toString());
 
 	SuperAdmin superAdmin2 = new SuperAdmin();
 	superAdmin2.setName("super_malinda");
@@ -48,7 +63,11 @@ public class SuperAdminDAOImplTest {
 	superAdmin2.setPass_word("test2");
 	superAdmin2.setEmail("malinda@gmail.com");
 	superAdmin2.setApi_key(UUID.randomUUID().toString());
-	superAdminDao.saveSuperAdmin(superAdmin2);
+	try {
+	    superAdminDao.saveSuperAdmin(superAdmin2);
+	} catch (Exception ex) {
+
+	}
 
     }
 
@@ -65,7 +84,9 @@ public class SuperAdminDAOImplTest {
 	log.info("Start test update Super admin users");
 	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
 	SuperAdmin superAdmin1 = new SuperAdmin();
+	SuperAdmin superAdminAlredayModified = new SuperAdmin();
 	superAdmin1 = superAdminDao.getSuperAdmin("dinuka");
+	superAdminAlredayModified = superAdminDao.getSuperAdmin("dinuka");
 
 	assertEquals(superAdmin1.getEmail(), "dinuka@gmail.com");
 	assertEquals(superAdmin1.getUser_name(), "dinuka");
@@ -75,8 +96,20 @@ public class SuperAdminDAOImplTest {
 	superAdmin1.setEmail("dinukanew@gmail.com");
 	superAdmin1.setPass_word("testnew1");
 	superAdmin1.setName("Dinuka Malalanayake");
+	try {
+	    superAdminDao.updateSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
 
-	superAdminDao.updateSuperAdmin(superAdmin1);
+	}
+
+	// Check RecordAlreadyModifiedException
+	String checkException = "";
+	try {
+	    superAdminDao.updateSuperAdmin(superAdminAlredayModified);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, RecordAlreadyModifiedException.class.toString());
 
 	SuperAdmin superAdmin2 = new SuperAdmin();
 	superAdmin2 = superAdminDao.getSuperAdmin("dinuka");
@@ -92,16 +125,39 @@ public class SuperAdminDAOImplTest {
 	log.info("Start test delete Super admin users");
 	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
 	SuperAdmin superAdmin1 = new SuperAdmin();
+	SuperAdmin superAdminAlredayModified = new SuperAdmin();
 	superAdmin1 = superAdminDao.getSuperAdmin("dinuka");
+	superAdminAlredayModified = superAdminDao.getSuperAdmin("dinuka");
+	superAdminAlredayModified.setEmail("updateemail@gmail.com");
 
 	assertEquals(superAdminDao.isSuperAdminUserNameExist("dinuka"), true);
-	superAdminDao.deleteSuperAdmin(superAdmin1);
+
+	// Check RecordAlreadyModifiedException
+	String checkException = "";
+	try {
+	    superAdminDao.updateSuperAdmin(superAdminAlredayModified);
+	    superAdminDao.deleteSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
+	    checkException = ex.getClass().toString();
+	}
+	assertEquals(checkException, RecordAlreadyModifiedException.class.toString());
+
+	superAdmin1 = superAdminDao.getSuperAdmin("dinuka");
+	try {
+	    superAdminDao.deleteSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(superAdminDao.isSuperAdminUserNameExist("dinuka"), false);
 
 	superAdmin1 = superAdminDao.getSuperAdmin("malinda");
 
 	assertEquals(superAdminDao.isSuperAdminUserNameExist("malinda"), true);
-	superAdminDao.deleteSuperAdmin(superAdmin1);
+	try {
+	    superAdminDao.deleteSuperAdmin(superAdmin1);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(superAdminDao.isSuperAdminUserNameExist("malinda"), false);
     }
 

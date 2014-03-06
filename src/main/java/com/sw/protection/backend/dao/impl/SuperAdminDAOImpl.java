@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.SuperAdminDAO;
@@ -93,8 +96,10 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
     }
 
     @Override
-    public void updateSuperAdmin(SuperAdmin admin) {
+    public void updateSuperAdmin(SuperAdmin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by super admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -119,29 +124,41 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 		    log.debug("This is not the latest modification of Super admin " + admin.toString()
 			    + " so cannot update");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Super admin ID " + admin.getId());
 	    }
 	    // Unlock the lock by super admin ID
 	    LOCK_MAP.unlock(admin.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void deleteSuperAdmin(SuperAdmin admin) {
+    public void deleteSuperAdmin(SuperAdmin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by super admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -163,34 +180,47 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 		    log.debug("This is not the latest modification of Super admin " + admin.toString()
 			    + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Super admin ID " + admin.getId());
 	    }
 	    // Unlock the lock by super admin ID
 	    LOCK_MAP.unlock(admin.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void saveSuperAdmin(SuperAdmin admin) {
+    public void saveSuperAdmin(SuperAdmin admin) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    // check whether the super admin user name already exist
 	    if (this.isSuperAdminUserNameExist(admin.getUser_name())) {
 		if (log.isDebugEnabled()) {
 		    log.debug("Super admin username :" + admin.toString() + " already exist");
 		}
-		// TODO: Pass the Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    } else {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
@@ -208,8 +238,18 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 

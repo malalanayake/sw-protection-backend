@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
@@ -63,8 +66,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     }
 
     @Override
-    public void saveNewAdminScope(AdminScope adminScope) {
+    public void saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    if (this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()) == null) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -80,20 +85,34 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		if (log.isDebugEnabled()) {
 		    log.debug("Admin scope" + adminScope.toString() + " already exist");
 		}
-		// TODO: Create Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void deleteAdminScope(AdminScope adminScope) {
+    public void deleteAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	try {
 	    // Lock by adminScope ID
 	    LOCK_MAP.lock(adminScope.getId());
@@ -117,28 +136,41 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		    log.debug("This is not the latest modification of admin scope " + adminScope.toString()
 			    + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + adminScope.getId());
 	    }
 	    // Unlock the lock by admin ID
 	    LOCK_MAP.unlock(adminScope.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void updateAdminScope(AdminScope adminScope) {
+    public void updateAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(adminScope.getAdmin().getId());
@@ -166,22 +198,32 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		    log.debug("This is not the latest admin scope:" + adminScope.toString()
 			    + " so this is not going to upate");
 		}
-		// TODO: create the exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + adminScope.getAdmin().getId());
 	    }
 	    // Unlock the lock by admin ID
 	    LOCK_MAP.unlock(adminScope.getAdmin().getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
