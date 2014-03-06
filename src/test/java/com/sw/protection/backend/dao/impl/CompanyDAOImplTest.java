@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
@@ -75,7 +77,20 @@ public class CompanyDAOImplTest {
 	companySWSet.add(companySW);
 	company.setCompanySWSet(companySWSet);
 
-	companyDAO.saveCompany(company);
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
     }
 
     @Test(dependsOnMethods = { "saveCompany" })
@@ -113,7 +128,9 @@ public class CompanyDAOImplTest {
 	log.info("Start Test update company");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
+	Company companyAlreadyModi = companyDAO.getCompany("sysensor");
 	company = companyDAO.loadAllPropertiesOfCompany(company.getId());
+	companyAlreadyModi = companyDAO.loadAllPropertiesOfCompany(companyAlreadyModi.getId());
 
 	assertEquals(company.getName(), "Sysensor IT Solutions");
 	assertEquals(company.getUser_name(), "sysensor");
@@ -125,7 +142,20 @@ public class CompanyDAOImplTest {
 	company.setEmail("sysensorit@gmail.com");
 	String api_key = UUID.randomUUID().toString();
 	company.setApi_key(api_key);
-	companyDAO.updateCompany(company);
+	try {
+	    companyDAO.updateCompany(company);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyDAO.updateCompany(companyAlreadyModi);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	Company company1 = companyDAO.getCompany("sysensor");
 	assertEquals(company1.getName(), "Sysensor IT");
@@ -140,7 +170,27 @@ public class CompanyDAOImplTest {
 	log.info("Start Test delete Company");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
-	companyDAO.deleteCompany(company);
+
+	Company companyAlreadyModi = companyDAO.getCompany("sysensor");
+	companyAlreadyModi = companyDAO.loadAllPropertiesOfCompany(companyAlreadyModi.getId());
+	companyAlreadyModi.setEmail("uptodateemail@gmail.com");
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyDAO.updateCompany(companyAlreadyModi);
+	    companyDAO.deleteCompany(company);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	company = companyDAO.getCompany("sysensor");
+	try {
+	    companyDAO.deleteCompany(company);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(companyDAO.getCompany("sysensor"), null);
     }
 }

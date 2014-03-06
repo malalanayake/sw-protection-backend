@@ -43,7 +43,11 @@ public class CompanySWDAOImplTest {
 	company.setPass_word("test1");
 	company.setEmail("sysensor@gmail.com");
 	company.setApi_key(UUID.randomUUID().toString());
-	companyDAO.saveCompany(company);
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+
+	}
 
 	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
 	CompanySW companySW = new CompanySW();
@@ -93,7 +97,11 @@ public class CompanySWDAOImplTest {
 
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
-	companyDAO.deleteCompany(company);
+	try {
+	    companyDAO.deleteCompany(company);
+	} catch (Exception ex) {
+
+	}
 	Company company2 = companyDAO.getCompany("sysensor");
 	assertEquals(company2, null);
     }

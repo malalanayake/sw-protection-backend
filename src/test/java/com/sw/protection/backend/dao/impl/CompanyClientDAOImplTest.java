@@ -43,7 +43,11 @@ public class CompanyClientDAOImplTest {
 	company.setPass_word("test1");
 	company.setEmail("sysensor@gmail.com");
 	company.setApi_key(UUID.randomUUID().toString());
-	companyDAO.saveCompany(company);
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+
+	}
 
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	CompanyClient companyClient = new CompanyClient();
@@ -99,7 +103,11 @@ public class CompanyClientDAOImplTest {
 	CompanyDAO companyDAO = new CompanyDAOImpl();
 	Company company = companyDAO.getCompany("sysensor");
 	assertEquals(company.getUser_name(), "sysensor");
-	companyDAO.deleteCompany(company);
+	try {
+	    companyDAO.deleteCompany(company);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(companyDAO.getCompany("sysensor"), null);
     }
 

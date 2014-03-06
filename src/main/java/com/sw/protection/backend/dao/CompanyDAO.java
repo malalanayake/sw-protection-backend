@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.entity.Company;
 
 /**
@@ -32,7 +35,7 @@ public interface CompanyDAO {
      * @param company
      *            - Company object with updated values
      */
-    public void updateCompany(Company company);
+    public void updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete specific company
@@ -40,7 +43,7 @@ public interface CompanyDAO {
      * @param company
      *            - Company object to be deleted
      */
-    public void deleteCompany(Company company);
+    public void deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save company data
@@ -48,7 +51,7 @@ public interface CompanyDAO {
      * @param company
      *            - New company object to be saved
      */
-    public void saveCompany(Company company);
+    public void saveCompany(Company company) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Load all properties of company

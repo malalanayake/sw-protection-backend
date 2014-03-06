@@ -46,7 +46,11 @@ public class CompanyUserScopeDAOImplTest {
 	company.setPass_word("test1");
 	company.setEmail("sysensor@gmail.com");
 	company.setApi_key(UUID.randomUUID().toString());
-	companyDAO.saveCompany(company);
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+
+	}
 
 	company = companyDAO.getCompany("sysensor");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
@@ -135,8 +139,11 @@ public class CompanyUserScopeDAOImplTest {
 	assertEquals(company.getUser_name(), "sysensor");
 	assertEquals(company.getPass_word(), "test1");
 	assertEquals(company.getEmail(), "sysensor@gmail.com");
+	try {
+	    companyDAO.deleteCompany(company);
+	} catch (Exception ex) {
 
-	companyDAO.deleteCompany(company);
+	}
 	Company company2 = companyDAO.getCompany("sysensor");
 	assertEquals(company2, null);
     }
