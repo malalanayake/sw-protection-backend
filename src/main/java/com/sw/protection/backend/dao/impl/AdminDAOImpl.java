@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.AdminDAO;
@@ -62,8 +65,10 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
-    public void updateAdmin(Admin admin) {
+    public void updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -87,28 +92,42 @@ public class AdminDAOImpl implements AdminDAO {
 		if (log.isDebugEnabled()) {
 		    log.debug("This is not the latest modification of admin " + admin.toString() + " so cannot update");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
+
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + admin.getId());
 	    }
 	    // Unlock the lock by admin ID
 	    LOCK_MAP.unlock(admin.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
+
 	}
     }
 
     @Override
-    public void deleteAdmin(Admin admin) {
+    public void deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -129,34 +148,48 @@ public class AdminDAOImpl implements AdminDAO {
 		if (log.isDebugEnabled()) {
 		    log.debug("This is not the latest modification of admin " + admin.toString() + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + admin.getId());
 	    }
 	    // Unlock the lock by admin ID
 	    LOCK_MAP.unlock(admin.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void saveAdmin(Admin admin) {
+    public void saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    // check whether the admin user name already exist
 	    if (this.isAdminUserNameExist(admin.getUser_name())) {
 		if (log.isDebugEnabled()) {
 		    log.debug("Admin username :" + admin.toString() + " already exist");
 		}
-		// TODO: Pass the Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    } else {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
@@ -179,8 +212,18 @@ public class AdminDAOImpl implements AdminDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 

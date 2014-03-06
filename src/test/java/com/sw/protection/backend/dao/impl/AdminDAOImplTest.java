@@ -18,6 +18,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
@@ -121,12 +123,28 @@ public class AdminDAOImplTest {
 	String userName = "malalanayake";
 	AdminDAO instance = new AdminDAOImpl();
 	Admin expResult = new Admin();
+	Admin failResult = new Admin();
 	Admin result = new Admin();
 	expResult = instance.getAdmin(userName);
 	expResult = instance.loadAllPropertiesOfAdmin(expResult.getId());
+	failResult = instance.getAdmin(userName);
+	failResult = instance.loadAllPropertiesOfAdmin(failResult.getId());
 	expResult.setEmail("testmail@yahoo.com");
 	expResult.setName("Kasuni");
-	instance.updateAdmin(expResult);
+	try {
+	    instance.updateAdmin(expResult);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    instance.updateAdmin(failResult);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	result = instance.getAdmin("malalanayake");
 
@@ -160,13 +178,43 @@ public class AdminDAOImplTest {
 	admin1 = instance.getAdmin(userName1);
 	admin2 = instance.getAdmin(userName2);
 	admin3 = instance.getAdmin(userName3);
+	try {
+	    instance.deleteAdmin(admin1);
+	    assertEquals(instance.isAdminUserNameExist(userName1), false);
+	    instance.deleteAdmin(admin2);
+	    assertEquals(instance.isAdminUserNameExist(userName2), false);
+	} catch (Exception ex) {
 
-	instance.deleteAdmin(admin1);
-	assertEquals(instance.isAdminUserNameExist(userName1), false);
-	instance.deleteAdmin(admin2);
-	assertEquals(instance.isAdminUserNameExist(userName2), false);
-	instance.deleteAdmin(admin3);
+	}
+
+	Admin admin4 = new Admin();
+	admin4 = instance.getAdmin(userName3);
+	admin4 = instance.loadAllPropertiesOfAdmin(admin4.getId());
+	admin4.setEmail("lateModified@gmail.com");
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    // update late modified
+	    instance.updateAdmin(admin4);
+	    // going to delete through early loaded admin data
+	    instance.deleteAdmin(admin3);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+	assertEquals(instance.isAdminUserNameExist(userName3), true);
+
+	// Again get load only the Admin data and delete
+	Admin admin5 = new Admin();
+	admin5 = instance.getAdmin(userName3);
+	try {
+	    instance.deleteAdmin(admin5);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(instance.isAdminUserNameExist(userName3), false);
+
     }
 
     /**
@@ -196,7 +244,20 @@ public class AdminDAOImplTest {
 	admin.setAdminScopeSet(adminScopSet);
 	AdminDAO instance = new AdminDAOImpl();
 	log.info("" + admin.toString());
-	instance.saveAdmin(admin);
+	try {
+	    instance.saveAdmin(admin);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    instance.saveAdmin(admin);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
     }
 
@@ -215,7 +276,11 @@ public class AdminDAOImplTest {
 
 	AdminDAO instance = new AdminDAOImpl();
 	log.info("" + admin.toString());
-	instance.saveAdmin(admin);
+	try {
+	    instance.saveAdmin(admin);
+	} catch (Exception ex) {
+
+	}
 
     }
 }

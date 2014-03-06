@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.entity.Admin;
 
 /**
@@ -41,7 +44,7 @@ public interface AdminDAO {
      * @param admin
      *            - new Admin with updated values
      */
-    public void updateAdmin(Admin admin);
+    public void updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete admin user
@@ -49,7 +52,7 @@ public interface AdminDAO {
      * @param admin
      *            - Admin to be deleted
      */
-    public void deleteAdmin(Admin admin);
+    public void deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save admin user
@@ -57,7 +60,7 @@ public interface AdminDAO {
      * @param admin
      *            - new Admin
      */
-    public void saveAdmin(Admin admin);
+    public void saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the admin user name exist

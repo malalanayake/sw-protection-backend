@@ -10,8 +10,10 @@ import java.util.Date;
  * @author dinuka
  */
 public class Formatters {
-
-    private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    // This formatter should return up to millisecond if not record
+    // going to be overwrite by early record. As an example there may be data
+    // loss
+    private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS";
 
     /**
      * Format the given date

@@ -13,7 +13,11 @@ public class AdminDAOThread implements Runnable {
     @Override
     public void run() {
 	AdminDAO adminDao = new AdminDAOImpl();
-	adminDao.updateAdmin(admin);
+	try {
+	    adminDao.updateAdmin(admin);
+	} catch (Exception ex) {
+
+	}
     }
 
 }
