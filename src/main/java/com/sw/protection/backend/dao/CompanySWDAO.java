@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.entity.CompanySW;
 
 /**
@@ -34,7 +37,7 @@ public interface CompanySWDAO {
      * @param companySW
      *            - software going to be updated
      */
-    public void updateCompanySW(CompanySW companySW);
+    public void updateCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete specific company software
@@ -42,7 +45,7 @@ public interface CompanySWDAO {
      * @param companySW
      *            - software going to be deleted
      */
-    public void deleteCompanySW(CompanySW companySW);
+    public void deleteCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save company software
@@ -50,7 +53,7 @@ public interface CompanySWDAO {
      * @param companySW
      *            - software going to be saved
      */
-    public void saveCompanySW(CompanySW companySW);
+    public void saveCompanySW(CompanySW companySW) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the company software is exist

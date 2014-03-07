@@ -12,6 +12,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
@@ -100,8 +102,20 @@ public class CompanySWCopyDAOImplTest {
 	companySWCopy.setMother_board("M_BOARD_ID");
 	companySWCopy.setHd("HD_ID");
 	companySWCopy.setMac("MAC_ID");
+	try {
+	    companySWCopyDAO.saveCompanySWCopy(companySWCopy);
+	} catch (Exception ex) {
 
-	companySWCopyDAO.saveCompanySWCopy(companySWCopy);
+	}
+
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companySWCopyDAO.saveCompanySWCopy(companySWCopy);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
     }
 
     @Test(dependsOnMethods = { "saveCompanySWCopy" })
@@ -128,10 +142,25 @@ public class CompanySWCopyDAOImplTest {
 	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
 	CompanySWCopy companySWCopy = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID",
 		"HD_ID", "MAC_ID");
+	CompanySWCopy companySWCopyAlreadyModi = companySWCopyDAO.getCompanySWCopy("client1", "Application 1",
+		"M_BOARD_ID", "HD_ID", "MAC_ID");
 
 	companySWCopy.setExpire_date(Formatters.formatDate(new Date()));
+	try {
+	    companySWCopyDAO.updateCompanySWCopy(companySWCopy);
+	} catch (Exception ex) {
 
-	companySWCopyDAO.updateCompanySWCopy(companySWCopy);
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companySWCopyDAO.updateCompanySWCopy(companySWCopyAlreadyModi);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
 	CompanySWCopy companySWCopy2 = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID",
 		"HD_ID", "MAC_ID");
 

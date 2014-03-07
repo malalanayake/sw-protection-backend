@@ -53,7 +53,6 @@ public class UsageDAOImpl implements UsageDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -84,7 +83,6 @@ public class UsageDAOImpl implements UsageDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -101,7 +99,6 @@ public class UsageDAOImpl implements UsageDAO {
 	    return usage;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    // TODO: Throw exception
 	    return null;
 	}
     }

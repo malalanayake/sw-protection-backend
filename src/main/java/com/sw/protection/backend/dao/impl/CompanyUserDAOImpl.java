@@ -60,7 +60,6 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -92,7 +91,6 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -288,7 +286,6 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    return companyUser;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    // TODO: Throw exception
 	    return null;
 	}
     }

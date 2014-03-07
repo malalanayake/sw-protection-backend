@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanySWCopyDAO;
@@ -31,8 +34,11 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 	    SharedInMemoryData.DB_LOCKS.COMPANY_SW_COPY_DAO);
 
     @Override
-    public void updateCompanySWCopy(CompanySWCopy companySWCopy) {
+    public void updateCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company software copy ID
 	    LOCK_MAP.lock(companySWCopy.getId());
@@ -60,28 +66,41 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 		    log.debug("This is not the latest modification of company software copy "
 			    + companySWCopy.toString() + " so cannot update");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by software copy ID " + companySWCopy.getId());
 	    }
 	    // Unlock the lock by software copy ID
 	    LOCK_MAP.unlock(companySWCopy.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void deleteCompanySWCopy(CompanySWCopy companySWCopy) {
+    public void deleteCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company software copy ID
 	    LOCK_MAP.lock(companySWCopy.getId());
@@ -106,21 +125,31 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 		    log.debug("This is not the latest modification of company software copy "
 			    + companySWCopy.toString() + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Company software copy ID " + companySWCopy.getId());
 	    }
 	    // Unlock the lock by software copy ID
 	    LOCK_MAP.unlock(companySWCopy.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
@@ -150,14 +179,16 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
 
     @Override
-    public void saveCompanySWCopy(CompanySWCopy companySWCopy) {
+    public void saveCompanySWCopy(CompanySWCopy companySWCopy) throws DuplicateRecordException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    // check whether the software copy already exist
 	    if (this.isCompanySWCopyExist(companySWCopy.getCompany_client().getUser_name(), companySWCopy
@@ -166,7 +197,8 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 		if (log.isDebugEnabled()) {
 		    log.debug("Company software copy :" + companySWCopy.toString() + " already exist");
 		}
-		// TODO: Pass the Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    } else {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
@@ -184,8 +216,18 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
@@ -222,7 +264,6 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }

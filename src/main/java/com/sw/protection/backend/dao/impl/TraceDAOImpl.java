@@ -56,7 +56,6 @@ public class TraceDAOImpl implements TraceDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -87,7 +86,6 @@ public class TraceDAOImpl implements TraceDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -122,7 +120,6 @@ public class TraceDAOImpl implements TraceDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -139,7 +136,6 @@ public class TraceDAOImpl implements TraceDAO {
 	    return trace;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    // TODO: Throw exception
 	    return null;
 	}
     }

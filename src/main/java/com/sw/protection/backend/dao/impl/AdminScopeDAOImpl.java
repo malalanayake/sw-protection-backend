@@ -60,7 +60,6 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -256,7 +255,6 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }

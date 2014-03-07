@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanyClientDAO;
@@ -58,7 +61,6 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -90,14 +92,16 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
 
     @Override
-    public void updateCompanyClient(CompanyClient companyClient) {
+    public void updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company client ID
 	    LOCK_MAP.lock(companyClient.getId());
@@ -123,28 +127,41 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		    log.debug("This is not the latest modification of company client " + companyClient.toString()
 			    + " so cannot update");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Client ID " + companyClient.getId());
 	    }
 	    // Unlock the lock by company client ID
 	    LOCK_MAP.unlock(companyClient.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void deleteCompanyClient(CompanyClient companyClient) {
+    public void deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company client ID
 	    LOCK_MAP.lock(companyClient.getId());
@@ -167,34 +184,48 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		    log.debug("This is not the latest modification of company client " + companyClient.toString()
 			    + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Company client ID " + companyClient.getId());
 	    }
 	    // Unlock the lock by company user ID
 	    LOCK_MAP.unlock(companyClient.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
     @Override
-    public void saveCompanyClient(CompanyClient companyClient) {
+    public void saveCompanyClient(CompanyClient companyClient) throws DuplicateRecordException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    // check whether the company user name already exist
 	    if (this.isCompanyClientUserNameExist(companyClient.getUser_name())) {
 		if (log.isDebugEnabled()) {
 		    log.debug("Company client username :" + companyClient.toString() + " already exist");
 		}
-		// TODO: Pass the Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    } else {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
@@ -217,8 +248,18 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 
@@ -249,7 +290,6 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 	    return companyClient;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
-	    // TODO: Throw exception
 	    return null;
 	}
     }

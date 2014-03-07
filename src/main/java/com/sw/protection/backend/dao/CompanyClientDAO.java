@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.entity.CompanyClient;
 
 /**
@@ -32,7 +35,8 @@ public interface CompanyClientDAO {
      * @param companyClient
      *            - Client object to be updated
      */
-    public void updateCompanyClient(CompanyClient companyClient);
+    public void updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Delete specific client object
@@ -40,7 +44,8 @@ public interface CompanyClientDAO {
      * @param companyClient
      *            - Specific client object to be deleted
      */
-    public void deleteCompanyClient(CompanyClient companyClient);
+    public void deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Save Company client
@@ -48,7 +53,8 @@ public interface CompanyClientDAO {
      * @param companyClient
      *            - Company Client object to be saved
      */
-    public void saveCompanyClient(CompanyClient companyClient);
+    public void saveCompanyClient(CompanyClient companyClient) throws DuplicateRecordException,
+	    OperationRollBackException;
 
     /**
      * Check whether the company client already exist

@@ -62,7 +62,6 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }
@@ -266,7 +265,6 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
 	    return null;
 	}
     }

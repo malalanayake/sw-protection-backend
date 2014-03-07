@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
@@ -54,8 +56,20 @@ public class CompanySWDAOImplTest {
 	companySW.setName("Application 1");
 	companySW.setDescription("Small accounting system");
 	companySW.setCompany(company);
+	try {
+	    companySWDAO.saveCompanySW(companySW);
+	} catch (Exception ex) {
 
-	companySWDAO.saveCompanySW(companySW);
+	}
+
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companySWDAO.saveCompanySW(companySW);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
     }
 
     @Test(dependsOnMethods = { "saveCompanySW" })
@@ -76,9 +90,23 @@ public class CompanySWDAOImplTest {
 	log.info("Start Test update Company Software");
 	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
 	CompanySW companySW = companySWDAO.getCompanySW("sysensor", "Application 1");
+	CompanySW companySWAlreadyModi = companySWDAO.getCompanySW("sysensor", "Application 1");
 	companySW.setDescription("Application for stock management");
+	try {
+	    companySWDAO.updateCompanySW(companySW);
+	} catch (Exception ex) {
 
-	companySWDAO.updateCompanySW(companySW);
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companySWDAO.updateCompanySW(companySWAlreadyModi);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
 	CompanySW companySW2 = companySWDAO.getCompanySW("sysensor", "Application 1");
 
 	assertEquals(companySW2.getName(), "Application 1");
@@ -90,7 +118,23 @@ public class CompanySWDAOImplTest {
 	log.info("Start Test update Company Software");
 	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
 	CompanySW companySW = companySWDAO.getCompanySW("sysensor", "Application 1");
-	companySWDAO.deleteCompanySW(companySW);
+	CompanySW companySWAlreadyModi = companySWDAO.getCompanySW("sysensor", "Application 1");
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companySWDAO.updateCompanySW(companySWAlreadyModi);
+	    companySWDAO.deleteCompanySW(companySW);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	companySW = companySWDAO.getCompanySW("sysensor", "Application 1");
+	try {
+	    companySWDAO.deleteCompanySW(companySW);
+	} catch (Exception ex) {
+
+	}
 
 	CompanySW companySW2 = companySWDAO.getCompanySW("sysensor", "Application 1");
 	assertEquals(companySW2, null);

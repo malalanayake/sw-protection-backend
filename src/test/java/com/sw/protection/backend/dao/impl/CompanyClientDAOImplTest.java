@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.test.DBTestProperties;
@@ -56,9 +58,20 @@ public class CompanyClientDAOImplTest {
 	companyClient.setPass_word("password");
 	companyClient.setEmail("client@gmail.com");
 	companyClient.setCompany(company);
+	try {
+	    companyClientDAO.saveCompanyClient(companyClient);
+	} catch (Exception ex) {
 
-	companyClientDAO.saveCompanyClient(companyClient);
+	}
 
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companyClientDAO.saveCompanyClient(companyClient);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
     }
 
     @Test(dependsOnMethods = { "saveCompanyClient" })
@@ -80,10 +93,24 @@ public class CompanyClientDAOImplTest {
 	log.info("Start Test update Company client");
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
+	CompanyClient companyClientAlredayUptodate = companyClientDAO.getCompanyClient("client1");
 	companyClient.setName("Client Malinda");
 	companyClient.setPass_word("password1");
 	companyClient.setEmail("malinda@gmail.com");
-	companyClientDAO.updateCompanyClient(companyClient);
+	try {
+	    companyClientDAO.updateCompanyClient(companyClient);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyClientDAO.updateCompanyClient(companyClientAlredayUptodate);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	CompanyClient companyClient2 = companyClientDAO.getCompanyClient("client1");
 	assertEquals(companyClient2.getName(), "Client Malinda");
@@ -97,7 +124,26 @@ public class CompanyClientDAOImplTest {
 	log.info("Start Test delete Company client");
 	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
-	companyClientDAO.deleteCompanyClient(companyClient);
+	CompanyClient companyClientAlredayUptodate = companyClientDAO.getCompanyClient("client1");
+	companyClientAlredayUptodate.setEmail("updateemail@gmail.com");
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyClientDAO.updateCompanyClient(companyClientAlredayUptodate);
+	    companyClientDAO.deleteCompanyClient(companyClient);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	companyClient = companyClientDAO.getCompanyClient("client1");
+	try {
+
+	    companyClientDAO.deleteCompanyClient(companyClient);
+	} catch (Exception ex) {
+
+	}
+
 	assertEquals(companyClientDAO.getCompanyClient("client1"), null);
 
 	CompanyDAO companyDAO = new CompanyDAOImpl();
