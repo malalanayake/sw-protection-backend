@@ -21,7 +21,8 @@ import com.sw.protection.backend.config.Types;
 @Entity
 @NamedQueries({
 	@NamedQuery(name = "findAllUsagesByTypeAndID", query = "SELECT u FROM UsageData u where u.type=:typeName and u.type_id=:typeID"),
-	@NamedQuery(name = "findAllUsagesByAPIName", query = "SELECT u FROM UsageData u where u.api_name=:apiName") })
+	@NamedQuery(name = "findAllUsagesByAPIName", query = "SELECT u FROM UsageData u where u.api_name=:apiName"),
+	@NamedQuery(name = "findUsagesIsAlreadyExist", query = "SELECT u FROM UsageData u where u.type=:typeName and u.type_id=:typeID and u.api_name=:apiName and u.operation=:apiOperation") })
 public class UsageData implements Serializable {
 
     /**
@@ -31,9 +32,11 @@ public class UsageData implements Serializable {
 
 	public static final String NAME_QUERY_FIND_ALL_BY_TYPE_AND_ID = "findAllUsagesByTypeAndID";
 	public static final String NAME_QUERY_FIND_ALL_BY_API_NAME = "findAllUsagesByAPIName";
+	public static final String NAME_QUERY_IS_RECORD_ALREADY_EXIST = "findUsagesIsAlreadyExist";
 	public static final String PARAM_USAGE_TYPE_NAME = "typeName";
 	public static final String PARAM_USAGE_TYPE_ID = "typeID";
 	public static final String PARAM_USAGE_API_NAME = "apiName";
+	public static final String PARAM_USAGE_API_OPERATION = "apiOperation";
     }
 
     private static final long serialVersionUID = 1L;

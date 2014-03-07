@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.Types;
 import com.sw.protection.backend.entity.UsageData;
 
@@ -46,19 +49,27 @@ public interface UsageDAO {
      * 
      * @param usage
      */
-    public void updateUsage(UsageData usage);
+    public void updateUsage(UsageData usage) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete usage data
      * 
      * @param usage
      */
-    public void deleteUsage(UsageData usage);
+    public void deleteUsage(UsageData usage) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save usage
      * 
      * @param usage
      */
-    public void saveUsage(UsageData usage);
+    public void saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException;
+
+    /**
+     * Check whether the usage data exist
+     * 
+     * @param usage
+     * @return
+     */
+    public boolean isUsageDataExist(UsageData usage);
 }

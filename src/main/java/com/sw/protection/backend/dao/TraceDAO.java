@@ -2,6 +2,7 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.config.Types;
 import com.sw.protection.backend.entity.Trace;
 
@@ -59,7 +60,7 @@ public interface TraceDAO {
      * @param trace
      *            - Trace object to be deleted
      */
-    public void deleteTrace(Trace trace);
+    public void deleteTrace(Trace trace) throws OperationRollBackException;
 
     /**
      * Save the Trace object

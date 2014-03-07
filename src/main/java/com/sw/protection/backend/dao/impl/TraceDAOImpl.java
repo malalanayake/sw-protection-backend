@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.Types;
@@ -141,8 +142,9 @@ public class TraceDAOImpl implements TraceDAO {
     }
 
     @Override
-    public void deleteTrace(Trace trace) {
+    public void deleteTrace(Trace trace) throws OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by trace ID
 	    LOCK_MAP.lock(trace.getId());
@@ -169,15 +171,18 @@ public class TraceDAOImpl implements TraceDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Trace ID " + trace.getId());
 	    }
 	    // Unlock the lock by trace ID
 	    LOCK_MAP.unlock(trace.getId());
-	    // TODO: throw the captured exception
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }

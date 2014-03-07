@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.config.Types;
@@ -104,8 +107,10 @@ public class UsageDAOImpl implements UsageDAO {
     }
 
     @Override
-    public void updateUsage(UsageData usage) {
+    public void updateUsage(UsageData usage) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by usage ID
 	    LOCK_MAP.lock(usage.getId());
@@ -114,7 +119,7 @@ public class UsageDAOImpl implements UsageDAO {
 	    }
 
 	    // check last modification
-	    if (getUsage(usage.getId()) != null) {
+	    if (getUsage(usage.getId()).getLast_modified().equals(usage.getLast_modified())) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
 		usage.setLast_modified(Formatters.formatDate(new Date()));
@@ -126,31 +131,43 @@ public class UsageDAOImpl implements UsageDAO {
 		}
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Usage data is not exist " + usage.toString());
+		    log.debug("Usage data is already modified " + usage.toString());
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Usage ID " + usage.getId());
 	    }
 	    // Unlock the lock by usage ID
 	    LOCK_MAP.unlock(usage.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void deleteUsage(UsageData usage) {
+    public void deleteUsage(UsageData usage) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by trace ID
 	    LOCK_MAP.lock(usage.getId());
@@ -159,7 +176,7 @@ public class UsageDAOImpl implements UsageDAO {
 	    }
 
 	    // check whether the recode is exist
-	    if (getUsage(usage.getId()) != null) {
+	    if (getUsage(usage.getId()).getLast_modified().equals(usage.getLast_modified())) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(usage);
@@ -169,44 +186,114 @@ public class UsageDAOImpl implements UsageDAO {
 		}
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Usage is not exist " + usage.toString());
+		    log.debug("Usage data is already modified" + usage.toString());
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Usage ID " + usage.getId());
 	    }
 	    // Unlock the lock by usage ID
 	    LOCK_MAP.unlock(usage.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void saveUsage(UsageData usage) {
+    public void saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
-	    session = HibernateUtil.getSessionFactory().getCurrentSession();
+	    // check whether the usage data is there exist
+	    if (!this.isUsageDataExist(usage)) {
+		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		tr = session.beginTransaction();
+		session.save(usage);
+		tr.commit();
+		if (log.isDebugEnabled()) {
+		    log.debug("Save Usage " + usage.toString());
+		}
+	    } else {
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
+	    }
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
+	}
+
+    }
+
+    @Override
+    public boolean isUsageDataExist(UsageData usage) {
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = null;
+
+	try {
 	    tr = session.beginTransaction();
-	    session.save(usage);
+	    List<UsageData> usageAll = session.getNamedQuery(UsageData.Constants.NAME_QUERY_IS_RECORD_ALREADY_EXIST)
+		    .setParameter(UsageData.Constants.PARAM_USAGE_API_NAME, usage.getApi_name())
+		    .setParameter(UsageData.Constants.PARAM_USAGE_API_OPERATION, usage.getOperation())
+		    .setParameter(UsageData.Constants.PARAM_USAGE_TYPE_NAME, usage.getType())
+		    .setParameter(UsageData.Constants.PARAM_USAGE_TYPE_ID, usage.getType_id()).list();
+
 	    tr.commit();
-	    if (log.isDebugEnabled()) {
-		log.debug("Save Usage " + usage.toString());
+	    if (usageAll != null) {
+		if (usageAll.size() == 0) {
+		    if (log.isDebugEnabled()) {
+			log.debug("Usage data not found :" + usage.toString());
+		    }
+		    return false;
+		} else {
+		    if (log.isDebugEnabled()) {
+			log.debug("Usage data found :" + usage.toString());
+		    }
+		    return true;
+		}
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Usage data not found :" + usage.toString());
+		}
+		return false;
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
-	    // TODO: Throw exception
+	    return false;
 	}
 
     }

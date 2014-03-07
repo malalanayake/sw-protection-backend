@@ -176,6 +176,29 @@ public class CompanySWCopyDAOImplTest {
     public void deleteCompanySWCopy() {
 	log.info("Start Test delete company software copy");
 	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
+	CompanySWCopy companySWCopy = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID",
+		"HD_ID", "MAC_ID");
+	CompanySWCopy companySWCopyAlreadyModi = companySWCopyDAO.getCompanySWCopy("client1", "Application 1",
+		"M_BOARD_ID", "HD_ID", "MAC_ID");
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companySWCopyDAO.updateCompanySWCopy(companySWCopyAlreadyModi);
+	    companySWCopyDAO.deleteCompanySWCopy(companySWCopy);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	companySWCopy = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID", "HD_ID", "MAC_ID");
+	try {
+	    companySWCopyDAO.deleteCompanySWCopy(companySWCopy);
+	} catch (Exception ex) {
+
+	}
+
 	Company company = companyDAO.getCompany("sysensor");
 	try {
 	    companyDAO.deleteCompany(company);

@@ -121,7 +121,11 @@ public class TraceDAOImplTest {
 	List<Trace> traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList.size(), 2);
 	for (Trace trace : traceList) {
-	    traceDAO.deleteTrace(trace);
+	    try {
+		traceDAO.deleteTrace(trace);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList, null);
@@ -129,7 +133,11 @@ public class TraceDAOImplTest {
 	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
 	assertEquals(traceList1.size(), 1);
 	for (Trace trace : traceList1) {
-	    traceDAO.deleteTrace(trace);
+	    try {
+		traceDAO.deleteTrace(trace);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
 	assertEquals(traceList1, null);
@@ -137,7 +145,11 @@ public class TraceDAOImplTest {
 	List<Trace> traceList2 = traceDAO.getAllTraceByAPIName(APINames.COMPANY);
 	assertEquals(traceList2.size(), 1);
 	for (Trace trace : traceList2) {
-	    traceDAO.deleteTrace(trace);
+	    try {
+		traceDAO.deleteTrace(trace);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	traceList2 = traceDAO.getAllTraceByAPIName(APINames.COMPANY);
 	assertEquals(traceList2, null);

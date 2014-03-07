@@ -10,6 +10,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
@@ -46,8 +48,20 @@ public class UsageDAOImplTest {
 	usage.setLast_modified(Formatters.formatDate(new Date()));
 	usage.setAccess_count("100");
 	usage.setDecline_count("0");
+	try {
+	    usageDAO.saveUsage(usage);
+	} catch (Exception ex) {
 
-	usageDAO.saveUsage(usage);
+	}
+
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    usageDAO.saveUsage(usage);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
 	UsageData usage2 = new UsageData();
 	usage2.setApi_name(APINames.USER);
@@ -58,8 +72,11 @@ public class UsageDAOImplTest {
 	usage2.setLast_modified(Formatters.formatDate(new Date()));
 	usage2.setAccess_count("200");
 	usage2.setDecline_count("0");
+	try {
+	    usageDAO.saveUsage(usage2);
+	} catch (Exception ex) {
 
-	usageDAO.saveUsage(usage2);
+	}
 
 	UsageData usage3 = new UsageData();
 	usage3.setApi_name(APINames.SOFTWARE);
@@ -70,8 +87,11 @@ public class UsageDAOImplTest {
 	usage3.setLast_modified(Formatters.formatDate(new Date()));
 	usage3.setAccess_count("0");
 	usage3.setDecline_count("10");
+	try {
+	    usageDAO.saveUsage(usage3);
+	} catch (Exception ex) {
 
-	usageDAO.saveUsage(usage3);
+	}
 
 	UsageData usage4 = new UsageData();
 	usage4.setApi_name(APINames.COMPANY);
@@ -82,8 +102,11 @@ public class UsageDAOImplTest {
 	usage4.setLast_modified(Formatters.formatDate(new Date()));
 	usage4.setAccess_count("200");
 	usage4.setDecline_count("20");
+	try {
+	    usageDAO.saveUsage(usage4);
+	} catch (Exception ex) {
 
-	usageDAO.saveUsage(usage4);
+	}
 
     }
 
@@ -116,6 +139,9 @@ public class UsageDAOImplTest {
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	assertEquals(usageList1.size(), 1);
 	UsageData usageData = usageList1.get(0);
+	List<UsageData> usageListAlreadyUptodate = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	UsageData usageDataAlreadyUptodate = usageListAlreadyUptodate.get(0);
+
 	assertEquals(usageData.getApi_name(), APINames.ADMIN);
 	assertEquals(usageData.getOperation(), APIOperations.GET);
 	assertEquals(usageData.getType(), Types.ADMIN);
@@ -124,7 +150,20 @@ public class UsageDAOImplTest {
 
 	usageData.setAccess_count("200");
 	usageData.setDecline_count("12");
-	usageDAO.updateUsage(usageData);
+	try {
+	    usageDAO.updateUsage(usageData);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    usageDAO.updateUsage(usageDataAlreadyUptodate);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	assertEquals(usageList2.size(), 1);
@@ -141,20 +180,55 @@ public class UsageDAOImplTest {
     public void deleteUsage() {
 	UsageDAO usageDAO = new UsageDAOImpl();
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	UsageData usageData = usageList1.get(0);
+	List<UsageData> usageListAlreadyUptodate = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
+	UsageData usageDataAlreadyUptodate = usageListAlreadyUptodate.get(0);
+	try {
+	    usageDAO.updateUsage(usageDataAlreadyUptodate);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    usageDAO.deleteUsage(usageData);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	for (UsageData usage : usageList1) {
-	    usageDAO.deleteUsage(usage);
+	    try {
+		usageDAO.deleteUsage(usage);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
 	for (UsageData usage : usageList2) {
-	    usageDAO.deleteUsage(usage);
+	    try {
+		usageDAO.deleteUsage(usage);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
 	for (UsageData usage : usageList3) {
-	    usageDAO.deleteUsage(usage);
+	    try {
+		usageDAO.deleteUsage(usage);
+	    } catch (Exception ex) {
+
+	    }
 	}
 	List<UsageData> usageList4 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY);
 	for (UsageData usage : usageList4) {
-	    usageDAO.deleteUsage(usage);
+	    try {
+		usageDAO.deleteUsage(usage);
+	    } catch (Exception ex) {
+
+	    }
 	}
     }
 }
