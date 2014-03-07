@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
@@ -51,6 +53,14 @@ public class CompanyUserDAOImplTest {
 	} catch (Exception ex) {
 
 	}
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
 	company = companyDAO.getCompany("sysensor");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
@@ -72,8 +82,11 @@ public class CompanyUserDAOImplTest {
 	companyUserScope.setCompanyUser(companyUser);
 	companyUserScopeSet.add(companyUserScope);
 	companyUser.setUserScopeSet(companyUserScopeSet);
+	try {
+	    companyUserDAO.saveUser(companyUser);
+	} catch (Exception ex) {
 
-	companyUserDAO.saveUser(companyUser);
+	}
 
     }
 
@@ -114,7 +127,10 @@ public class CompanyUserDAOImplTest {
 	log.info("Start Test update Company user");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
+	CompanyUser companyUserAlreadyUptodate = companyUserDAO.getUser("dinuka");
 	companyUser = companyUserDAO.loadAllPropertiesOfCompanyUser(companyUser.getId());
+	companyUserAlreadyUptodate = companyUserDAO.loadAllPropertiesOfCompanyUser(companyUserAlreadyUptodate.getId());
+
 	assertEquals(companyUser.getCompany().getName(), "Sysensor IT Solutions");
 	assertEquals(companyUser.getCompany().getUser_name(), "sysensor");
 	assertEquals(companyUser.getCompany().getPass_word(), "test1");
@@ -127,7 +143,20 @@ public class CompanyUserDAOImplTest {
 	companyUser.setName("Dinuka");
 	companyUser.setPass_word("test2");
 	companyUser.setEmail("dinukanew@gmail.com");
-	companyUserDAO.updateUser(companyUser);
+	try {
+	    companyUserDAO.updateUser(companyUser);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyUserDAO.updateUser(companyUserAlreadyUptodate);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	CompanyUser companyUser1 = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser1.getName(), "Dinuka");
@@ -140,7 +169,27 @@ public class CompanyUserDAOImplTest {
 	log.info("Start Test delete Company user");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
-	companyUserDAO.deleteUser(companyUser);
+
+	CompanyUser companyUserAlreadyUptodate = companyUserDAO.getUser("dinuka");
+	companyUserAlreadyUptodate = companyUserDAO.loadAllPropertiesOfCompanyUser(companyUserAlreadyUptodate.getId());
+	companyUserAlreadyUptodate.setEmail("uptodateemail@gmail.com");
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyUserDAO.updateUser(companyUserAlreadyUptodate);
+	    companyUserDAO.deleteUser(companyUser);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	companyUser = companyUserDAO.getUser("dinuka");
+	try {
+	    companyUserDAO.deleteUser(companyUser);
+	} catch (Exception ex) {
+
+	}
 	assertEquals(companyUserDAO.getUser("dinuka"), null);
 
 	CompanyDAO companyDAO = new CompanyDAOImpl();

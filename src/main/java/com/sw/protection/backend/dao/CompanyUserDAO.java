@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.entity.CompanyUser;
 
 /**
@@ -32,7 +35,7 @@ public interface CompanyUserDAO {
      * @param user
      *            - Company user object with updated values
      */
-    public void updateUser(CompanyUser user);
+    public void updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete specific user
@@ -40,7 +43,7 @@ public interface CompanyUserDAO {
      * @param user
      *            - Company user object to be deleted
      */
-    public void deleteUser(CompanyUser user);
+    public void deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save user
@@ -48,7 +51,7 @@ public interface CompanyUserDAO {
      * @param user
      *            - Company user object to be save
      */
-    public void saveUser(CompanyUser user);
+    public void saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the company user name exist

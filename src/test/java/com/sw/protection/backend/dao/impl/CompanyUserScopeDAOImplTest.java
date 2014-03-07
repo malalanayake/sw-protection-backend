@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
@@ -52,6 +54,15 @@ public class CompanyUserScopeDAOImplTest {
 
 	}
 
+	// Check the DuplicateRecordException behavior
+	String exceptionClass = "";
+	try {
+	    companyDAO.saveCompany(company);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
+
 	company = companyDAO.getCompany("sysensor");
 	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
 	CompanyUser companyUser = new CompanyUser();
@@ -61,7 +72,11 @@ public class CompanyUserScopeDAOImplTest {
 	companyUser.setEmail("dinuka@gmail.com");
 	companyUser.setApi_key(UUID.randomUUID().toString());
 	companyUser.setCompany(company);
-	companyUserDAO.saveUser(companyUser);
+	try {
+	    companyUserDAO.saveUser(companyUser);
+	} catch (Exception ex) {
+
+	}
 
 	companyUser = companyUserDAO.getUser("dinuka");
 
@@ -74,7 +89,11 @@ public class CompanyUserScopeDAOImplTest {
 	companyUserScope.setCompanyUser(companyUser);
 
 	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
-	companyUserScopeDAO.saveNewCompanyUserScope(companyUserScope);
+	try {
+	    companyUserScopeDAO.saveNewCompanyUserScope(companyUserScope);
+	} catch (Exception ex) {
+
+	}
 
     }
 
@@ -91,6 +110,8 @@ public class CompanyUserScopeDAOImplTest {
     public void updateCompanyUserScope() {
 	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
 	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
+		APINames.SOFTWARE);
 	assertEquals(companyUserScope.getApi_name(), APINames.SOFTWARE);
 	assertEquals(companyUserScope.isDel(), true);
 	assertEquals(companyUserScope.isPost(), true);
@@ -99,7 +120,20 @@ public class CompanyUserScopeDAOImplTest {
 
 	companyUserScope.setDel(false);
 	companyUserScope.setPut(false);
-	companyUserScopeDAO.updateCompanyUserScope(companyUserScope);
+	try {
+	    companyUserScopeDAO.updateCompanyUserScope(companyUserScope);
+	} catch (Exception ex) {
+
+	}
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyUserScopeDAO.updateCompanyUserScope(companyUserScopeAlreadyModified);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
 	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
 	assertEquals(companyUserScope2.getApi_name(), APINames.SOFTWARE);
@@ -114,7 +148,27 @@ public class CompanyUserScopeDAOImplTest {
     public void deleteCompanyUserScope() {
 	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
 	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
-	companyUserScopeDAO.deleteCompanyUserScope(companyUserScope);
+	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
+		APINames.SOFTWARE);
+	companyUserScopeAlreadyModified.setPost(false);
+
+	// Check the RecordAlreadyModifiedException behavior
+	String exceptionClass = "";
+	try {
+	    companyUserScopeDAO.updateCompanyUserScope(companyUserScopeAlreadyModified);
+	    companyUserScopeDAO.deleteCompanyUserScope(companyUserScope);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+
+	companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	try {
+	    companyUserScopeDAO.deleteCompanyUserScope(companyUserScope);
+	} catch (Exception ex) {
+
+	}
+
 	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
 	assertEquals(companyUserScope2, null);
 
@@ -128,8 +182,11 @@ public class CompanyUserScopeDAOImplTest {
 	assertEquals(companyUser.getName(), "Dinuka Malalanayake");
 	assertEquals(companyUser.getPass_word(), "test1");
 	assertEquals(companyUser.getEmail(), "dinuka@gmail.com");
+	try {
+	    companyUserDAO.deleteUser(companyUser);
+	} catch (Exception ex) {
 
-	companyUserDAO.deleteUser(companyUser);
+	}
 	CompanyUser companyUser2 = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser2, null);
 

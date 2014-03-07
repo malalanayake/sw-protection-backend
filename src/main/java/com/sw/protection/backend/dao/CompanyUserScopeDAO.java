@@ -2,6 +2,9 @@ package com.sw.protection.backend.dao;
 
 import java.util.List;
 
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.entity.CompanyUserScope;
 
@@ -21,7 +24,8 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - the company user scope going to be save
      */
-    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope);
+    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
+	    OperationRollBackException;
 
     /**
      * Delete Company user scope data
@@ -29,7 +33,8 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - the company user scope to be deleted
      */
-    public void deleteCompanyUserScope(CompanyUserScope companyUserScope);
+    public void deleteCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Update Company user scope data
@@ -37,7 +42,8 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - edited company user scope
      */
-    public void updateCompanyUserScope(CompanyUserScope companyUserScope);
+    public void updateCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Get specific Company user scope data

@@ -163,11 +163,6 @@ public class CompanyUser implements Serializable {
 	String output = "id=" + id + ", name=" + name + ", user_name=" + user_name + ", api_key=" + api_key
 		+ ", email=" + email + ", date_time=" + date_time;
 	output = output + ", Admin ScopSet :";
-	if (!userScopeSet.isEmpty()) {
-	    for (CompanyUserScope scop : userScopeSet) {
-		output = output + scop.toString();
-	    }
-	}
 	return output;
 
     }

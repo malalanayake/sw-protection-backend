@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanyUserDAO;
@@ -95,8 +98,10 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
     }
 
     @Override
-    public void updateUser(CompanyUser user) {
+    public void updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(user.getId());
@@ -121,28 +126,41 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		    log.debug("This is not the latest modification of company user " + user.toString()
 			    + " so cannot update");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: capture the exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + user.getId());
 	    }
 	    // Unlock the lock by company user ID
 	    LOCK_MAP.unlock(user.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
+
 	}
     }
 
     @Override
-    public void deleteUser(CompanyUser user) {
+    public void deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(user.getId());
@@ -164,34 +182,48 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		    log.debug("This is not the latest modification of company user " + user.toString()
 			    + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Company user ID " + user.getId());
 	    }
 	    // Unlock the lock by company user ID
 	    LOCK_MAP.unlock(user.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
+
 	}
     }
 
     @Override
-    public void saveUser(CompanyUser user) {
+    public void saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    // check whether the company user name already exist
 	    if (this.isCompanyUserNameExist(user.getUser_name())) {
 		if (log.isDebugEnabled()) {
 		    log.debug("Company user username :" + user.toString() + " already exist");
 		}
-		// TODO: Pass the Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    } else {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
@@ -214,8 +246,18 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
     }
 

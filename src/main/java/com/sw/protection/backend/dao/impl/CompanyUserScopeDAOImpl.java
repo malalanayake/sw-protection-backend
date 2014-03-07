@@ -9,6 +9,9 @@ import org.hibernate.Transaction;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
@@ -65,8 +68,11 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
     }
 
     @Override
-    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope) {
+    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	OperationRollBackException operationRollBackException = null;
+	DuplicateRecordException duplicateRecordException = null;
 	try {
 	    if (this.getCompanyUserScope(companyUserScope.getCompanyUser().getUser_name(),
 		    companyUserScope.getApi_name()) == null) {
@@ -83,21 +89,35 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		if (log.isDebugEnabled()) {
 		    log.debug("Company user scope" + companyUserScope.toString() + " already exist");
 		}
-		// TODO: Create Exception
+		// create DuplicateRecordException
+		duplicateRecordException = new DuplicateRecordException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+	} finally {
+	    // throw the captured exceptions
+	    if (duplicateRecordException != null) {
+		throw duplicateRecordException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void deleteCompanyUserScope(CompanyUserScope companyUserScope) {
+    public void deleteCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company user scope ID
 	    LOCK_MAP.lock(companyUserScope.getId());
@@ -121,28 +141,42 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		    log.debug("This is not the latest modification of company user scope "
 			    + companyUserScope.toString() + " so cannot delete");
 		}
-		// TODO:Create Exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
 	    }
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by Admin ID " + companyUserScope.getId());
 	    }
 	    // Unlock the lock by company user scope ID
 	    LOCK_MAP.unlock(companyUserScope.getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
 
     @Override
-    public void updateCompanyUserScope(CompanyUserScope companyUserScope) {
+    public void updateCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
+	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+	OperationRollBackException operationRollBackException = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(companyUserScope.getCompanyUser().getId());
@@ -171,22 +205,34 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		    log.debug("This is not the latest company user scope:" + companyUserScope.toString()
 			    + " so this is not going to upate");
 		}
-		// TODO: create the exception
+		// create custom RecordAlreadyModifiedException
+		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
+
 	    }
 
 	} catch (RuntimeException ex) {
 	    log.error(ex);
 	    if (tr != null) {
 		tr.rollback(); // roll back the transaction due to runtime error
+		// create custom OperationRollBackException
+		operationRollBackException = new OperationRollBackException(ex);
 	    }
-	    // TODO: Throw exception
+
 	} finally {
 	    if (log.isDebugEnabled()) {
 		log.debug("Releasing LOCK by company user ID " + companyUserScope.getCompanyUser().getId());
 	    }
 	    // Unlock the lock by company user ID
 	    LOCK_MAP.unlock(companyUserScope.getCompanyUser().getId());
-	    // TODO: throw the captured exception
+
+	    // throw the captured exceptions
+	    if (recordAlreadyModifiedException != null) {
+		throw recordAlreadyModifiedException;
+	    }
+
+	    if (operationRollBackException != null) {
+		throw operationRollBackException;
+	    }
 	}
 
     }
