@@ -3,7 +3,7 @@ package com.sw.protection.backend.dao;
 import java.util.List;
 
 import com.sw.protection.backend.common.exception.OperationRollBackException;
-import com.sw.protection.backend.config.Types;
+import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.entity.Trace;
 
 /**
@@ -23,7 +23,7 @@ public interface TraceDAO {
      *            - user name of the operator
      * @return - List of Trace
      */
-    public List<Trace> getAllTraceByTypeAndUserName(Types type, String userName);
+    public List<Trace> getAllTraceByTypeAndUserName(ObjectType type, String userName);
 
     /**
      * Get all Traces by API name as an example apiName: ADMIN_API
@@ -44,7 +44,7 @@ public interface TraceDAO {
      *            - object user name
      * @return - List of Trace
      */
-    public List<Trace> getAllTraceByAffectedTypeAndUserName(Types affectedType, String affectedUserName);
+    public List<Trace> getAllTraceByAffectedTypeAndUserName(ObjectType affectedType, String affectedUserName);
 
     /**
      * Get trace by trace id

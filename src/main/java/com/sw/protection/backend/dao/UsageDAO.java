@@ -5,7 +5,7 @@ import java.util.List;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.Types;
+import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.entity.UsageData;
 
 /**
@@ -24,7 +24,7 @@ public interface UsageDAO {
      * @param id
      * @return - List of Usages.
      */
-    public List<UsageData> getAllUsagesByTypeAndID(Types type, Long id);
+    public List<UsageData> getAllUsagesByTypeAndID(ObjectType type, Long id);
 
     /**
      * Get all usages data according to the API Name

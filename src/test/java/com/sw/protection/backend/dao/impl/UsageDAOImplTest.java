@@ -15,8 +15,8 @@ import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.Types;
 import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.UsageDAO;
 import com.sw.protection.backend.entity.UsageData;
@@ -42,7 +42,7 @@ public class UsageDAOImplTest {
 	UsageData usage = new UsageData();
 	usage.setApi_name(APINames.ADMIN);
 	usage.setOperation(APIOperations.GET);
-	usage.setType(Types.ADMIN);
+	usage.setType(ObjectType.ADMIN);
 	usage.setType_id(1l);
 	usage.setDate_time(Formatters.formatDate(new Date()));
 	usage.setLast_modified(Formatters.formatDate(new Date()));
@@ -66,7 +66,7 @@ public class UsageDAOImplTest {
 	UsageData usage2 = new UsageData();
 	usage2.setApi_name(APINames.USER);
 	usage2.setOperation(APIOperations.POST);
-	usage2.setType(Types.ADMIN);
+	usage2.setType(ObjectType.ADMIN);
 	usage2.setType_id(1l);
 	usage2.setDate_time(Formatters.formatDate(new Date()));
 	usage2.setLast_modified(Formatters.formatDate(new Date()));
@@ -81,7 +81,7 @@ public class UsageDAOImplTest {
 	UsageData usage3 = new UsageData();
 	usage3.setApi_name(APINames.SOFTWARE);
 	usage3.setOperation(APIOperations.PUT);
-	usage3.setType(Types.COMPANY);
+	usage3.setType(ObjectType.COMPANY);
 	usage3.setType_id(1l);
 	usage3.setDate_time(Formatters.formatDate(new Date()));
 	usage3.setLast_modified(Formatters.formatDate(new Date()));
@@ -96,7 +96,7 @@ public class UsageDAOImplTest {
 	UsageData usage4 = new UsageData();
 	usage4.setApi_name(APINames.COMPANY);
 	usage4.setOperation(APIOperations.DELETE);
-	usage4.setType(Types.COMPANY_USER);
+	usage4.setType(ObjectType.COMPANY_USER);
 	usage4.setType_id(1l);
 	usage4.setDate_time(Formatters.formatDate(new Date()));
 	usage4.setLast_modified(Formatters.formatDate(new Date()));
@@ -126,10 +126,10 @@ public class UsageDAOImplTest {
     @Test(dependsOnMethods = { "getAllUsagesByAPIName" })
     public void getAllUsagesByTypeAndID() {
 	UsageDAO usageDAO = new UsageDAOImpl();
-	List<UsageData> usageList1 = usageDAO.getAllUsagesByTypeAndID(Types.ADMIN, 1l);
+	List<UsageData> usageList1 = usageDAO.getAllUsagesByTypeAndID(ObjectType.ADMIN, 1l);
 	assertEquals(usageList1.size(), 2);
 
-	List<UsageData> usageList2 = usageDAO.getAllUsagesByTypeAndID(Types.SUPER_ADMIN, 1l);
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByTypeAndID(ObjectType.SUPER_ADMIN, 1l);
 	assertEquals(usageList2, null);
     }
 
@@ -144,7 +144,7 @@ public class UsageDAOImplTest {
 
 	assertEquals(usageData.getApi_name(), APINames.ADMIN);
 	assertEquals(usageData.getOperation(), APIOperations.GET);
-	assertEquals(usageData.getType(), Types.ADMIN);
+	assertEquals(usageData.getType(), ObjectType.ADMIN);
 	assertEquals(usageData.getAccess_count(), "100");
 	assertEquals(usageData.getDecline_count(), "0");
 
@@ -170,7 +170,7 @@ public class UsageDAOImplTest {
 	UsageData usageData2 = usageList2.get(0);
 	assertEquals(usageData2.getApi_name(), APINames.ADMIN);
 	assertEquals(usageData2.getOperation(), APIOperations.GET);
-	assertEquals(usageData2.getType(), Types.ADMIN);
+	assertEquals(usageData2.getType(), ObjectType.ADMIN);
 	assertEquals(usageData2.getAccess_count(), "200");
 	assertEquals(usageData2.getDecline_count(), "12");
 

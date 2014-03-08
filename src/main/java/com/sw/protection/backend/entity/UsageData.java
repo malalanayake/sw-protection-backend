@@ -11,7 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.Types;
+import com.sw.protection.backend.config.ObjectType;
 
 /**
  * This is an Entity which is holding the usage data of API's
@@ -50,7 +50,7 @@ public class UsageData implements Serializable {
     @Column(nullable = false)
     private Long type_id;
     @Column(nullable = false)
-    private Types type;
+    private ObjectType type;
     @Column(nullable = false)
     private String date_time;
     @Column(nullable = false)
@@ -64,7 +64,7 @@ public class UsageData implements Serializable {
 	return operation;
     }
 
-    public Types getType() {
+    public ObjectType getType() {
 	return type;
     }
 
@@ -88,7 +88,7 @@ public class UsageData implements Serializable {
 	this.decline_count = decline_count;
     }
 
-    public void setType(Types type) {
+    public void setType(ObjectType type) {
 	this.type = type;
     }
 

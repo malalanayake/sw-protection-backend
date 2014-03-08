@@ -11,7 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.Types;
+import com.sw.protection.backend.config.ObjectType;
 
 /**
  * This is an Entity which is holding the data of user tracing operations
@@ -51,11 +51,11 @@ public class Trace implements Serializable {
     @Column(nullable = false)
     private String type_user_name;
     @Column(nullable = false)
-    private Types type;
+    private ObjectType type;
     @Column(nullable = false)
     private String date_time;
     @Column(nullable = false)
-    private Types affected_type;
+    private ObjectType affected_type;
     @Column(nullable = false)
     private String affected_user_name;
     @Column(nullable = false)
@@ -111,19 +111,19 @@ public class Trace implements Serializable {
 	this.api_name = api_name;
     }
 
-    public Types getType() {
+    public ObjectType getType() {
 	return type;
     }
 
-    public void setType(Types type) {
+    public void setType(ObjectType type) {
 	this.type = type;
     }
 
-    public Types getAffected_type() {
+    public ObjectType getAffected_type() {
 	return affected_type;
     }
 
-    public void setAffected_type(Types affected_type) {
+    public void setAffected_type(ObjectType affected_type) {
 	this.affected_type = affected_type;
     }
 

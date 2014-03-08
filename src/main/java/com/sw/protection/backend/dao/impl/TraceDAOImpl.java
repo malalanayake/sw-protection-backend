@@ -9,8 +9,8 @@ import org.hibernate.Transaction;
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.Types;
 import com.sw.protection.backend.dao.TraceDAO;
 import com.sw.protection.backend.entity.Trace;
 
@@ -31,7 +31,7 @@ public class TraceDAOImpl implements TraceDAO {
 	    SharedInMemoryData.DB_LOCKS.TRACE_DAO);
 
     @Override
-    public List<Trace> getAllTraceByTypeAndUserName(Types type, String userName) {
+    public List<Trace> getAllTraceByTypeAndUserName(ObjectType type, String userName) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = null;
 	try {
@@ -92,7 +92,7 @@ public class TraceDAOImpl implements TraceDAO {
     }
 
     @Override
-    public List<Trace> getAllTraceByAffectedTypeAndUserName(Types affectedType, String affectedUserName) {
+    public List<Trace> getAllTraceByAffectedTypeAndUserName(ObjectType affectedType, String affectedUserName) {
 	session = HibernateUtil.getSessionFactory().getCurrentSession();
 	Transaction tr = null;
 	try {
