@@ -10,6 +10,7 @@ import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.Company;
+import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.SuperAdmin;
 
@@ -64,6 +65,15 @@ public class JSONEncoder implements Encoder {
 	    }
 	    break;
 	case CLIENT:
+	    try {
+		this.encodeCompanyClient((CompanyClient) object);
+	    } catch (ClassCastException ex) {
+		log.error(ex);
+		throw ex;
+	    } catch (EncodingException ex) {
+		log.error(ex);
+		throw ex;
+	    }
 	    break;
 	case SOFTWARE:
 	    break;
@@ -113,10 +123,20 @@ public class JSONEncoder implements Encoder {
 		log.error(ex);
 		throw ex;
 	    } catch (EncodingException ex) {
+		log.error(ex);
 		throw ex;
 	    }
 	    break;
 	case CLIENT:
+	    try {
+		this.encodeCompanyClientList((List<CompanyClient>) objectList);
+	    } catch (ClassCastException ex) {
+		log.error(ex);
+		throw ex;
+	    } catch (EncodingException ex) {
+		log.error(ex);
+		throw ex;
+	    }
 	    break;
 	case SOFTWARE:
 	    break;
@@ -213,7 +233,8 @@ public class JSONEncoder implements Encoder {
     }
 
     /**
-     * Encoding the Company User data to JSON but remove all passwords
+     * Encoding the Company User data to JSON but remove all passwords and
+     * secondary data
      * 
      * @param object
      */
@@ -226,13 +247,16 @@ public class JSONEncoder implements Encoder {
 	    object.getCompany().setCompanyClientSet(null);
 	    object.getCompany().setCompanySWSet(null);
 	    object.getCompany().setCompanyUserSet(null);
+	} else {
+	    throw new EncodingException(
+		    "Company details are not presented, Company details is required to encode the company use object");
 	}
 	encodedString = gson.toJson(object);
     }
 
     /**
      * Encoding the Company User list of objects to JSON but remove all password
-     * fields
+     * fields and secondary data
      * 
      * @param objectList
      */
@@ -246,6 +270,55 @@ public class JSONEncoder implements Encoder {
 		companyUser.getCompany().setCompanyClientSet(null);
 		companyUser.getCompany().setCompanySWSet(null);
 		companyUser.getCompany().setCompanyUserSet(null);
+	    } else {
+		throw new EncodingException(
+			"Company details are not presented, Company details is required to encode the company use object");
+	    }
+	}
+	encodedListString = gson.toJson(objectList);
+    }
+
+    /**
+     * Encoding the Company User data to JSON but remove all passwords and
+     * secondary data
+     * 
+     * @param object
+     */
+    private void encodeCompanyClient(CompanyClient object) throws EncodingException {
+	Gson gson = new Gson();
+	object.setPass_word(null);
+	object.setCompanySWCopySet(null);
+	if (object.getCompany() != null) {
+	    object.getCompany().setPass_word(null);
+	    object.getCompany().setCompanyClientSet(null);
+	    object.getCompany().setCompanySWSet(null);
+	    object.getCompany().setCompanyUserSet(null);
+	} else {
+	    throw new EncodingException(
+		    "Company details are not presented, Company details is required to encode the company use object");
+	}
+	encodedString = gson.toJson(object);
+    }
+
+    /**
+     * Encoding the Company User list of objects to JSON but remove all password
+     * fields and secondary data
+     * 
+     * @param objectList
+     */
+    private void encodeCompanyClientList(List<CompanyClient> objectList) throws EncodingException {
+	Gson gson = new Gson();
+	for (CompanyClient companyUser : objectList) {
+	    companyUser.setPass_word(null);
+	    companyUser.setCompanySWCopySet(null);
+	    if (companyUser.getCompany() != null) {
+		companyUser.getCompany().setPass_word(null);
+		companyUser.getCompany().setCompanyClientSet(null);
+		companyUser.getCompany().setCompanySWSet(null);
+		companyUser.getCompany().setCompanyUserSet(null);
+	    } else {
+		throw new EncodingException(
+			"Company details are not presented, Company details is required to encode the company use object");
 	    }
 	}
 	encodedListString = gson.toJson(objectList);

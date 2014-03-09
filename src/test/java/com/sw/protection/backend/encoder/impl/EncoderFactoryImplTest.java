@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.sw.protection.backend.common.exception.EncodingException;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.dao.impl.UsageDAOImplTest;
@@ -16,6 +17,7 @@ import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.encoder.EncoderFactory;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.Company;
+import com.sw.protection.backend.entity.CompanyClient;
 import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.SuperAdmin;
 
@@ -211,7 +213,7 @@ public class EncoderFactoryImplTest {
 
     @Test
     public void testJsonEncoderforCompanyUser() {
-	log.info("Test JSON Encoder for Company");
+	log.info("Test JSON Encoder for Company User");
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -234,7 +236,7 @@ public class EncoderFactoryImplTest {
 	} catch (Exception ex) {
 
 	}
-	System.out.println(encodedString);
+
 	assertEquals(
 		encodedString,
 		"{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"dinuka@gmail.com\","
@@ -280,5 +282,96 @@ public class EncoderFactoryImplTest {
 	    listClassCastException = ex.getClass().toString();
 	}
 	assertEquals(listClassCastException, ClassCastException.class.toString());
+
+	// check the class cast exception
+	String exceptionEncodingClass = "";
+	companyUser.setCompany(null);
+	try {
+	    encoder.encodeObject(ObjectType.COMPANY_USER, companyUser);
+	} catch (Exception ex) {
+	    exceptionEncodingClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionEncodingClass, EncodingException.class.toString());
+    }
+
+    @Test
+    public void testJsonEncoderforCompanyClient() {
+	log.info("Test JSON Encoder for Company Client");
+	Company company = new Company();
+
+	company.setName("Sysensor IT Solutions");
+	company.setUser_name("sysensor");
+	company.setPass_word("test1");
+	company.setEmail("sysensor@gmail.com");
+	company.setApi_key("75e70eb1-7940-4234-b6c4-2870ab0bb794");
+
+	CompanyClient companyClient = new CompanyClient();
+	companyClient.setUser_name("dinuka");
+	companyClient.setName("Dinuka Malalanayake");
+	companyClient.setPass_word("test1");
+	companyClient.setEmail("dinuka@gmail.com");
+	companyClient.setCompany(company);
+
+	String encodedString = "";
+	try {
+	    encodedString = encoder.encodeObject(ObjectType.CLIENT, companyClient);
+	} catch (Exception ex) {
+
+	}
+	System.out.println(encodedString);
+	assertEquals(
+		encodedString,
+		"{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"email\":\"dinuka@gmail.com\","
+			+ "\"company\":{\"name\":\"Sysensor IT Solutions\",\"user_name\":\"sysensor\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"sysensor@gmail.com\"}}");
+
+	// check the class cast exception
+	String exceptionClass = "";
+	try {
+	    encoder.encodeObject(ObjectType.SUPER_ADMIN, companyClient);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, ClassCastException.class.toString());
+
+	CompanyClient companyClient2 = new CompanyClient();
+	companyClient2.setUser_name("dinuka");
+	companyClient2.setName("Dinuka Malalanayake");
+	companyClient2.setPass_word("test1");
+	companyClient2.setEmail("dinuka@gmail.com");
+	companyClient2.setCompany(company);
+
+	List<CompanyClient> list = new ArrayList<CompanyClient>();
+	list.add(companyClient);
+	list.add(companyClient2);
+	String encodedListString = "";
+	try {
+	    encodedListString = encoder.encodeObjectList(ObjectType.CLIENT, list);
+	} catch (Exception ex) {
+
+	}
+	assertEquals(
+		encodedListString,
+		"[{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"email\":\"dinuka@gmail.com\","
+			+ "\"company\":{\"name\":\"Sysensor IT Solutions\",\"user_name\":\"sysensor\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"sysensor@gmail.com\"}},"
+			+ "{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"email\":\"dinuka@gmail.com\","
+			+ "\"company\":{\"name\":\"Sysensor IT Solutions\",\"user_name\":\"sysensor\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"sysensor@gmail.com\"}}]");
+
+	String listClassCastException = "";
+	try {
+	    encoder.encodeObjectList(ObjectType.SUPER_ADMIN, list);
+	} catch (Exception ex) {
+	    listClassCastException = ex.getClass().toString();
+	}
+	assertEquals(listClassCastException, ClassCastException.class.toString());
+
+	// check the class cast exception
+	String exceptionEncodingClass = "";
+	companyClient.setCompany(null);
+	try {
+	    encoder.encodeObject(ObjectType.CLIENT, companyClient);
+	} catch (Exception ex) {
+	    exceptionEncodingClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionEncodingClass, EncodingException.class.toString());
     }
 }
