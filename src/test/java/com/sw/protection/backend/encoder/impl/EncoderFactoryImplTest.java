@@ -32,7 +32,7 @@ import com.sw.protection.backend.entity.SuperAdmin;
 import com.sw.protection.backend.entity.Trace;
 import com.sw.protection.backend.entity.UsageData;
 
-//@Test(groups = { "EncoderFactoryImplTest" }, dependsOnGroups = { "UsageDAOImplTest" })
+@Test(groups = { "EncoderFactoryImplTest" }, dependsOnGroups = { "UsageDAOImplTest" })
 public class EncoderFactoryImplTest {
     public static final Logger log = Logger.getLogger(UsageDAOImplTest.class.getName());
     EncoderFactory encoderFactory;
