@@ -17,6 +17,8 @@ import com.sw.protection.backend.entity.CompanySWCopy;
 import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.CompanyUserScope;
 import com.sw.protection.backend.entity.SuperAdmin;
+import com.sw.protection.backend.entity.Trace;
+import com.sw.protection.backend.entity.UsageData;
 
 /**
  * Implementation of JSON Encoder which is used to encode the any type of Entity
@@ -123,6 +125,22 @@ public class JSONEncoder implements Encoder {
 		throw ex;
 	    }
 	    break;
+	case TRACE:
+	    try {
+		this.encodeTrace((Trace) object);
+	    } catch (ClassCastException ex) {
+		log.error(ex);
+		throw ex;
+	    }
+	    break;
+	case USAGE:
+	    try {
+		this.encodeUsage((UsageData) object);
+	    } catch (ClassCastException ex) {
+		log.error(ex);
+		throw ex;
+	    }
+	    break;
 	}
 
 	return encodedString;
@@ -218,6 +236,22 @@ public class JSONEncoder implements Encoder {
 		log.error(ex);
 		throw ex;
 	    } catch (EncodingException ex) {
+		log.error(ex);
+		throw ex;
+	    }
+	    break;
+	case TRACE:
+	    try {
+		this.encodeTraceList((List<Trace>) objectList);
+	    } catch (ClassCastException ex) {
+		log.error(ex);
+		throw ex;
+	    }
+	    break;
+	case USAGE:
+	    try {
+		this.encodeUsageList((List<UsageData>) objectList);
+	    } catch (ClassCastException ex) {
 		log.error(ex);
 		throw ex;
 	    }
@@ -579,6 +613,46 @@ public class JSONEncoder implements Encoder {
 
 	    }
 	}
+	encodedListString = gson.toJson(objectList);
+    }
+
+    /**
+     * Encoding the Trace data to JSON
+     * 
+     * @param object
+     */
+    private void encodeTrace(Trace object) {
+	Gson gson = new Gson();
+	encodedString = gson.toJson(object);
+    }
+
+    /**
+     * Encoding the Trace list of objects to JSON fields
+     * 
+     * @param objectList
+     */
+    private void encodeTraceList(List<Trace> objectList) {
+	Gson gson = new Gson();
+	encodedListString = gson.toJson(objectList);
+    }
+
+    /**
+     * Encoding the Usage data to JSON
+     * 
+     * @param object
+     */
+    private void encodeUsage(UsageData object) {
+	Gson gson = new Gson();
+	encodedString = gson.toJson(object);
+    }
+
+    /**
+     * Encoding the Usage list of objects to JSON fields
+     * 
+     * @param objectList
+     */
+    private void encodeUsageList(List<UsageData> objectList) {
+	Gson gson = new Gson();
 	encodedListString = gson.toJson(objectList);
     }
 

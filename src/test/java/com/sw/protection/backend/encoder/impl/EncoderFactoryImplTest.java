@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.EncodingException;
 import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.dao.impl.UsageDAOImplTest;
@@ -28,6 +29,8 @@ import com.sw.protection.backend.entity.CompanySWCopy;
 import com.sw.protection.backend.entity.CompanyUser;
 import com.sw.protection.backend.entity.CompanyUserScope;
 import com.sw.protection.backend.entity.SuperAdmin;
+import com.sw.protection.backend.entity.Trace;
+import com.sw.protection.backend.entity.UsageData;
 
 //@Test(groups = { "EncoderFactoryImplTest" }, dependsOnGroups = { "UsageDAOImplTest" })
 public class EncoderFactoryImplTest {
@@ -738,5 +741,154 @@ public class EncoderFactoryImplTest {
 	    listEncodingException = ex.getClass().toString();
 	}
 	assertEquals(listEncodingException, EncodingException.class.toString());
+    }
+
+    @Test(dependsOnMethods = { "testJsonEncoderforUserScope" })
+    public void testJsonEncoderforTrace() {
+	log.info("Test JSON Encoder for Trace");
+
+	String date = Formatters.formatDate(new Date());
+	Trace trace1 = new Trace();
+	trace1.setApi_name(APINames.ADMIN);
+	trace1.setOperation(APIOperations.PUT);
+	trace1.setDate_time(date);
+	trace1.setType(ObjectType.SUPER_ADMIN);
+	trace1.setType_user_name("dinuka");
+	trace1.setAffected_type(ObjectType.ADMIN);
+	trace1.setAffected_user_name("malinda");
+	trace1.setBefore_data("Admin operation GET,POST");
+	trace1.setAfter_data("Admin operation GET,POST,DELETE,PUT");
+
+	String encodedString = "";
+	try {
+	    encodedString = encoder.encodeObject(ObjectType.TRACE, trace1);
+	} catch (Exception ex) {
+
+	}
+	assertEquals(
+		encodedString,
+		"{\"operation\":\"PUT\",\"api_name\":\"admin\",\"type_user_name\":\"dinuka\",\"type\":\"SUPER_ADMIN\",\"date_time\":\""
+			+ date
+			+ "\",\"affected_type\":\"ADMIN\",\"affected_user_name\":\"malinda\",\"before_data\":\"Admin operation GET,POST\",\"after_data\":\"Admin operation GET,POST,DELETE,PUT\"}");
+
+	// check the class cast exception
+	String exceptionClass = "";
+	try {
+	    encoder.encodeObject(ObjectType.ADMIN, trace1);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, ClassCastException.class.toString());
+
+	Trace trace2 = new Trace();
+	trace2.setApi_name(APINames.ADMIN);
+	trace2.setOperation(APIOperations.PUT);
+	trace2.setDate_time(date);
+	trace2.setType(ObjectType.SUPER_ADMIN);
+	trace2.setType_user_name("dinuka");
+	trace2.setAffected_type(ObjectType.ADMIN);
+	trace2.setAffected_user_name("malinda");
+	trace2.setBefore_data("Admin operation GET,POST");
+	trace2.setAfter_data("Admin operation GET,POST,DELETE,PUT");
+
+	List<Trace> list = new ArrayList<Trace>();
+	list.add(trace1);
+	list.add(trace2);
+	String encodedListString = "";
+	try {
+	    encodedListString = encoder.encodeObjectList(ObjectType.TRACE, list);
+	} catch (Exception ex) {
+
+	}
+	assertEquals(
+		encodedListString,
+		"[{\"operation\":\"PUT\",\"api_name\":\"admin\",\"type_user_name\":\"dinuka\",\"type\":\"SUPER_ADMIN\",\"date_time\":\""
+			+ date
+			+ "\",\"affected_type\":\"ADMIN\",\"affected_user_name\":\"malinda\",\"before_data\":\"Admin operation GET,POST\",\"after_data\":\"Admin operation GET,POST,DELETE,PUT\"},"
+			+ "{\"operation\":\"PUT\",\"api_name\":\"admin\",\"type_user_name\":\"dinuka\",\"type\":\"SUPER_ADMIN\",\"date_time\":\""
+			+ date
+			+ "\",\"affected_type\":\"ADMIN\",\"affected_user_name\":\"malinda\",\"before_data\":\"Admin operation GET,POST\",\"after_data\":\"Admin operation GET,POST,DELETE,PUT\"}]");
+
+	String listClassCastException = "";
+	try {
+	    encoder.encodeObjectList(ObjectType.ADMIN, list);
+	} catch (Exception ex) {
+	    listClassCastException = ex.getClass().toString();
+	}
+	assertEquals(listClassCastException, ClassCastException.class.toString());
+    }
+
+    @Test(dependsOnMethods = { "testJsonEncoderforTrace" })
+    public void testJsonEncoderforUsage() {
+	log.info("Test JSON Encoder for Usage");
+
+	String date = Formatters.formatDate(new Date());
+	UsageData usage = new UsageData();
+	usage.setApi_name(APINames.ADMIN);
+	usage.setOperation(APIOperations.GET);
+	usage.setType(ObjectType.ADMIN);
+	usage.setType_id(1l);
+	usage.setDate_time(date);
+	usage.setLast_modified(date);
+	usage.setAccess_count("100");
+	usage.setDecline_count("0");
+
+	String encodedString = "";
+	try {
+	    encodedString = encoder.encodeObject(ObjectType.USAGE, usage);
+	} catch (Exception ex) {
+
+	}
+	assertEquals(encodedString,
+		"{\"operation\":\"GET\",\"api_name\":\"admin\",\"type_id\":1,\"type\":\"ADMIN\",\"date_time\":\""
+			+ date + "\",\"last_modified\":\"" + date
+			+ "\",\"access_count\":\"100\",\"decline_count\":\"0\"}");
+
+	// check the class cast exception
+	String exceptionClass = "";
+	try {
+	    encoder.encodeObject(ObjectType.TRACE, usage);
+	} catch (Exception ex) {
+	    exceptionClass = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass, ClassCastException.class.toString());
+
+	UsageData usage2 = new UsageData();
+	usage2.setApi_name(APINames.ADMIN);
+	usage2.setOperation(APIOperations.GET);
+	usage2.setType(ObjectType.ADMIN);
+	usage2.setType_id(1l);
+	usage2.setDate_time(date);
+	usage2.setLast_modified(date);
+	usage2.setAccess_count("100");
+	usage2.setDecline_count("0");
+
+	List<UsageData> list = new ArrayList<UsageData>();
+	list.add(usage);
+	list.add(usage2);
+	String encodedListString = "";
+	try {
+	    encodedListString = encoder.encodeObjectList(ObjectType.USAGE, list);
+	} catch (Exception ex) {
+
+	}
+	assertEquals(
+		encodedListString,
+		"[{\"operation\":\"GET\",\"api_name\":\"admin\",\"type_id\":1,\"type\":\"ADMIN\",\"date_time\":\""
+			+ date
+			+ "\",\"last_modified\":\""
+			+ date
+			+ "\",\"access_count\":\"100\",\"decline_count\":\"0\"},"
+			+ "{\"operation\":\"GET\",\"api_name\":\"admin\",\"type_id\":1,\"type\":\"ADMIN\",\"date_time\":\""
+			+ date + "\",\"last_modified\":\"" + date
+			+ "\",\"access_count\":\"100\",\"decline_count\":\"0\"}]");
+
+	String listClassCastException = "";
+	try {
+	    encoder.encodeObjectList(ObjectType.ADMIN, list);
+	} catch (Exception ex) {
+	    listClassCastException = ex.getClass().toString();
+	}
+	assertEquals(listClassCastException, ClassCastException.class.toString());
     }
 }
