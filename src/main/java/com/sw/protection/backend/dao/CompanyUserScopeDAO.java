@@ -8,6 +8,11 @@ import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.entity.CompanyUserScope;
 
+/**
+ * Interface which is provide the Company User Scope operations.
+ * 
+ * @author dinuka
+ */
 public interface CompanyUserScopeDAO {
     /**
      * Get all company user scope data

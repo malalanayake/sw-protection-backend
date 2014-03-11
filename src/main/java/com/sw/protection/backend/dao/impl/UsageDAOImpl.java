@@ -18,6 +18,12 @@ import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.UsageDAO;
 import com.sw.protection.backend.entity.UsageData;
 
+/**
+ * Usage tacking operation implementation
+ * 
+ * @author dinuka
+ * 
+ */
 public class UsageDAOImpl implements UsageDAO {
 
     private Session session;
