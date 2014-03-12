@@ -12,9 +12,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -62,14 +60,11 @@ public class AdminDAOImplTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+	log.info("Delete all Admins");
+	AdminDAO instance = new AdminDAOImpl();
+	for (Admin admin : instance.getAllAdmins()) {
+	    instance.deleteAdmin(admin);
+	}
     }
 
     /**
@@ -291,6 +286,32 @@ public class AdminDAOImplTest {
 	} catch (Exception ex) {
 
 	}
+
+    }
+
+    @Test(dependsOnMethods = { "testDeleteAdmin" })
+    public void testPagination() {
+	log.info("Start Test Pagination");
+	Admin admin = new Admin();
+	admin.setPass_word("Test");
+	admin.setName("Test Admin");
+	admin.setApi_key(UUID.randomUUID().toString());
+
+	AdminDAO instance = new AdminDAOImpl();
+	log.info("" + admin.toString());
+	try {
+	    for (int i = 0; i < 23; i++) {
+		admin.setUser_name("TestUser" + i);
+		admin.setEmail("dinuka" + i + "@123.com");
+		instance.saveAdmin(admin);
+	    }
+	} catch (Exception ex) {
+
+	}
+
+	assertEquals(instance.getAllAdminsWithPagination(1, 20).size(), 20);
+	assertEquals(instance.getAllAdminsWithPagination(2, 20).size(), 3);
+	assertEquals(instance.getAllAdminsWithPagination(3, 20), null);
 
     }
 
