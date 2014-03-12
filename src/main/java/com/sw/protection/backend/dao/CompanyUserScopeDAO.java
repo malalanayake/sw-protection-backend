@@ -29,7 +29,7 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - the company user scope going to be save
      */
-    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
+    public CompanyUserScope saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
 	    OperationRollBackException;
 
     /**

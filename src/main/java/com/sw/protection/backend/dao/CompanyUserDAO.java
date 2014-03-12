@@ -51,7 +51,7 @@ public interface CompanyUserDAO {
      * @param user
      *            - Company user object to be save
      */
-    public void saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException;
+    public CompanyUser saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the company user name exist

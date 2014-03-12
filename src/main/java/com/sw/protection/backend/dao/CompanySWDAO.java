@@ -53,7 +53,7 @@ public interface CompanySWDAO {
      * @param companySW
      *            - software going to be saved
      */
-    public void saveCompanySW(CompanySW companySW) throws DuplicateRecordException, OperationRollBackException;
+    public CompanySW saveCompanySW(CompanySW companySW) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the company software is exist

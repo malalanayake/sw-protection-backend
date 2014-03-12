@@ -207,10 +207,11 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
     }
 
     @Override
-    public void saveSuperAdmin(SuperAdmin admin) throws DuplicateRecordException, OperationRollBackException {
+    public SuperAdmin saveSuperAdmin(SuperAdmin admin) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	SuperAdmin superAdminReturn = null;
 	try {
 	    // check whether the super admin user name already exist
 	    if (this.isSuperAdminUserNameExist(admin.getUser_name())) {
@@ -227,6 +228,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 		admin.setLast_modified(dateTime);
 
 		session.save(admin);
+		superAdminReturn = admin;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Super admin" + admin.toString());
@@ -249,6 +251,8 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return superAdminReturn;
     }
 
     @Override

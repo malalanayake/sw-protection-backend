@@ -67,11 +67,12 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
     }
 
     @Override
-    public void saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
+    public CompanyUserScope saveNewCompanyUserScope(CompanyUserScope companyUserScope) throws DuplicateRecordException,
 	    OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	CompanyUserScope companyUserScopeReturn = null;
 	try {
 	    if (this.getCompanyUserScope(companyUserScope.getCompanyUser().getUser_name(),
 		    companyUserScope.getApi_name()) == null) {
@@ -80,6 +81,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		// set latest time on modification
 		companyUserScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.save(companyUserScope);
+		companyUserScopeReturn = companyUserScope;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company user scope" + companyUserScope.toString());
@@ -109,6 +111,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    }
 	}
 
+	return companyUserScopeReturn;
     }
 
     @Override

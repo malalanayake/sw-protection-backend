@@ -179,10 +179,11 @@ public class CompanySWDAOImpl implements CompanySWDAO {
     }
 
     @Override
-    public void saveCompanySW(CompanySW companySW) throws DuplicateRecordException, OperationRollBackException {
+    public CompanySW saveCompanySW(CompanySW companySW) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	CompanySW companySWReturn = null;
 	try {
 	    // check whether the company software name already exist
 	    if (this.isCompanySWExist(companySW.getCompany().getUser_name(), companySW.getName())) {
@@ -204,6 +205,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		    }
 		}
 		session.save(companySW);
+		companySWReturn = companySW;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company software " + companySW.toString());
@@ -226,6 +228,8 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companySWReturn;
     }
 
     @Override

@@ -177,10 +177,11 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
-    public void saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException {
+    public Admin saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	Admin adminReturn = null;
 	try {
 	    // check whether the admin user name already exist
 	    if (this.isAdminUserNameExist(admin.getUser_name())) {
@@ -202,6 +203,7 @@ public class AdminDAOImpl implements AdminDAO {
 		    }
 		}
 		session.save(admin);
+		adminReturn = admin;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Admin" + admin.toString());
@@ -224,6 +226,7 @@ public class AdminDAOImpl implements AdminDAO {
 		throw operationRollBackException;
 	    }
 	}
+	return adminReturn;
     }
 
     @Override

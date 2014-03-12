@@ -68,5 +68,5 @@ public interface TraceDAO {
      * @param trace
      *            - Trace object to be save
      */
-    public void saveTrace(Trace trace);
+    public Trace saveTrace(Trace trace);
 }

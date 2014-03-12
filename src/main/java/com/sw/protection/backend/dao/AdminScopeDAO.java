@@ -29,7 +29,8 @@ public interface AdminScopeDAO {
      * @param adminScope
      *            - the admin scope going to be save
      */
-    public void saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException, OperationRollBackException;
+    public AdminScope saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException,
+	    OperationRollBackException;
 
     /**
      * Delete admin scope data

@@ -210,10 +210,11 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
     }
 
     @Override
-    public void saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException {
+    public CompanyUser saveUser(CompanyUser user) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	CompanyUser companyUserReturn = null;
 	try {
 	    // check whether the company user name already exist
 	    if (this.isCompanyUserNameExist(user.getUser_name())) {
@@ -235,6 +236,7 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		    }
 		}
 		session.save(user);
+		companyUserReturn = user;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company user " + user.toString());
@@ -257,6 +259,8 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companyUserReturn;
     }
 
     @Override

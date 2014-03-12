@@ -51,7 +51,7 @@ public interface CompanyDAO {
      * @param company
      *            - New company object to be saved
      */
-    public void saveCompany(Company company) throws DuplicateRecordException, OperationRollBackException;
+    public Company saveCompany(Company company) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Load all properties of company

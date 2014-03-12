@@ -62,7 +62,7 @@ public interface CompanySWCopyDAO {
      * @param companySWCopy
      *            - software copy going to be saved
      */
-    public void saveCompanySWCopy(CompanySWCopy companySWCopy) throws DuplicateRecordException,
+    public CompanySWCopy saveCompanySWCopy(CompanySWCopy companySWCopy) throws DuplicateRecordException,
 	    OperationRollBackException;
 
     /**

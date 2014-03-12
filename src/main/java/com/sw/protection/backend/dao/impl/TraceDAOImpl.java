@@ -188,12 +188,14 @@ public class TraceDAOImpl implements TraceDAO {
     }
 
     @Override
-    public void saveTrace(Trace trace) {
+    public Trace saveTrace(Trace trace) {
 	Transaction tr = null;
+	Trace traceReturn = null;
 	try {
 	    session = HibernateUtil.getSessionFactory().getCurrentSession();
 	    tr = session.beginTransaction();
 	    session.save(trace);
+	    traceReturn = trace;
 	    tr.commit();
 	    if (log.isDebugEnabled()) {
 		log.debug("Save Trace " + trace.toString());
@@ -205,7 +207,7 @@ public class TraceDAOImpl implements TraceDAO {
 	    }
 	    // TODO: Throw exception
 	}
-
+	return traceReturn;
     }
 
 }

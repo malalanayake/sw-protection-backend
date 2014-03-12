@@ -184,11 +184,12 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
     }
 
     @Override
-    public void saveCompanySWCopy(CompanySWCopy companySWCopy) throws DuplicateRecordException,
+    public CompanySWCopy saveCompanySWCopy(CompanySWCopy companySWCopy) throws DuplicateRecordException,
 	    OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	CompanySWCopy companySWCopyReturn = null;
 	try {
 	    // check whether the software copy already exist
 	    if (this.isCompanySWCopyExist(companySWCopy.getCompany_client().getUser_name(), companySWCopy
@@ -207,6 +208,7 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 		companySWCopy.setLast_modified(dateTime);
 
 		session.save(companySWCopy);
+		companySWCopyReturn = companySWCopy;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save software copy " + companySWCopy.toString());
@@ -229,6 +231,8 @@ public class CompanySWCopyDAOImpl implements CompanySWCopyDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companySWCopyReturn;
     }
 
     @Override

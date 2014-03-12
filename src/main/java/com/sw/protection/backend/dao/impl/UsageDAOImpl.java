@@ -224,16 +224,18 @@ public class UsageDAOImpl implements UsageDAO {
     }
 
     @Override
-    public void saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException {
+    public UsageData saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	UsageData usageDataReturn = null;
 	try {
 	    // check whether the usage data is there exist
 	    if (!this.isUsageDataExist(usage)) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
 		session.save(usage);
+		usageDataReturn = usage;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Usage " + usage.toString());
@@ -259,6 +261,8 @@ public class UsageDAOImpl implements UsageDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return usageDataReturn;
 
     }
 

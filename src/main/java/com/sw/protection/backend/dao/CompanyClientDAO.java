@@ -53,7 +53,7 @@ public interface CompanyClientDAO {
      * @param companyClient
      *            - Company Client object to be saved
      */
-    public void saveCompanyClient(CompanyClient companyClient) throws DuplicateRecordException,
+    public CompanyClient saveCompanyClient(CompanyClient companyClient) throws DuplicateRecordException,
 	    OperationRollBackException;
 
     /**

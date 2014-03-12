@@ -65,10 +65,12 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     }
 
     @Override
-    public void saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException, OperationRollBackException {
+    public AdminScope saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException,
+	    OperationRollBackException {
 	Transaction tr = null;
 	OperationRollBackException operationRollBackException = null;
 	DuplicateRecordException duplicateRecordException = null;
+	AdminScope adminScopeReturn = null;
 	try {
 	    if (this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()) == null) {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -76,6 +78,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		// set latest time on modification
 		adminScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.save(adminScope);
+		adminScopeReturn = adminScope;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Admin scope" + adminScope.toString());
@@ -104,6 +107,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		throw operationRollBackException;
 	    }
 	}
+	return adminScopeReturn;
     }
 
     @Override

@@ -52,7 +52,7 @@ public interface SuperAdminDAO {
      * @param admin
      *            - new super Admin
      */
-    public void saveSuperAdmin(SuperAdmin admin) throws DuplicateRecordException, OperationRollBackException;
+    public SuperAdmin saveSuperAdmin(SuperAdmin admin) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the super admin user name exist

@@ -60,7 +60,7 @@ public interface AdminDAO {
      * @param admin
      *            - new Admin
      */
-    public void saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException;
+    public Admin saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the admin user name exist

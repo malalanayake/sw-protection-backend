@@ -63,7 +63,7 @@ public interface UsageDAO {
      * 
      * @param usage
      */
-    public void saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException;
+    public UsageData saveUsage(UsageData usage) throws DuplicateRecordException, OperationRollBackException;
 
     /**
      * Check whether the usage data exist
