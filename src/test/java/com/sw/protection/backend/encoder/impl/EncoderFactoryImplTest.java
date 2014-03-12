@@ -17,7 +17,6 @@ import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
-import com.sw.protection.backend.dao.impl.UsageDAOImplTest;
 import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.encoder.EncoderFactory;
 import com.sw.protection.backend.entity.Admin;
@@ -34,7 +33,7 @@ import com.sw.protection.backend.entity.UsageData;
 
 @Test(groups = { "EncoderFactoryImplTest" }, dependsOnGroups = { "UsageDAOImplTest" })
 public class EncoderFactoryImplTest {
-    public static final Logger log = Logger.getLogger(UsageDAOImplTest.class.getName());
+    public static final Logger log = Logger.getLogger(EncoderFactoryImplTest.class.getName());
     EncoderFactory encoderFactory;
     Encoder encoder;
 

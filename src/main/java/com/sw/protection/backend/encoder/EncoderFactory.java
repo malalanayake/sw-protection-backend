@@ -3,7 +3,7 @@ package com.sw.protection.backend.encoder;
 import com.sw.protection.backend.config.EncoderDecoderType;
 
 /**
- * Enum which is used to create the proper Encoder
+ * Interface which is used to get the proper Encoder
  * 
  * @author dinuka
  * 
