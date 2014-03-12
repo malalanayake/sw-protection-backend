@@ -259,6 +259,16 @@ public class AdminDAOImplTest {
 	}
 	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
+	// Check the DuplicateRecordException behavior
+	String exceptionClass2 = "";
+	try {
+	    admin.setUser_name(UUID.randomUUID().toString());
+	    instance.saveAdmin(admin);
+	} catch (Exception ex) {
+	    exceptionClass2 = ex.getClass().toString();
+	}
+	assertEquals(exceptionClass2, DuplicateRecordException.class.toString());
+
     }
 
     /**
@@ -283,4 +293,5 @@ public class AdminDAOImplTest {
 	}
 
     }
+
 }

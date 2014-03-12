@@ -21,6 +21,17 @@ public interface AdminDAO {
     public List<Admin> getAllAdmins();
 
     /**
+     * Get all admin with pagination
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum recodes per page
+     * @return
+     */
+    public List<Admin> getAllAdminsWithPagination(int page, int recordePerPage);
+
+    /**
      * Get specific admin user
      * 
      * @param userName
@@ -70,4 +81,13 @@ public interface AdminDAO {
      * @return - True/False
      */
     public boolean isAdminUserNameExist(String userName);
+
+    /**
+     * Check whether the admin user email exist
+     * 
+     * @param email
+     *            - Admin Email
+     * @return - True/False
+     */
+    public boolean isAdminUserEmailExist(String email);
 }

@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 @NamedQueries({ @NamedQuery(name = "findAll", query = "SELECT u FROM Admin u"),
 	@NamedQuery(name = "findByName", query = "select u from Admin u where u.name like:adminName"),
 	@NamedQuery(name = "findByUserName", query = "select u from Admin u where u.user_name=:userName"),
+	@NamedQuery(name = "findByEmail", query = "select u from Admin u where u.email=:userEmail"),
 	@NamedQuery(name = "findByAPIKey", query = "select u from Admin u where u.api_key=:apiKey") })
 public class Admin implements Serializable {
 
@@ -37,9 +38,11 @@ public class Admin implements Serializable {
 	public static final String NAME_QUERY_FIND_BY_NAME = "findByName";
 	public static final String PARAM_ADMIN_NAME = "adminName";
 	public static final String NAME_QUERY_FIND_BY_USER_NAME = "findByUserName";
+	public static final String NAME_QUERY_FIND_BY_EMAIL = "findByEmail";
 	public static final String NAME_QUERY_FIND_BY_API_KEY = "findByAPIKey";
 	public static final String PARAM_USER_NAME = "userName";
 	public static final String PARAM_API_KEY = "apiKey";
+	public static final String PARAM_USER_EMAIL = "userEmail";
     }
 
     private static final long serialVersionUID = 1L;

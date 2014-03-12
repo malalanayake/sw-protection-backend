@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -184,9 +185,9 @@ public class AdminDAOImpl implements AdminDAO {
 	Admin adminReturn = null;
 	try {
 	    // check whether the admin user name already exist
-	    if (this.isAdminUserNameExist(admin.getUser_name())) {
+	    if (this.isAdminUserNameExist(admin.getUser_name()) || this.isAdminUserEmailExist(admin.getEmail())) {
 		if (log.isDebugEnabled()) {
-		    log.debug("Admin username :" + admin.toString() + " already exist");
+		    log.debug("Admin user:" + admin.toString() + " already exist");
 		}
 		// create DuplicateRecordException
 		duplicateRecordException = new DuplicateRecordException();
@@ -287,6 +288,68 @@ public class AdminDAOImpl implements AdminDAO {
 		tr.rollback(); // roll back the transaction due to runtime error
 	    }
 	    return null;
+	}
+    }
+
+    @Override
+    public List<Admin> getAllAdminsWithPagination(int page, int recordePerPage) {
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    Criteria cr = session.createCriteria(Admin.class);
+	    cr.setFirstResult((page - 1) * recordePerPage);
+	    cr.setMaxResults(recordePerPage);
+	    List<Admin> adminAll = cr.list();
+	    tr.commit();
+
+	    if (adminAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin users are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + adminAll.size() + " Admin users");
+		}
+		return adminAll;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
+	    return null;
+	}
+    }
+
+    @Override
+    public boolean isAdminUserEmailExist(String email) {
+	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    List<Admin> adminAll = session.getNamedQuery(Admin.Constants.NAME_QUERY_FIND_BY_EMAIL)
+		    .setParameter(Admin.Constants.PARAM_USER_EMAIL, email).list();
+	    tr.commit();
+
+	    if (adminAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin email: " + email + " is not found");
+		}
+		return false;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin email: " + email + " found");
+		}
+		return true;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
+	    return false;
 	}
     }
 
