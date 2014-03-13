@@ -55,7 +55,7 @@ public interface AdminDAO {
      * @param admin
      *            - new Admin with updated values
      */
-    public void updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public Admin updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete admin user
@@ -63,7 +63,7 @@ public interface AdminDAO {
      * @param admin
      *            - Admin to be deleted
      */
-    public void deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public Admin deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save admin user
@@ -90,4 +90,24 @@ public interface AdminDAO {
      * @return - True/False
      */
     public boolean isAdminUserEmailExist(String email);
+
+    /**
+     * This method is used to validate the given Admin. This is going to use in
+     * service class befor saving the object
+     * 
+     * @param admin
+     *            - given admin object
+     * @return
+     */
+    public boolean validateAdminforSave(Admin admin);
+
+    /**
+     * This method is used to validate the given Admin. This is going to use in
+     * service class befor update or delete the object
+     * 
+     * @param admin
+     *            - given admin object
+     * @return
+     */
+    public boolean validateAdminforUpdateandDelete(Admin admin);
 }

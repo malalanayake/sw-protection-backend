@@ -65,10 +65,11 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
-    public void updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public Admin updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	Admin adminReturn = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -83,6 +84,7 @@ public class AdminDAOImpl implements AdminDAO {
 		tr = session.beginTransaction();
 		admin.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(admin);
+		adminReturn = admin;
 		tr.commit();
 
 		if (log.isDebugEnabled()) {
@@ -121,13 +123,16 @@ public class AdminDAOImpl implements AdminDAO {
 	    }
 
 	}
+
+	return adminReturn;
     }
 
     @Override
-    public void deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public Admin deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	Admin adminReturn = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(admin.getId());
@@ -140,6 +145,7 @@ public class AdminDAOImpl implements AdminDAO {
 		session = HibernateUtil.getSessionFactory().getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(admin);
+		adminReturn = admin;
 		tr.commit();
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Admin" + admin.toString());
@@ -175,6 +181,7 @@ public class AdminDAOImpl implements AdminDAO {
 		throw operationRollBackException;
 	    }
 	}
+	return adminReturn;
     }
 
     @Override
@@ -351,6 +358,40 @@ public class AdminDAOImpl implements AdminDAO {
 	    }
 	    return false;
 	}
+    }
+
+    @Override
+    public boolean validateAdminforSave(Admin admin) {
+	boolean status = false;
+	if (admin.getUser_name() != null && admin.getUser_name() != "" && admin.getEmail() != null
+		&& admin.getEmail() != "") {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateAdminforUpdateandDelete(Admin admin) {
+	boolean status = false;
+	if (admin.getId() != null && admin.getUser_name() != null && admin.getUser_name() != ""
+		&& admin.getEmail() != null && admin.getEmail() != "" && admin.getLast_modified() != null
+		&& admin.getLast_modified() != "") {
+	    // check whether the data is null or not
+	    if (isAdminUserNameExist(admin.getUser_name())) {
+		// check whether the given user name is not changed
+		Admin saveAdmin = getAdmin(admin.getUser_name());
+		if (saveAdmin.getId() == admin.getId()) {
+		    status = true;
+		}
+	    } else {
+		status = false;
+	    }
+	} else {
+	    status = false;
+	}
+	return status;
     }
 
 }

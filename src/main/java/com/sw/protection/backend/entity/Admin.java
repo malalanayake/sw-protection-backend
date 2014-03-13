@@ -57,7 +57,7 @@ public class Admin implements Serializable {
     private String pass_word;
     @Column(nullable = false)
     private String api_key;
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
     private String date_time;
