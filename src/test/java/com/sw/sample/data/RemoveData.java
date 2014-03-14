@@ -2,7 +2,6 @@ package com.sw.sample.data;
 
 import java.util.UUID;
 
-import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.HibernateUtil;
