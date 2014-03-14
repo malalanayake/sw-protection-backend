@@ -379,17 +379,32 @@ public class AdminDAOImpl implements AdminDAO {
 		&& admin.getEmail() != null && admin.getEmail() != "" && admin.getLast_modified() != null
 		&& admin.getLast_modified() != "") {
 	    // check whether the data is null or not
-	    if (isAdminUserNameExist(admin.getUser_name())) {
+	    if (this.isAdminUserNameExist(admin.getUser_name())) {
 		// check whether the given user name is not changed
-		Admin saveAdmin = getAdmin(admin.getUser_name());
-		if (saveAdmin.getId() == admin.getId()) {
+		Admin saveAdmin = this.getAdmin(admin.getUser_name());
+		if (saveAdmin.getId().equals(admin.getId())) {
 		    status = true;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation Pass");
+		    }
+		} else {
+		    status = false;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+				+ saveAdmin.getId() + " This is the given ID:" + admin.getId());
+		    }
 		}
 	    } else {
 		status = false;
+		if (log.isDebugEnabled()) {
+		    log.debug("Validation fail due to Admin userName:" + admin.getUser_name() + " doesn't exist");
+		}
 	    }
 	} else {
 	    status = false;
+	    if (log.isDebugEnabled()) {
+		log.debug("Validation fail due to empty or null values");
+	    }
 	}
 	return status;
     }
