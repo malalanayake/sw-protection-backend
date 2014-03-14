@@ -24,6 +24,12 @@ import com.sw.protection.backend.encoder.impl.EncoderFactoryImpl;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.service.AdminService;
 
+/**
+ * Admin service operation implementation.
+ * 
+ * @author dinuka
+ * 
+ */
 public class AdminServiceImpl implements AdminService {
     public static final Logger log = Logger.getLogger(AdminServiceImpl.class.getName());
     private static AdminServiceImpl adminServiceImpl;
@@ -59,6 +65,9 @@ public class AdminServiceImpl implements AdminService {
 	    admin = adminDAO.saveAdmin(admin);
 	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	} else {
+	    if (log.isDebugEnabled()) {
+		log.debug("Given object doesn't contain expected data:" + admin.toString());
+	    }
 	    throw new RequiredDataNotFoundException();
 	}
 
@@ -85,6 +94,9 @@ public class AdminServiceImpl implements AdminService {
 		encodedString = "";
 	    }
 	} else {
+	    if (log.isDebugEnabled()) {
+		log.debug("Given object doesn't contain expected data:" + admin.toString());
+	    }
 	    throw new RequiredDataNotFoundException();
 	}
 	return encodedString;
@@ -113,6 +125,9 @@ public class AdminServiceImpl implements AdminService {
 	    admin = adminDAO.deleteAdmin(admin);
 	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	} else {
+	    if (log.isDebugEnabled()) {
+		log.debug("Given object doesn't contain expected data:" + admin.toString());
+	    }
 	    throw new RequiredDataNotFoundException();
 	}
 
@@ -142,6 +157,9 @@ public class AdminServiceImpl implements AdminService {
 	    admin = adminDAO.updateAdmin(admin);
 	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	} else {
+	    if (log.isDebugEnabled()) {
+		log.debug("Given object doesn't contain expected data:" + admin.toString());
+	    }
 	    throw new RequiredDataNotFoundException();
 	}
 
@@ -152,9 +170,7 @@ public class AdminServiceImpl implements AdminService {
     public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
 	    throws EncodingException, DecodingException {
 	EncoderFactory encoderFactory = new EncoderFactoryImpl();
-	DecoderFactory decoderFactory = new DecoderFactoryImpl();
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
-	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
 	AdminDAO adminDAO = new AdminDAOImpl();
 	String encodedString = "";
 	List<Admin> admins = adminDAO.getAllAdminsWithPagination(page, recordePerPage);

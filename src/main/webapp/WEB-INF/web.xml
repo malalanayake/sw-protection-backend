@@ -7,7 +7,7 @@
     <!--Specify the local deployment or openshift-->
     <context-param>
         <param-name>local-deployment</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
     </context-param>
     <context-param>
         <param-name>db-host</param-name>
@@ -27,7 +27,7 @@
     </context-param>
     <context-param>
         <param-name>db-name</param-name>
-        <param-value>sw</param-value>
+        <param-value>online</param-value>
     </context-param>
    
     <listener>

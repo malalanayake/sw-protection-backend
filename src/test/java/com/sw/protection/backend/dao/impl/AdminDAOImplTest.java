@@ -17,6 +17,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
+import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.HibernateUtil;
@@ -59,11 +60,19 @@ public class AdminDAOImplTest {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() {
 	log.info("Delete all Admins");
 	AdminDAO instance = new AdminDAOImpl();
 	for (Admin admin : instance.getAllAdmins()) {
-	    instance.deleteAdmin(admin);
+	    try {
+		instance.deleteAdmin(admin);
+	    } catch (RecordAlreadyModifiedException e) {
+
+		e.printStackTrace();
+	    } catch (OperationRollBackException e) {
+
+		e.printStackTrace();
+	    }
 	}
     }
 
