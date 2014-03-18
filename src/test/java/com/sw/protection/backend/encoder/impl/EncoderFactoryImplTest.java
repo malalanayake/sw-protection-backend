@@ -15,6 +15,7 @@ import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.EncodingException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.encoder.Encoder;
@@ -39,7 +40,7 @@ public class EncoderFactoryImplTest {
 
     @BeforeClass
     public void initialize() {
-	encoderFactory = new EncoderFactoryImpl();
+	encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	encoder = encoderFactory.getEncoder(EncoderDecoderType.JSON);
     }
 

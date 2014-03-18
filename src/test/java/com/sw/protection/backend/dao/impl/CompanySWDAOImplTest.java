@@ -11,9 +11,8 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.dao.CompanySWDAO;
 import com.sw.protection.backend.entity.Company;
@@ -24,20 +23,14 @@ public class CompanySWDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanySWDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveCompanySW() {
 	log.info("Start Test save Company Software");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -51,7 +44,7 @@ public class CompanySWDAOImplTest {
 
 	}
 
-	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
+	CompanySWDAO companySWDAO = AppContext.getInstance().getBean(CompanySWDAO.class);
 	CompanySW companySW = new CompanySW();
 	companySW.setName("Application 1");
 	companySW.setDescription("Small accounting system");
@@ -75,7 +68,7 @@ public class CompanySWDAOImplTest {
     @Test(dependsOnMethods = { "saveCompanySW" })
     public void getAllCompanySWs() {
 	log.info("Start Test get all Company Software");
-	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
+	CompanySWDAO companySWDAO = AppContext.getInstance().getBean(CompanySWDAO.class);
 	List<CompanySW> comanySWList = companySWDAO.getAllCompanySWs();
 
 	assertEquals(comanySWList.size(), 1);
@@ -88,7 +81,7 @@ public class CompanySWDAOImplTest {
     @Test(dependsOnMethods = { "getAllCompanySWs" })
     public void updateCompanySW() {
 	log.info("Start Test update Company Software");
-	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
+	CompanySWDAO companySWDAO = AppContext.getInstance().getBean(CompanySWDAO.class);
 	CompanySW companySW = companySWDAO.getCompanySW("sysensor", "Application 1");
 	CompanySW companySWAlreadyModi = companySWDAO.getCompanySW("sysensor", "Application 1");
 	companySW.setDescription("Application for stock management");
@@ -116,7 +109,7 @@ public class CompanySWDAOImplTest {
     @Test(dependsOnMethods = { "updateCompanySW" })
     public void deleteCompanySW() {
 	log.info("Start Test update Company Software");
-	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
+	CompanySWDAO companySWDAO = AppContext.getInstance().getBean(CompanySWDAO.class);
 	CompanySW companySW = companySWDAO.getCompanySW("sysensor", "Application 1");
 	CompanySW companySWAlreadyModi = companySWDAO.getCompanySW("sysensor", "Application 1");
 	// Check the RecordAlreadyModifiedException behavior
@@ -139,7 +132,7 @@ public class CompanySWDAOImplTest {
 	CompanySW companySW2 = companySWDAO.getCompanySW("sysensor", "Application 1");
 	assertEquals(companySW2, null);
 
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	try {
 	    companyDAO.deleteCompany(company);

@@ -12,10 +12,9 @@ import org.testng.annotations.Test;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.TraceDAO;
 import com.sw.protection.backend.entity.Trace;
 
@@ -24,19 +23,13 @@ public class TraceDAOImplTest {
     public static final Logger log = Logger.getLogger(TraceDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveTrace() {
-	TraceDAO traceDAO = new TraceDAOImpl();
+	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	Trace trace1 = new Trace();
 	trace1.setApi_name(APINames.ADMIN);
 	trace1.setOperation(APIOperations.PUT);
@@ -89,7 +82,7 @@ public class TraceDAOImplTest {
 
     @Test(dependsOnMethods = { "saveTrace" })
     public void getAllTraceByAPIName() {
-	TraceDAO traceDAO = new TraceDAOImpl();
+	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	List<Trace> traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList.size(), 2);
 	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
@@ -98,7 +91,7 @@ public class TraceDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllTraceByAPIName" })
     public void getAllTraceByAffectedTypeAndUserName() {
-	TraceDAO traceDAO = new TraceDAOImpl();
+	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	List<Trace> traceList = traceDAO.getAllTraceByAffectedTypeAndUserName(ObjectType.SOFTWARE, "payroll");
 	assertEquals(traceList.size(), 1);
 	List<Trace> traceList1 = traceDAO.getAllTraceByAffectedTypeAndUserName(ObjectType.SOFTWARE, "adverising");
@@ -108,7 +101,7 @@ public class TraceDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllTraceByAffectedTypeAndUserName" })
     public void getAllTraceByTypeAndUserName() {
-	TraceDAO traceDAO = new TraceDAOImpl();
+	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	List<Trace> traceList = traceDAO.getAllTraceByTypeAndUserName(ObjectType.ADMIN, "kasuni");
 	assertEquals(traceList.size(), 1);
 	List<Trace> traceList1 = traceDAO.getAllTraceByTypeAndUserName(ObjectType.CLIENT, "malinda");
@@ -117,7 +110,7 @@ public class TraceDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllTraceByTypeAndUserName" })
     public void deleteTrace() {
-	TraceDAO traceDAO = new TraceDAOImpl();
+	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	List<Trace> traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList.size(), 2);
 	for (Trace trace : traceList) {

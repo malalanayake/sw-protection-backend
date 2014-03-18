@@ -6,14 +6,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
@@ -24,8 +26,13 @@ import com.sw.protection.backend.entity.AdminScope;
  * 
  * @author dinuka
  */
+
+@Repository
 public class AdminDAOImpl implements AdminDAO {
-    private Session session;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(AdminDAOImpl.class.getName());
     /**
      * Maintain Locks over the cluster
@@ -35,7 +42,8 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public Admin getAdmin(String userName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
+
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -80,7 +88,7 @@ public class AdminDAOImpl implements AdminDAO {
 	    // Assume that the username never changed
 	    // check last modification
 	    if (admin.getLast_modified().equals(this.getAdmin(admin.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		admin.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(admin);
@@ -142,7 +150,7 @@ public class AdminDAOImpl implements AdminDAO {
 
 	    // check last modification
 	    if (admin.getLast_modified().equals(this.getAdmin(admin.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(admin);
 		adminReturn = admin;
@@ -199,7 +207,7 @@ public class AdminDAOImpl implements AdminDAO {
 		// create DuplicateRecordException
 		duplicateRecordException = new DuplicateRecordException();
 	    } else {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		String dateTime = Formatters.formatDate(new Date());
 		admin.setDate_time(dateTime);
@@ -239,7 +247,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public Admin loadAllPropertiesOfAdmin(Long id) {
-	session = HibernateUtil.getSessionFactory().openSession();
+	Session session = sessionFactory.openSession();
 	try {
 	    Admin admin = new Admin();
 	    admin = (Admin) session.get(Admin.class, id);
@@ -271,7 +279,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public List<Admin> getAllAdmins() {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -300,7 +308,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public List<Admin> getAllAdminsWithPagination(int page, int recordePerPage) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -332,7 +340,7 @@ public class AdminDAOImpl implements AdminDAO {
 
     @Override
     public boolean isAdminUserEmailExist(String email) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();

@@ -11,9 +11,8 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyClientDAO;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.entity.Company;
@@ -24,20 +23,14 @@ public class CompanyClientDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanyUserDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveCompanyClient() {
 	log.info("Start Test save Company client");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -51,7 +44,7 @@ public class CompanyClientDAOImplTest {
 
 	}
 
-	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
+	CompanyClientDAO companyClientDAO = AppContext.getInstance().getBean(CompanyClientDAO.class);
 	CompanyClient companyClient = new CompanyClient();
 	companyClient.setName("Client Dinuka");
 	companyClient.setUser_name("client1");
@@ -77,7 +70,7 @@ public class CompanyClientDAOImplTest {
     @Test(dependsOnMethods = { "saveCompanyClient" })
     public void getAllCompanyClients() {
 	log.info("Start Test get all Company client");
-	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
+	CompanyClientDAO companyClientDAO = AppContext.getInstance().getBean(CompanyClientDAO.class);
 	List<CompanyClient> companyClients = companyClientDAO.getAllCompanyClients();
 	assertEquals(companyClients.size(), 1);
 
@@ -91,7 +84,7 @@ public class CompanyClientDAOImplTest {
     @Test(dependsOnMethods = { "getAllCompanyClients" })
     public void updateCompanyClient() {
 	log.info("Start Test update Company client");
-	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
+	CompanyClientDAO companyClientDAO = AppContext.getInstance().getBean(CompanyClientDAO.class);
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
 	CompanyClient companyClientAlredayUptodate = companyClientDAO.getCompanyClient("client1");
 	companyClient.setName("Client Malinda");
@@ -122,7 +115,7 @@ public class CompanyClientDAOImplTest {
     @Test(dependsOnMethods = { "updateCompanyClient" })
     public void deleteCompanyClient() {
 	log.info("Start Test delete Company client");
-	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
+	CompanyClientDAO companyClientDAO = AppContext.getInstance().getBean(CompanyClientDAO.class);
 	CompanyClient companyClient = companyClientDAO.getCompanyClient("client1");
 	CompanyClient companyClientAlredayUptodate = companyClientDAO.getCompanyClient("client1");
 	companyClientAlredayUptodate.setEmail("updateemail@gmail.com");
@@ -146,7 +139,7 @@ public class CompanyClientDAOImplTest {
 
 	assertEquals(companyClientDAO.getCompanyClient("client1"), null);
 
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	assertEquals(company.getUser_name(), "sysensor");
 	try {

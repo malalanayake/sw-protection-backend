@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.entity.Company;
@@ -26,8 +28,12 @@ import com.sw.protection.backend.entity.CompanyUser;
  * @author dinuka
  * 
  */
+@Repository
 public class CompanyDAOImpl implements CompanyDAO {
-    private Session session;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(CompanyDAOImpl.class.getName());
     /**
      * Maintain Locks over the cluster
@@ -37,7 +43,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     @Override
     public List<Company> getAllCompanies() {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -79,7 +85,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	    // Assume that the username never changed
 	    // check last modification
 	    if (company.getLast_modified().equals(this.getCompany(company.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		company.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(company);
@@ -136,7 +142,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 	    // check last modification
 	    if (company.getLast_modified().equals(this.getCompany(company.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(company);
 		tr.commit();
@@ -191,7 +197,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		// create DuplicateRecordException
 		duplicateRecordException = new DuplicateRecordException();
 	    } else {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		String dateTime = Formatters.formatDate(new Date());
 		company.setDate_time(dateTime);
@@ -248,7 +254,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     @Override
     public Company getCompany(String companyUserName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -279,7 +285,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     @Override
     public Company loadAllPropertiesOfCompany(Long id) {
-	session = HibernateUtil.getSessionFactory().openSession();
+	Session session = sessionFactory.openSession();
 	try {
 	    Company company = new Company();
 	    company = (Company) session.get(Company.class, id);

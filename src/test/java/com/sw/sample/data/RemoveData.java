@@ -4,11 +4,9 @@ import java.util.UUID;
 
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.AdminDAO;
-import com.sw.protection.backend.dao.impl.AdminDAOImpl;
 import com.sw.protection.backend.entity.Admin;
 
 public class RemoveData {
@@ -16,12 +14,6 @@ public class RemoveData {
     String dataBaseName = "online";
 
     public RemoveData() {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(dataBaseName);
-	HibernateUtil.init();
 	SharedInMemoryData.getInstance();
     }
 
@@ -31,7 +23,7 @@ public class RemoveData {
     }
 
     public void deleteAdminData() {
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	for (int i = 0; i < 20; i++) {
 	    Admin admin = new Admin();
 	    admin.setName("AdminUser " + i);

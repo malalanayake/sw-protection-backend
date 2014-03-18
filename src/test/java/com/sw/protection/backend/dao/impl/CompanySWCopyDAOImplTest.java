@@ -14,9 +14,8 @@ import org.testng.annotations.Test;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyClientDAO;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.dao.CompanySWCopyDAO;
@@ -32,20 +31,14 @@ public class CompanySWCopyDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanySWCopyDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveCompanySWCopy() {
 	log.info("Start Test save company software copy");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -88,13 +81,13 @@ public class CompanySWCopyDAOImplTest {
 
 	}
 
-	CompanySWDAO companySWDAO = new CompanySWDAOImpl();
+	CompanySWDAO companySWDAO = AppContext.getInstance().getBean(CompanySWDAO.class);
 	CompanySW companySW2 = companySWDAO.getCompanySW("sysensor", "Application 1");
 
-	CompanyClientDAO companyClientDAO = new CompanyClientDAOImpl();
+	CompanyClientDAO companyClientDAO = AppContext.getInstance().getBean(CompanyClientDAO.class);
 	CompanyClient companyClient2 = companyClientDAO.getCompanyClient("client1");
 
-	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
+	CompanySWCopyDAO companySWCopyDAO = AppContext.getInstance().getBean(CompanySWCopyDAO.class);
 	CompanySWCopy companySWCopy = new CompanySWCopy();
 	companySWCopy.setCompany_client(companyClient2);
 	companySWCopy.setCompany_sw(companySW2);
@@ -121,7 +114,7 @@ public class CompanySWCopyDAOImplTest {
     @Test(dependsOnMethods = { "saveCompanySWCopy" })
     public void getAllCompanySWCopies() {
 	log.info("Start Test get all company software copy");
-	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
+	CompanySWCopyDAO companySWCopyDAO = AppContext.getInstance().getBean(CompanySWCopyDAO.class);
 	List<CompanySWCopy> allSwCopyList = companySWCopyDAO.getAllCompanySWCopies();
 	assertEquals(allSwCopyList.size(), 1);
 
@@ -139,7 +132,7 @@ public class CompanySWCopyDAOImplTest {
     @Test(dependsOnMethods = { "getAllCompanySWCopies" })
     public void updateCompanySWCopy() {
 	log.info("Start Test update company software copy");
-	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
+	CompanySWCopyDAO companySWCopyDAO = AppContext.getInstance().getBean(CompanySWCopyDAO.class);
 	CompanySWCopy companySWCopy = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID",
 		"HD_ID", "MAC_ID");
 	CompanySWCopy companySWCopyAlreadyModi = companySWCopyDAO.getCompanySWCopy("client1", "Application 1",
@@ -175,8 +168,8 @@ public class CompanySWCopyDAOImplTest {
     @Test(dependsOnMethods = { "updateCompanySWCopy" })
     public void deleteCompanySWCopy() {
 	log.info("Start Test delete company software copy");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
-	CompanySWCopyDAO companySWCopyDAO = new CompanySWCopyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
+	CompanySWCopyDAO companySWCopyDAO = AppContext.getInstance().getBean(CompanySWCopyDAO.class);
 	CompanySWCopy companySWCopy = companySWCopyDAO.getCompanySWCopy("client1", "Application 1", "M_BOARD_ID",
 		"HD_ID", "MAC_ID");
 	CompanySWCopy companySWCopyAlreadyModi = companySWCopyDAO.getCompanySWCopy("client1", "Application 1",

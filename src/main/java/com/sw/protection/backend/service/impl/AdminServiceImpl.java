@@ -3,6 +3,7 @@ package com.sw.protection.backend.service.impl;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.sw.protection.backend.common.exception.DecodingException;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
@@ -11,16 +12,14 @@ import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APIKeyGenerator;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.dao.AdminDAO;
-import com.sw.protection.backend.dao.impl.AdminDAOImpl;
 import com.sw.protection.backend.decoder.Decoder;
 import com.sw.protection.backend.decoder.DecoderFactory;
-import com.sw.protection.backend.decoder.impl.DecoderFactoryImpl;
 import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.encoder.EncoderFactory;
-import com.sw.protection.backend.encoder.impl.EncoderFactoryImpl;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.service.AdminService;
 
@@ -30,33 +29,19 @@ import com.sw.protection.backend.service.AdminService;
  * @author dinuka
  * 
  */
+
+@Service
 public class AdminServiceImpl implements AdminService {
     public static final Logger log = Logger.getLogger(AdminServiceImpl.class.getName());
-    private static AdminServiceImpl adminServiceImpl;
-
-    private AdminServiceImpl() {
-
-    }
-
-    public static AdminServiceImpl getInstance() {
-	if (adminServiceImpl == null) {
-	    synchronized (AdminServiceImpl.class) {
-		if (adminServiceImpl == null) {
-		    adminServiceImpl = new AdminServiceImpl();
-		}
-	    }
-	}
-	return adminServiceImpl;
-    }
 
     @Override
     public String saveAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws DuplicateRecordException,
 	    OperationRollBackException, EncodingException, DecodingException, RequiredDataNotFoundException {
-	EncoderFactory encoderFactory = new EncoderFactoryImpl();
-	DecoderFactory decoderFactory = new DecoderFactoryImpl();
+	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
+	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
@@ -78,11 +63,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String getAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws EncodingException,
 	    DecodingException, RequiredDataNotFoundException {
-	EncoderFactory encoderFactory = new EncoderFactoryImpl();
-	DecoderFactory decoderFactory = new DecoderFactoryImpl();
+	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
+	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
 	if (admin.getUser_name() != null && admin.getUser_name() != "") {
@@ -106,11 +91,11 @@ public class AdminServiceImpl implements AdminService {
     public String deleteAdmin(EncoderDecoderType encoderDecoderType, String adminString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException {
-	EncoderFactory encoderFactory = new EncoderFactoryImpl();
-	DecoderFactory decoderFactory = new DecoderFactoryImpl();
+	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
+	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
 	if (adminDAO.validateAdminforUpdateandDelete(admin)) {
@@ -138,11 +123,11 @@ public class AdminServiceImpl implements AdminService {
     public String updateAdmin(EncoderDecoderType encoderDecoderType, String adminString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException {
-	EncoderFactory encoderFactory = new EncoderFactoryImpl();
-	DecoderFactory decoderFactory = new DecoderFactoryImpl();
+	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
+	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
 	if (adminDAO.validateAdminforUpdateandDelete(admin)) {
@@ -169,9 +154,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
 	    throws EncodingException, DecodingException {
-	EncoderFactory encoderFactory = new EncoderFactoryImpl();
+	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
-	AdminDAO adminDAO = new AdminDAOImpl();
+
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	List<Admin> admins = adminDAO.getAllAdminsWithPagination(page, recordePerPage);
 	encodedString = encoder.encodeObjectList(ObjectType.ADMIN, admins);

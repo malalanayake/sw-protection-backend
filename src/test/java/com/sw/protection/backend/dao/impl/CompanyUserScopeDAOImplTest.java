@@ -12,9 +12,8 @@ import org.testng.annotations.Test;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.dao.CompanyUserDAO;
 import com.sw.protection.backend.dao.CompanyUserScopeDAO;
@@ -27,20 +26,14 @@ public class CompanyUserScopeDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanyUserScopeDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveNewCompanyUserScope() {
 	log.info("Start Test save Company user scope");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -64,7 +57,7 @@ public class CompanyUserScopeDAOImplTest {
 	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
 	company = companyDAO.getCompany("sysensor");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = new CompanyUser();
 	companyUser.setUser_name("dinuka");
 	companyUser.setName("Dinuka Malalanayake");
@@ -88,7 +81,7 @@ public class CompanyUserScopeDAOImplTest {
 	companyUserScope.setPut(true);
 	companyUserScope.setCompanyUser(companyUser);
 
-	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
+	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
 	try {
 	    companyUserScopeDAO.saveNewCompanyUserScope(companyUserScope);
 	} catch (Exception ex) {
@@ -99,7 +92,7 @@ public class CompanyUserScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "saveNewCompanyUserScope" })
     public void getAllCompanyUserScopes() {
-	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
+	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
 	List<CompanyUserScope> companyUserScopeList = companyUserScopeDAO.getAllCompanyUserScopes("dinuka");
 	assertEquals(companyUserScopeList.size(), 1);
 	List<CompanyUserScope> companyUserScopeList2 = companyUserScopeDAO.getAllCompanyUserScopes("malinda");
@@ -108,7 +101,7 @@ public class CompanyUserScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllCompanyUserScopes" })
     public void updateCompanyUserScope() {
-	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
+	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
 	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
 	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
 		APINames.SOFTWARE);
@@ -146,7 +139,7 @@ public class CompanyUserScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "updateCompanyUserScope" })
     public void deleteCompanyUserScope() {
-	CompanyUserScopeDAO companyUserScopeDAO = new CompanyUserScopeDAOImpl();
+	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
 	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
 	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
 		APINames.SOFTWARE);
@@ -172,7 +165,7 @@ public class CompanyUserScopeDAOImplTest {
 	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
 	assertEquals(companyUserScope2, null);
 
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser.getCompany().getName(), "Sysensor IT Solutions");
 	assertEquals(companyUser.getCompany().getUser_name(), "sysensor");
@@ -190,7 +183,7 @@ public class CompanyUserScopeDAOImplTest {
 	CompanyUser companyUser2 = companyUserDAO.getUser("dinuka");
 	assertEquals(companyUser2, null);
 
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	assertEquals(company.getName(), "Sysensor IT Solutions");
 	assertEquals(company.getUser_name(), "sysensor");

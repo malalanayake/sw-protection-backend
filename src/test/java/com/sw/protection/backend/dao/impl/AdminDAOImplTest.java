@@ -20,9 +20,8 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.AdminScope;
@@ -36,6 +35,11 @@ import com.sw.protection.backend.entity.AdminScope;
 public class AdminDAOImplTest {
     public static final Logger log = Logger.getLogger(AdminDAOImplTest.class.getName());
 
+    @BeforeClass()
+    public void setupParamValidation() {
+	SharedInMemoryData.getInstance();
+    }
+
     public AdminDAOImplTest() {
     }
 
@@ -48,21 +52,10 @@ public class AdminDAOImplTest {
 	return (IndiaIncomeArray);
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
-	SharedInMemoryData.getInstance();
-    }
-
     @AfterClass
     public void tearDownClass() {
 	log.info("Delete all Admins");
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	for (Admin admin : instance.getAllAdmins()) {
 	    try {
 		instance.deleteAdmin(admin);
@@ -77,28 +70,13 @@ public class AdminDAOImplTest {
     }
 
     /**
-     * Test of getAllAdmins method, of class AdminDAOImpl.
-     */
-    @Test
-    public void testGetAllAdmins() {
-	// System.out.println("getAllAdmins");
-	// AdminDAOImpl instance = new AdminDAOImpl();
-	// List expResult = null;
-	// List result = instance.getAllAdmins();
-	// assertEquals(result, expResult);
-	// // TODO review the generated test code and remove the default call to
-	// fail.
-	// fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getAdmin method, of class AdminDAOImpl.
      */
     @Test(dependsOnMethods = { "testSaveAdmin" })
     public void testGetAdmin() {
 	log.info("Start Test Get Admin");
 	String userName = "malalanayake";
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin expResult = new Admin();
 	expResult.setUser_name("malalanayake");
 	expResult.setEmail("dinuka.malalanayake@gmail.com");
@@ -125,7 +103,7 @@ public class AdminDAOImplTest {
     public void testUpdateAdmin() {
 	log.info("Start Test Update Admin");
 	String userName = "malalanayake";
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin expResult = new Admin();
 	Admin failResult = new Admin();
 	Admin result = new Admin();
@@ -161,7 +139,7 @@ public class AdminDAOImplTest {
     @Test(dependsOnMethods = { "testUpdateAdmin" })
     public void isAdminUserNameExist() {
 	log.info("getAllAdmins");
-	AdminDAOImpl instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
 	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
     }
@@ -175,7 +153,7 @@ public class AdminDAOImplTest {
 	String userName1 = "malinda";
 	String userName2 = "malalanayake";
 	String userName3 = "TestAdminWithoutScope";
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin admin1 = new Admin();
 	Admin admin2 = new Admin();
 	Admin admin3 = new Admin();
@@ -246,7 +224,7 @@ public class AdminDAOImplTest {
 	Set<AdminScope> adminScopSet = admin.getAdminScopeSet();
 	adminScopSet.add(adminScope);
 	admin.setAdminScopeSet(adminScopSet);
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	log.info("" + admin.toString());
 	try {
 	    instance.saveAdmin(admin);
@@ -288,7 +266,7 @@ public class AdminDAOImplTest {
 	admin.setName("Test Admin");
 	admin.setApi_key(UUID.randomUUID().toString());
 
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	log.info("" + admin.toString());
 	try {
 	    instance.saveAdmin(admin);
@@ -306,7 +284,7 @@ public class AdminDAOImplTest {
 	admin.setName("Test Admin");
 	admin.setApi_key(UUID.randomUUID().toString());
 
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	log.info("" + admin.toString());
 	try {
 	    for (int i = 0; i < 23; i++) {

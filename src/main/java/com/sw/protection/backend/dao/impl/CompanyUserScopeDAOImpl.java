@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
@@ -13,7 +16,6 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanyUserScopeDAO;
 import com.sw.protection.backend.entity.CompanyUserScope;
@@ -24,9 +26,12 @@ import com.sw.protection.backend.entity.CompanyUserScope;
  * @author dinuka
  * 
  */
+@Repository
 public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(CompanyUserScopeDAOImpl.class.getName());
 
     /**
@@ -37,7 +42,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 
     @Override
     public List<CompanyUserScope> getAllCompanyUserScopes(String userName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -76,7 +81,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	try {
 	    if (this.getCompanyUserScope(companyUserScope.getCompanyUser().getUser_name(),
 		    companyUserScope.getApi_name()) == null) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		// set latest time on modification
 		companyUserScope.setLast_modified(Formatters.formatDate(new Date()));
@@ -131,7 +136,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    if (companyUserScope.getLast_modified().equals(
 		    this.getCompanyUserScope(companyUserScope.getCompanyUser().getUser_name(),
 			    companyUserScope.getApi_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(companyUserScope);
 		tr.commit();
@@ -190,7 +195,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    if (companyUserScope.getLast_modified().equals(
 		    getCompanyUserScope(companyUserScope.getCompanyUser().getUser_name(),
 			    companyUserScope.getApi_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 
 		// set the latest date and time
@@ -241,7 +246,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 
     @Override
     public CompanyUserScope getCompanyUserScope(String userName, String apiName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();

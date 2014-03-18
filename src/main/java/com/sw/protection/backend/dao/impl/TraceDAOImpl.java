@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.TraceDAO;
@@ -20,8 +22,12 @@ import com.sw.protection.backend.entity.Trace;
  * @author dinuka
  * 
  */
+@Repository
 public class TraceDAOImpl implements TraceDAO {
-    private Session session;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(TraceDAOImpl.class.getName());
 
     /**
@@ -32,7 +38,7 @@ public class TraceDAOImpl implements TraceDAO {
 
     @Override
     public List<Trace> getAllTraceByTypeAndUserName(ObjectType type, String userName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -63,7 +69,7 @@ public class TraceDAOImpl implements TraceDAO {
 
     @Override
     public List<Trace> getAllTraceByAPIName(String apiName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -93,7 +99,7 @@ public class TraceDAOImpl implements TraceDAO {
 
     @Override
     public List<Trace> getAllTraceByAffectedTypeAndUserName(ObjectType affectedType, String affectedUserName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -127,7 +133,7 @@ public class TraceDAOImpl implements TraceDAO {
 
     @Override
     public Trace getTrace(Long ID) {
-	session = HibernateUtil.getSessionFactory().openSession();
+	Session session = sessionFactory.openSession();
 	try {
 	    Trace trace = new Trace();
 	    trace = (Trace) session.get(Trace.class, ID);
@@ -154,7 +160,7 @@ public class TraceDAOImpl implements TraceDAO {
 
 	    // check whether the recode is exist
 	    if (getTrace(trace.getId()) != null) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(trace);
 		tr.commit();
@@ -192,7 +198,7 @@ public class TraceDAOImpl implements TraceDAO {
 	Transaction tr = null;
 	Trace traceReturn = null;
 	try {
-	    session = HibernateUtil.getSessionFactory().getCurrentSession();
+	    Session session = sessionFactory.getCurrentSession();
 	    tr = session.beginTransaction();
 	    session.save(trace);
 	    traceReturn = trace;

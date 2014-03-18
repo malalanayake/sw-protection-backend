@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DecodingException;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.decoder.Decoder;
@@ -36,7 +37,7 @@ public class DecoderFactoryImplTest {
 
     @BeforeClass
     public void initialize() {
-	decoderFactory = new DecoderFactoryImpl();
+	decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	decoder = decoderFactory.getDecoder(EncoderDecoderType.JSON);
     }
 

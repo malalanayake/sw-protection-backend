@@ -14,6 +14,7 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.Admin;
@@ -23,8 +24,13 @@ import com.sw.protection.backend.entity.AdminScope;
 public class AdminScopeDAOImplTest {
     public static final Logger log = Logger.getLogger(AdminScopeDAOImplTest.class.getName());
 
+    @BeforeClass()
+    public void setupParamValidation() {
+	// Test class setup code with autowired classes goes here
+    }
+
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
 	log.info("Setup the initial data");
 	Admin admin = new Admin();
 	admin.setUser_name("dinuka");
@@ -53,7 +59,7 @@ public class AdminScopeDAOImplTest {
 	adminScopSet.add(adminScope1);
 	adminScopSet.add(adminScope2);
 	admin.setAdminScopeSet(adminScopSet);
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	instance.saveAdmin(admin);
 
 	Admin admin2 = new Admin();
@@ -83,7 +89,7 @@ public class AdminScopeDAOImplTest {
 	adminScopSet2.add(adminScope12);
 	adminScopSet2.add(adminScope22);
 	admin2.setAdminScopeSet(adminScopSet2);
-	AdminDAO instance2 = new AdminDAOImpl();
+	AdminDAO instance2 = AppContext.getInstance().getBean(AdminDAO.class);
 	instance2.saveAdmin(admin2);
     }
 
@@ -93,8 +99,8 @@ public class AdminScopeDAOImplTest {
     @Test()
     public void getAllAdminScopes() {
 	log.info("Test Start get all admin scopes");
-	AdminScopeDAO instance = new AdminScopeDAOImpl();
-	List<AdminScope> list = instance.getAllAdminScopes("dinuka");
+	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
+	List<AdminScope> list = adminScopeDAO.getAllAdminScopes("dinuka");
 	log.info("Admin Scope List size:" + list.size());
 	assertEquals(list.size(), 2);
 	for (AdminScope scope : list) {
@@ -108,10 +114,8 @@ public class AdminScopeDAOImplTest {
     @Test(dependsOnMethods = { "getAllAdminScopes" })
     public void saveAdminScopes() {
 	log.info("Test Start save admin scopes");
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin admin = adminDAO.getAdmin("dinuka");
-
-	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
 
 	AdminScope adminScope = new AdminScope();
 	adminScope.setAdmin(admin);
@@ -120,6 +124,7 @@ public class AdminScopeDAOImplTest {
 	adminScope.setPost(false);
 	adminScope.setPut(false);
 	adminScope.setDel(false);
+	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
 	try {
 	    adminScopeDAO.saveNewAdminScope(adminScope);
 	} catch (Exception ex) {
@@ -153,11 +158,10 @@ public class AdminScopeDAOImplTest {
     @Test(dependsOnMethods = { "saveAdminScopes" })
     public void updateAdminScope() {
 	log.info("Test Start update admin scopes");
-	AdminDAO adminDAO = new AdminDAOImpl();
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin admin = adminDAO.getAdmin("dinuka");
 
-	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
-
+	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
 	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
 	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
 	log.info("Admin Scope :" + adminScope.toString());
@@ -196,7 +200,7 @@ public class AdminScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "updateAdminScope" })
     public void isAccessGrantedFor() {
-	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
+	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.GET), true);
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.DELETE), true);
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.POST), true);
@@ -216,7 +220,7 @@ public class AdminScopeDAOImplTest {
 
     @Test(dependsOnMethods = { "isAccessGrantedFor" })
     public void testDeleteAdminScope() {
-	AdminScopeDAO adminScopeDAO = new AdminScopeDAOImpl();
+	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
 	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
 	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.ADMIN);
 	adminAlredayModifiedScope.setDel(false);
@@ -247,7 +251,7 @@ public class AdminScopeDAOImplTest {
 	log.info("Start Test Delete Admin");
 	String userName1 = "malinda";
 	String userName2 = "dinuka";
-	AdminDAO instance = new AdminDAOImpl();
+	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
 	Admin admin1 = new Admin();
 	Admin admin2 = new Admin();
 	admin1 = instance.getAdmin(userName1);

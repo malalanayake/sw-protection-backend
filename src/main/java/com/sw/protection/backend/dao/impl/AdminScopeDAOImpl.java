@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
@@ -13,7 +16,6 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.AdminScopeDAO;
 import com.sw.protection.backend.entity.AdminScope;
@@ -24,8 +26,11 @@ import com.sw.protection.backend.entity.AdminScope;
  * @author dinuka
  * 
  */
+@Repository
 public class AdminScopeDAOImpl implements AdminScopeDAO {
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(AdminScopeDAOImpl.class.getName());
 
     /**
@@ -36,7 +41,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 
     @Override
     public List<AdminScope> getAllAdminScopes(String userName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -73,7 +78,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	AdminScope adminScopeReturn = null;
 	try {
 	    if (this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()) == null) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		// set latest time on modification
 		adminScope.setLast_modified(Formatters.formatDate(new Date()));
@@ -127,7 +132,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    if (adminScope.getLast_modified().equals(
 		    this.getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name())
 			    .getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(adminScope);
 		tr.commit();
@@ -184,7 +189,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	    // check the modification time
 	    if (adminScope.getLast_modified().equals(
 		    getAdminScope(adminScope.getAdmin().getUser_name(), adminScope.getApi_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 
 		// set the latest date and time
@@ -233,7 +238,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 
     @Override
     public AdminScope getAdminScope(String userName, String apiName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();

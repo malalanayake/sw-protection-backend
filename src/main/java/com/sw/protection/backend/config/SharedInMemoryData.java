@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.ManagementCenterConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.core.Hazelcast;
@@ -80,7 +81,14 @@ public class SharedInMemoryData {
 			networkConfig.setJoin(join);
 			networkConfig.getInterfaces().setEnabled(false).addInterface("OPENSHIFT_JBOSSEWS_IP");
 			// .addInterface("127.13.21.129");
+
+			ManagementCenterConfig managementCenterConfig = new ManagementCenterConfig();
+			managementCenterConfig.setEnabled(true);
+			managementCenterConfig.setUrl("http://localhost:8080/mancenter-3.1.4");
+			config.setManagementCenterConfig(managementCenterConfig);
+
 			config.setNetworkConfig(networkConfig);
+
 		    }
 
 		    SHARED_INSTANCE = Hazelcast.newHazelcastInstance(config);

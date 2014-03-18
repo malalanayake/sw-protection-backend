@@ -11,31 +11,24 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.SuperAdminDAO;
 import com.sw.protection.backend.entity.SuperAdmin;
 
-@Test(groups = { "SuperAdminDAOImplTest" }, dependsOnGroups = { "AdminScopeDAOImplTest" })
+@Test(groups = { "SuperAdminDAOImplTest" }, dependsOnGroups = { "AdminDAOImplMultiThreadingTest" })
 public class SuperAdminDAOImplTest {
     public static final Logger log = Logger.getLogger(SuperAdminDAOImplTest.class.getName());
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    @BeforeClass()
+    public void setupParamValidation() {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveSuperAdmin() {
 	log.info("Start test save Super admin");
-	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
+	SuperAdminDAO superAdminDao = AppContext.getInstance().getBean(SuperAdminDAO.class);
 	SuperAdmin superAdmin1 = new SuperAdmin();
 	superAdmin1.setName("super_dinuka");
 	superAdmin1.setUser_name("dinuka");
@@ -74,7 +67,7 @@ public class SuperAdminDAOImplTest {
     @Test(dependsOnMethods = { "saveSuperAdmin" })
     public void getAllAdmins() {
 	log.info("Start test get all Super admin users");
-	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
+	SuperAdminDAO superAdminDao = AppContext.getInstance().getBean(SuperAdminDAO.class);
 	List<SuperAdmin> superAdminList = superAdminDao.getAllAdmins();
 	assertEquals(superAdminList.size(), 2);
     }
@@ -82,9 +75,9 @@ public class SuperAdminDAOImplTest {
     @Test(dependsOnMethods = { "getAllAdmins" })
     public void updateSuperAdmin() {
 	log.info("Start test update Super admin users");
-	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
 	SuperAdmin superAdmin1 = new SuperAdmin();
 	SuperAdmin superAdminAlredayModified = new SuperAdmin();
+	SuperAdminDAO superAdminDao = AppContext.getInstance().getBean(SuperAdminDAO.class);
 	superAdmin1 = superAdminDao.getSuperAdmin("dinuka");
 	superAdminAlredayModified = superAdminDao.getSuperAdmin("dinuka");
 
@@ -123,9 +116,9 @@ public class SuperAdminDAOImplTest {
     @Test(dependsOnMethods = { "updateSuperAdmin" })
     public void deleteSuperAdmin() {
 	log.info("Start test delete Super admin users");
-	SuperAdminDAO superAdminDao = new SuperAdminDAOImpl();
 	SuperAdmin superAdmin1 = new SuperAdmin();
 	SuperAdmin superAdminAlredayModified = new SuperAdmin();
+	SuperAdminDAO superAdminDao = AppContext.getInstance().getBean(SuperAdminDAO.class);
 	superAdmin1 = superAdminDao.getSuperAdmin("dinuka");
 	superAdminAlredayModified = superAdminDao.getSuperAdmin("dinuka");
 	superAdminAlredayModified.setEmail("updateemail@gmail.com");

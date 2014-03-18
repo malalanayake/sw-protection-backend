@@ -6,7 +6,6 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 
 /**
@@ -22,17 +21,9 @@ public class BackEndContextListner implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 	ServletContext ctx = sce.getServletContext();
 	if (log.isDebugEnabled()) {
-	    log.debug("Initalizing the hibernate");
+	    log.debug("Initalizing the basic configurations");
 	}
 	isLocalDeployment = Boolean.valueOf(ctx.getInitParameter("local-deployment"));
-
-	HibernateUtil.setHost(ctx.getInitParameter("db-host"));
-	HibernateUtil.setPort(ctx.getInitParameter("db-port"));
-	HibernateUtil.setUsername(ctx.getInitParameter("db-user"));
-	HibernateUtil.setPassword(ctx.getInitParameter("db-pw"));
-	HibernateUtil.setDbname(ctx.getInitParameter("db-name"));
-	HibernateUtil.init();
-
 	SharedInMemoryData.getInstance();
 
     }

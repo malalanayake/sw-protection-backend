@@ -14,10 +14,9 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.APIOperations;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.UsageDAO;
 import com.sw.protection.backend.entity.UsageData;
 
@@ -27,18 +26,12 @@ public class UsageDAOImplTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveUsage() {
-	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	UsageData usage = new UsageData();
 	usage.setApi_name(APINames.ADMIN);
 	usage.setOperation(APIOperations.GET);
@@ -112,7 +105,7 @@ public class UsageDAOImplTest {
 
     @Test(dependsOnMethods = { "saveUsage" })
     public void getAllUsagesByAPIName() {
-	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	assertEquals(usageList1.size(), 1);
 	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
@@ -125,7 +118,7 @@ public class UsageDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllUsagesByAPIName" })
     public void getAllUsagesByTypeAndID() {
-	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByTypeAndID(ObjectType.ADMIN, 1l);
 	assertEquals(usageList1.size(), 2);
 
@@ -135,7 +128,7 @@ public class UsageDAOImplTest {
 
     @Test(dependsOnMethods = { "getAllUsagesByTypeAndID" })
     public void updateUsage() {
-	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	assertEquals(usageList1.size(), 1);
 	UsageData usageData = usageList1.get(0);
@@ -178,7 +171,7 @@ public class UsageDAOImplTest {
 
     @Test(dependsOnMethods = { "updateUsage" })
     public void deleteUsage() {
-	UsageDAO usageDAO = new UsageDAOImpl();
+	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	UsageData usageData = usageList1.get(0);
 	List<UsageData> usageListAlreadyUptodate = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);

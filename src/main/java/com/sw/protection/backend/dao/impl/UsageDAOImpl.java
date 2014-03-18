@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.UsageDAO;
@@ -24,9 +26,12 @@ import com.sw.protection.backend.entity.UsageData;
  * @author dinuka
  * 
  */
+@Repository
 public class UsageDAOImpl implements UsageDAO {
 
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(UsageDAOImpl.class.getName());
 
     /**
@@ -37,7 +42,7 @@ public class UsageDAOImpl implements UsageDAO {
 
     @Override
     public List<UsageData> getAllUsagesByTypeAndID(ObjectType type, Long id) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -68,7 +73,7 @@ public class UsageDAOImpl implements UsageDAO {
 
     @Override
     public List<UsageData> getAllUsagesByAPIName(String apiName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -98,7 +103,7 @@ public class UsageDAOImpl implements UsageDAO {
 
     @Override
     public UsageData getUsage(Long ID) {
-	session = HibernateUtil.getSessionFactory().openSession();
+	Session session = sessionFactory.openSession();
 	try {
 	    UsageData usage = new UsageData();
 	    usage = (UsageData) session.get(UsageData.class, ID);
@@ -126,7 +131,7 @@ public class UsageDAOImpl implements UsageDAO {
 
 	    // check last modification
 	    if (getUsage(usage.getId()).getLast_modified().equals(usage.getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		usage.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(usage);
@@ -183,7 +188,7 @@ public class UsageDAOImpl implements UsageDAO {
 
 	    // check whether the recode is exist
 	    if (getUsage(usage.getId()).getLast_modified().equals(usage.getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(usage);
 		tr.commit();
@@ -232,7 +237,7 @@ public class UsageDAOImpl implements UsageDAO {
 	try {
 	    // check whether the usage data is there exist
 	    if (!this.isUsageDataExist(usage)) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.save(usage);
 		usageDataReturn = usage;
@@ -268,7 +273,7 @@ public class UsageDAOImpl implements UsageDAO {
 
     @Override
     public boolean isUsageDataExist(UsageData usage) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 
 	try {

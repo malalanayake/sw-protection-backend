@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.SuperAdminDAO;
 import com.sw.protection.backend.entity.SuperAdmin;
@@ -23,8 +25,11 @@ import com.sw.protection.backend.entity.SuperAdmin;
  * @author dinuka
  * 
  */
+@Repository
 public class SuperAdminDAOImpl implements SuperAdminDAO {
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(SuperAdminDAOImpl.class.getName());
     /**
      * Maintain Locks over the cluster
@@ -34,7 +39,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 
     @Override
     public List<SuperAdmin> getAllAdmins() {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -64,7 +69,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 
     @Override
     public SuperAdmin getSuperAdmin(String userName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -108,7 +113,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 	    // Assume that the username never changed
 	    // check last modification
 	    if (admin.getLast_modified().equals(this.getSuperAdmin(admin.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		admin.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(admin);
@@ -166,7 +171,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 
 	    // check last modification
 	    if (admin.getLast_modified().equals(this.getSuperAdmin(admin.getUser_name()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(admin);
 		tr.commit();
@@ -221,7 +226,7 @@ public class SuperAdminDAOImpl implements SuperAdminDAO {
 		// create DuplicateRecordException
 		duplicateRecordException = new DuplicateRecordException();
 	    } else {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		String dateTime = Formatters.formatDate(new Date());
 		admin.setDate_time(dateTime);

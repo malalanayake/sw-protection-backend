@@ -1,5 +1,7 @@
 package com.sw.protection.backend.encoder.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.encoder.EncoderFactory;
@@ -11,6 +13,7 @@ import com.sw.protection.backend.encoder.EncoderFactory;
  * @author dinuka
  * 
  */
+@Service
 public class EncoderFactoryImpl implements EncoderFactory {
 
     @Override

@@ -14,11 +14,10 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.ObjectType;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.decoder.impl.JSONDecoder;
 import com.sw.protection.backend.encoder.impl.JSONEncoder;
 import com.sw.protection.backend.entity.Admin;
@@ -30,18 +29,12 @@ public class AdminServiceImplTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
 	SharedInMemoryData.getInstance();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-	AdminService adminService = AdminServiceImpl.getInstance();
+    public void tearDown() throws Exception {
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String listofAdmins = adminService.getAllAdmins(EncoderDecoderType.JSON, 1, 20);
 	JSONDecoder decoder = new JSONDecoder();
 	JSONEncoder encoder = new JSONEncoder();
@@ -55,7 +48,7 @@ public class AdminServiceImplTest {
 
     @Test
     public void saveAdmin() {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String adminEncoded = "{\"name\":\"super_dinuka\",\"user_name\":\"dinuka\",\"pass_word\":\"test1\",\"email\":\"dinuka@gmail.com\"}";
 	String adminReturn = "";
 	try {
@@ -104,7 +97,7 @@ public class AdminServiceImplTest {
 
     @Test(dependsOnMethods = { "saveAdmin" })
     public void getAdmin() {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String adminEncoded = "{\"user_name\":\"dinuka\"}";
 	String adminReturn = "";
 	try {
@@ -118,7 +111,7 @@ public class AdminServiceImplTest {
 
     @Test(dependsOnMethods = { "getAdmin" })
     public void getAllAdmins() {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String adminReturn = "";
 	JSONDecoder decoder = new JSONDecoder();
 	List<Admin> admins = null;
@@ -144,7 +137,7 @@ public class AdminServiceImplTest {
 
     @Test(dependsOnMethods = { "getAllAdmins" })
     public void updateAdmin() {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String adminEncoded = "{\"user_name\":\"dinuka\"}";
 	String adminReturn = "";
 	try {
@@ -221,7 +214,7 @@ public class AdminServiceImplTest {
 
     @Test(dependsOnMethods = { "updateAdmin" })
     public void deleteAdmin() {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = new AdminServiceImpl();
 	String adminEncoded = "{\"user_name\":\"dinuka\"}";
 	String adminReturn = "";
 	try {

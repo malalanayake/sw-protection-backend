@@ -9,15 +9,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.Formatters;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.dao.AdminDAO;
 import com.sw.protection.backend.entity.Admin;
 
 @Test(groups = { "AdminDAOImplMultiThreadingTest" }, dependsOnGroups = { "AdminScopeDAOImplTest" })
 public class AdminDAOImplMultiThreadingTest {
     public Logger log = Logger.getLogger(AdminDAOImplMultiThreadingTest.class.getName());
+
+    Admin admin = new Admin();
+
+    @BeforeClass()
+    public void setupParamValidation() {
+	// Test class setup code with autowired classes goes here
+    }
 
     public void concurencyTesting() {
 	Admin pre_admin = new Admin();
@@ -38,7 +47,7 @@ public class AdminDAOImplMultiThreadingTest {
 	pre_admin2.setDate_time(Formatters.formatDate(new Date()));
 	pre_admin2.setLast_modified(Formatters.formatDate(new Date()));
 
-	AdminDAO adminDao = new AdminDAOImpl();
+	AdminDAO adminDao = AppContext.getInstance().getBean(AdminDAO.class);
 	try {
 	    adminDao.saveAdmin(pre_admin);
 	    adminDao.saveAdmin(pre_admin2);
@@ -53,14 +62,16 @@ public class AdminDAOImplMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin1.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOThread(admin1);
+
+	    AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	    Runnable worker = new AdminDAOThread(admin1, adminDAO);
 	    log.info("Start Editing thread " + i);
 	    executor.execute(worker);
 	}
 	executor.shutdown();
 
+	AdminDAO adminDao3 = AppContext.getInstance().getBean(AdminDAO.class);
 	// same recode access from different threads form different objects
-	AdminDAO adminDao3 = new AdminDAOImpl();
 	ExecutorService executor3 = Executors.newFixedThreadPool(10);
 	Admin admin13 = adminDao3.getAdmin("dinuka");
 
@@ -68,13 +79,16 @@ public class AdminDAOImplMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin13.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOThread(admin13);
+
+	    AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+
+	    Runnable worker = new AdminDAOThread(admin13, adminDAO);
 	    log.info("Start Editing thread " + i);
 	    executor3.execute(worker);
 	}
 	executor3.shutdown();
 
-	AdminDAO adminDao1 = new AdminDAOImpl();
+	AdminDAO adminDao1 = AppContext.getInstance().getBean(AdminDAO.class);
 	ExecutorService executor1 = Executors.newFixedThreadPool(10);
 	Admin admin2 = adminDao1.getAdmin("malinda");
 
@@ -83,7 +97,10 @@ public class AdminDAOImplMultiThreadingTest {
 	for (int i = 0; i < 10; i++) {
 
 	    admin2.setEmail("thread" + i + "@gmail.com");
-	    Runnable worker = new AdminDAOThread(admin2);
+
+	    AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+
+	    Runnable worker = new AdminDAOThread(admin2, adminDAO);
 	    log.info("Start Editing thread " + i);
 	    executor1.execute(worker);
 	}
@@ -107,18 +124,20 @@ public class AdminDAOImplMultiThreadingTest {
 	log.info("Start Test Delete Admin");
 	String userName1 = "malinda";
 	String userName2 = "dinuka";
-	AdminDAO instance = new AdminDAOImpl();
+
 	Admin admin1 = new Admin();
 	Admin admin2 = new Admin();
-	admin1 = instance.getAdmin(userName1);
-	admin2 = instance.getAdmin(userName2);
+	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	admin1 = adminDAO.getAdmin(userName1);
+	admin2 = adminDAO.getAdmin(userName2);
 	try {
-	    instance.deleteAdmin(admin1);
-	    assertEquals(instance.isAdminUserNameExist(userName1), false);
-	    instance.deleteAdmin(admin2);
-	    assertEquals(instance.isAdminUserNameExist(userName2), false);
+	    adminDAO.deleteAdmin(admin1);
+	    assertEquals(adminDAO.isAdminUserNameExist(userName1), false);
+	    adminDAO.deleteAdmin(admin2);
+	    assertEquals(adminDAO.isAdminUserNameExist(userName2), false);
 	} catch (Exception ex) {
 
 	}
     }
+
 }

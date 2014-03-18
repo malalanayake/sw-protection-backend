@@ -12,9 +12,8 @@ import org.testng.annotations.Test;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APINames;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.dao.CompanyUserDAO;
 import com.sw.protection.backend.entity.Company;
@@ -27,20 +26,14 @@ public class CompanyUserDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanyUserDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveUser() {
 	log.info("Start Test save Company user");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -63,7 +56,7 @@ public class CompanyUserDAOImplTest {
 	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
 	company = companyDAO.getCompany("sysensor");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = new CompanyUser();
 	companyUser.setUser_name("dinuka");
 	companyUser.setName("Dinuka Malalanayake");
@@ -93,7 +86,7 @@ public class CompanyUserDAOImplTest {
     @Test(dependsOnMethods = { "saveUser" })
     public void getAllUsers() {
 	log.info("Start Test get All Company user");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	assertEquals(companyUserDAO.getAllUsers().size(), 1);
 
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
@@ -106,7 +99,7 @@ public class CompanyUserDAOImplTest {
 	assertEquals(companyUser.getPass_word(), "test1");
 	assertEquals(companyUser.getEmail(), "dinuka@gmail.com");
 
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	company = companyDAO.loadAllPropertiesOfCompany(company.getId());
 	assertEquals(company.getCompanyUserSet().size(), 1);
@@ -116,7 +109,7 @@ public class CompanyUserDAOImplTest {
     @Test(dependsOnMethods = { "getAllUsers" })
     public void loadAllPropertiesOfCompanyUser() {
 	log.info("Start Test load Company user");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 	companyUser = companyUserDAO.loadAllPropertiesOfCompanyUser(companyUser.getId());
 	assertEquals(companyUser.getUserScopeSet().size(), 1);
@@ -125,7 +118,7 @@ public class CompanyUserDAOImplTest {
     @Test(dependsOnMethods = { "loadAllPropertiesOfCompanyUser" })
     public void updateUser() {
 	log.info("Start Test update Company user");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 	CompanyUser companyUserAlreadyUptodate = companyUserDAO.getUser("dinuka");
 	companyUser = companyUserDAO.loadAllPropertiesOfCompanyUser(companyUser.getId());
@@ -167,7 +160,7 @@ public class CompanyUserDAOImplTest {
     @Test(dependsOnMethods = { "updateUser" })
     public void deleteUser() {
 	log.info("Start Test delete Company user");
-	CompanyUserDAO companyUserDAO = new CompanyUserDAOImpl();
+	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
 	CompanyUser companyUser = companyUserDAO.getUser("dinuka");
 
 	CompanyUser companyUserAlreadyUptodate = companyUserDAO.getUser("dinuka");
@@ -192,7 +185,7 @@ public class CompanyUserDAOImplTest {
 	}
 	assertEquals(companyUserDAO.getUser("dinuka"), null);
 
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	assertEquals(company.getUser_name(), "sysensor");
 	try {

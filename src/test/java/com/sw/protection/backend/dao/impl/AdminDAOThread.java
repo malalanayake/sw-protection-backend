@@ -6,15 +6,17 @@ import com.sw.protection.backend.entity.Admin;
 public class AdminDAOThread implements Runnable {
     Admin admin = new Admin();
 
-    public AdminDAOThread(Admin newAdmin) {
+    AdminDAO adminDAO;
+
+    public AdminDAOThread(Admin newAdmin, AdminDAO adminDAO) {
 	admin = newAdmin;
+	this.adminDAO = adminDAO;
     }
 
     @Override
     public void run() {
-	AdminDAO adminDao = new AdminDAOImpl();
 	try {
-	    adminDao.updateAdmin(admin);
+	    adminDAO.updateAdmin(admin);
 	} catch (Exception ex) {
 
 	}

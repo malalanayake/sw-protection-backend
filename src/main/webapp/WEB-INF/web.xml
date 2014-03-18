@@ -8,26 +8,6 @@
 		<param-name>local-deployment</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	<context-param>
-		<param-name>db-host</param-name>
-		<param-value>localhost</param-value>
-	</context-param>
-	<context-param>
-		<param-name>db-port</param-name>
-		<param-value>3306</param-value>
-	</context-param>
-	<context-param>
-		<param-name>db-user</param-name>
-		<param-value>root</param-value>
-	</context-param>
-	<context-param>
-		<param-name>db-pw</param-name>
-		<param-value>root123</param-value>
-	</context-param>
-	<context-param>
-		<param-name>db-name</param-name>
-		<param-value>online</param-value>
-	</context-param>
 
 	<listener>
 		<listener-class>com.sw.protection.backend.listners.BackEndContextListner</listener-class>

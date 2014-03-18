@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.hazelcast.core.IMap;
 import com.sw.protection.backend.common.Formatters;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
 import com.sw.protection.backend.config.SharedInMemoryData;
 import com.sw.protection.backend.dao.CompanySWDAO;
 import com.sw.protection.backend.entity.CompanySW;
@@ -24,9 +26,12 @@ import com.sw.protection.backend.entity.CompanySWCopy;
  * @author dinuka
  * 
  */
+@Repository
 public class CompanySWDAOImpl implements CompanySWDAO {
 
-    private Session session;
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public static final Logger log = Logger.getLogger(CompanySWDAOImpl.class.getName());
     /**
      * Maintain Locks over the cluster
@@ -36,7 +41,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 
     @Override
     public List<CompanySW> getAllCompanySWs() {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();
@@ -80,7 +85,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 	    // check last modification
 	    if (companySW.getLast_modified().equals(
 		    this.getCompanySW(companySW.getCompany().getUser_name(), companySW.getName()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		companySW.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(companySW);
@@ -138,7 +143,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 	    // check last modification
 	    if (companySW.getLast_modified().equals(
 		    this.getCompanySW(companySW.getCompany().getUser_name(), companySW.getName()).getLast_modified())) {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		session.delete(companySW);
 		tr.commit();
@@ -193,7 +198,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		// create DuplicateRecordException
 		duplicateRecordException = new DuplicateRecordException();
 	    } else {
-		session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
 		String dateTime = Formatters.formatDate(new Date());
 		companySW.setDate_time(dateTime);
@@ -234,7 +239,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 
     @Override
     public CompanySW getCompanySW(String companyUserName, String softwareName) {
-	session = HibernateUtil.getSessionFactory().getCurrentSession();
+	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;
 	try {
 	    tr = session.beginTransaction();

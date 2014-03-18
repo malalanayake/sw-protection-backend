@@ -11,9 +11,8 @@ import org.testng.annotations.Test;
 
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
-import com.sw.protection.backend.config.HibernateUtil;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.SharedInMemoryData;
-import com.sw.protection.backend.config.test.DBTestProperties;
 import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.entity.Company;
 import com.sw.protection.backend.entity.CompanyClient;
@@ -26,20 +25,14 @@ public class CompanyDAOImplTest {
     public static final Logger log = Logger.getLogger(CompanyUserDAOImplTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
-	HibernateUtil.setHost(DBTestProperties.HOST);
-	HibernateUtil.setPort(DBTestProperties.PORT);
-	HibernateUtil.setUsername(DBTestProperties.USER);
-	HibernateUtil.setPassword(DBTestProperties.PW);
-	HibernateUtil.setDbname(DBTestProperties.DBNAME);
-	HibernateUtil.init();
+    public void setUpClass() throws Exception {
 	SharedInMemoryData.getInstance();
     }
 
     @Test
     public void saveCompany() {
 	log.info("Start Test save company");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = new Company();
 
 	company.setName("Sysensor IT Solutions");
@@ -96,7 +89,7 @@ public class CompanyDAOImplTest {
     @Test(dependsOnMethods = { "saveCompany" })
     public void getAllCompanies() {
 	log.info("Start Test get all companies");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 
 	assertEquals(company.getName(), "Sysensor IT Solutions");
@@ -109,7 +102,7 @@ public class CompanyDAOImplTest {
     @Test(dependsOnMethods = { "getAllCompanies" })
     public void loadAllPropertiesOfCompany() {
 	log.info("Start Test load all properties of company");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	Company company1 = companyDAO.loadAllPropertiesOfCompany(company.getId());
 
@@ -126,7 +119,7 @@ public class CompanyDAOImplTest {
     @Test(dependsOnMethods = { "loadAllPropertiesOfCompany" })
     public void updateCompany() {
 	log.info("Start Test update company");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 	Company companyAlreadyModi = companyDAO.getCompany("sysensor");
 	company = companyDAO.loadAllPropertiesOfCompany(company.getId());
@@ -168,7 +161,7 @@ public class CompanyDAOImplTest {
     @Test(dependsOnMethods = { "updateCompany" })
     public void deleteCompany() {
 	log.info("Start Test delete Company");
-	CompanyDAO companyDAO = new CompanyDAOImpl();
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	Company company = companyDAO.getCompany("sysensor");
 
 	Company companyAlreadyModi = companyDAO.getCompany("sysensor");

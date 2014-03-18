@@ -16,9 +16,9 @@ import com.sw.protection.backend.common.exception.DecodingException;
 import com.sw.protection.backend.common.exception.EncodingException;
 import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APINames;
+import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.service.AdminService;
-import com.sw.protection.backend.service.impl.AdminServiceImpl;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -53,7 +53,8 @@ public class AdminAPI {
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found") })
     public Response getAdmin(
 	    @ApiParam(value = "user_name of admin", required = true) @PathParam("userName") String userName) {
-	AdminService adminService = AdminServiceImpl.getInstance();
+	AdminService adminService = (AdminService) AppContext.getInstance().getBean(AdminService.class);
+
 	try {
 	    String adminData = "";
 	    // process the JSON type request
