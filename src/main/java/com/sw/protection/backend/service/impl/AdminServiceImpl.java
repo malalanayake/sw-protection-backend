@@ -153,15 +153,34 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
-	    throws EncodingException, DecodingException {
-	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
-	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
-
-	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	    throws EncodingException, DecodingException, RequiredDataNotFoundException {
 	String encodedString = "";
-	List<Admin> admins = adminDAO.getAllAdminsWithPagination(page, recordePerPage);
-	encodedString = encoder.encodeObjectList(ObjectType.ADMIN, admins);
+	// TODO : set the max recode limitation on this by configurations
+	if (page > 0 && recordePerPage > 0) {
+	    EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
+	    Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
+
+	    AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	    List<Admin> admins = adminDAO.getAllAdminsWithPagination(page, recordePerPage);
+	    if (admins != null) {
+		encodedString = encoder.encodeObjectList(ObjectType.ADMIN, admins);
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Admin user list is empty so return empty string as encoded admin user list string");
+		}
+	    }
+
+	} else {
+	    if (log.isDebugEnabled()) {
+		log.debug("Page number and Max recode count per page should be grater than zero but found :(Page number:"
+			+ page + ") (Max Recode:" + recordePerPage + ")");
+	    }
+
+	    throw new RequiredDataNotFoundException(
+		    "Page number and Max recode count per page should be grater than zero but found :(Page number:"
+			    + page + ") (Max Recode:" + recordePerPage + ")");
+	}
+
 	return encodedString;
     }
-
 }

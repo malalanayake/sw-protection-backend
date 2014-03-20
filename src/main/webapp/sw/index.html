@@ -23,6 +23,8 @@
       url: "http://localhost:8080/SW-Protection-Backend-1.0-SNAPSHOT/rest/api-docs",
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+      supportHeaderParams: true,
+      headers: { "Content-Type": "application/json; charset=UTF-8" },
       onComplete: function(swaggerApi, swaggerUi){
         if(console) {
           console.log("Loaded SwaggerUI")

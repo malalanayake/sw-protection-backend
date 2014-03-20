@@ -31,5 +31,5 @@ public interface AdminService {
 	    RequiredDataNotFoundException;
 
     public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
-	    throws EncodingException, DecodingException;
+	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
 }
