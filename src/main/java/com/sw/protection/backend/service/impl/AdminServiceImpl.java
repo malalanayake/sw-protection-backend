@@ -45,13 +45,20 @@ public class AdminServiceImpl implements AdminService {
 	String encodedString = "";
 
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (adminDAO.validateAdminforSave(admin)) {
-	    admin.setApi_key(APIKeyGenerator.generateAPIKey());
-	    admin = adminDAO.saveAdmin(admin);
-	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	if (admin != null) {
+	    if (adminDAO.validateAdminforSave(admin)) {
+		admin.setApi_key(APIKeyGenerator.generateAPIKey());
+		admin = adminDAO.saveAdmin(admin);
+		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		}
+		throw new RequiredDataNotFoundException();
+	    }
 	} else {
 	    if (log.isDebugEnabled()) {
-		log.debug("Given object doesn't contain expected data:" + admin.toString());
+		log.debug("Given object is null");
 	    }
 	    throw new RequiredDataNotFoundException();
 	}
@@ -98,20 +105,27 @@ public class AdminServiceImpl implements AdminService {
 	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (adminDAO.validateAdminforUpdateandDelete(admin)) {
-	    if (admin.getPass_word() == null || admin.getPass_word() == "") {
-		// If password is not set then it will automatically get the
-		// existing one and save it
-		Admin adminData = adminDAO.getAdmin(admin.getUser_name());
-		if (adminData.getPass_word() != null) {
-		    admin.setPass_word(adminData.getPass_word());
+	if (admin != null) {
+	    if (adminDAO.validateAdminforUpdateandDelete(admin)) {
+		if (admin.getPass_word() == null || admin.getPass_word() == "") {
+		    // If password is not set then it will automatically get the
+		    // existing one and save it
+		    Admin adminData = adminDAO.getAdmin(admin.getUser_name());
+		    if (adminData.getPass_word() != null) {
+			admin.setPass_word(adminData.getPass_word());
+		    }
 		}
+		admin = adminDAO.deleteAdmin(admin);
+		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		}
+		throw new RequiredDataNotFoundException();
 	    }
-	    admin = adminDAO.deleteAdmin(admin);
-	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	} else {
 	    if (log.isDebugEnabled()) {
-		log.debug("Given object doesn't contain expected data:" + admin.toString());
+		log.debug("Given object is null");
 	    }
 	    throw new RequiredDataNotFoundException();
 	}
@@ -130,20 +144,27 @@ public class AdminServiceImpl implements AdminService {
 	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
 	String encodedString = "";
 	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (adminDAO.validateAdminforUpdateandDelete(admin)) {
-	    if (admin.getPass_word() == null || admin.getPass_word() == "") {
-		// If password is not set then it will automatically get the
-		// existing one and save it
-		Admin adminData = adminDAO.getAdmin(admin.getUser_name());
-		if (adminData.getPass_word() != null) {
-		    admin.setPass_word(adminData.getPass_word());
+	if (admin != null) {
+	    if (adminDAO.validateAdminforUpdateandDelete(admin)) {
+		if (admin.getPass_word() == null || admin.getPass_word() == "") {
+		    // If password is not set then it will automatically get the
+		    // existing one and save it
+		    Admin adminData = adminDAO.getAdmin(admin.getUser_name());
+		    if (adminData.getPass_word() != null) {
+			admin.setPass_word(adminData.getPass_word());
+		    }
 		}
+		admin = adminDAO.updateAdmin(admin);
+		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		}
+		throw new RequiredDataNotFoundException();
 	    }
-	    admin = adminDAO.updateAdmin(admin);
-	    encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	} else {
 	    if (log.isDebugEnabled()) {
-		log.debug("Given object doesn't contain expected data:" + admin.toString());
+		log.debug("Given object is null");
 	    }
 	    throw new RequiredDataNotFoundException();
 	}

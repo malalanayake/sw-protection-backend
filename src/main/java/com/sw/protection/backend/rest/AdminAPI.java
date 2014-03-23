@@ -1,9 +1,11 @@
 package com.sw.protection.backend.rest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,10 +20,12 @@ import com.sw.protection.backend.common.exception.DecodingException;
 import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.EncodingException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
+import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
+import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.service.AdminService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
@@ -46,6 +50,8 @@ public class AdminAPI {
     private static final String ACCEPT_HEADERS = "accept";
     @Context
     private HttpHeaders headers;
+    @Context
+    private HttpServletRequest httpServletRequest;
 
     @GET
     @Path("/{userName}")
@@ -122,7 +128,6 @@ public class AdminAPI {
     }
 
     @POST
-    @Path("/")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Save specific admin", httpMethod = "POST", notes = "Add new admin user", response = Response.class)
@@ -133,15 +138,16 @@ public class AdminAPI {
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
 	    @ApiResponse(code = 409, message = "Duplicate recode"),
 	    @ApiResponse(code = 304, message = "Not modified due to operation rollback") })
-    @ApiImplicitParams({ @ApiImplicitParam(name = "adminUser", required = true, dataType = "String", paramType = "header") })
-    public Response saveAdmin(@FormParam("adminUser") String adminUser) {
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "Admin", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    public Response saveAdmin(String body) {
+
 	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 
 	try {
 	    String adminData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminService.saveAdmin(EncoderDecoderType.JSON, adminUser);
+		adminData = adminService.saveAdmin(EncoderDecoderType.JSON, body);
 	    }
 	    // TODO: Need to process the XML type requests
 
@@ -163,4 +169,45 @@ public class AdminAPI {
 	}
     }
 
+    @PUT
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Update specific admin", httpMethod = "PUT", notes = "update existing admin user", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Admin user successfuly updated"),
+	    @ApiResponse(code = 404, message = "Given admin user not updated"),
+	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
+	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
+	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
+	    @ApiResponse(code = 304, message = "Not modified due to operation rollback"),
+	    @ApiResponse(code = 206, message = "Partial content due to given recode is not the latest modification") })
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "Admin", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    public Response updateAdmin(String body) {
+
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
+
+	try {
+	    String adminData = "";
+	    // process the JSON type request
+	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
+		adminData = adminService.updateAdmin(EncoderDecoderType.JSON, body);
+	    }
+	    // TODO: Need to process the XML type requests
+
+	    if (adminData != "") {
+		return Response.ok().entity(adminData).build();
+	    } else {
+		return Response.status(404).build();
+	    }
+	} catch (EncodingException e) {
+	    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+	} catch (DecodingException e) {
+	    return Response.status(Status.BAD_REQUEST).build();
+	} catch (RequiredDataNotFoundException e) {
+	    return Response.status(Status.PRECONDITION_FAILED).build();
+	} catch (OperationRollBackException e) {
+	    return Response.status(Status.NOT_MODIFIED).build();
+	} catch (RecordAlreadyModifiedException e) {
+	    return Response.status(206).build();
+	}
+    }
 }
