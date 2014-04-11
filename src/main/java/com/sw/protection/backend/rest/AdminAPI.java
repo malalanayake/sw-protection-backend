@@ -2,7 +2,7 @@ package com.sw.protection.backend.rest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -25,7 +25,6 @@ import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
-import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.service.AdminService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
@@ -190,6 +189,49 @@ public class AdminAPI {
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
 		adminData = adminService.updateAdmin(EncoderDecoderType.JSON, body);
+	    }
+	    // TODO: Need to process the XML type requests
+
+	    if (adminData != "") {
+		return Response.ok().entity(adminData).build();
+	    } else {
+		return Response.status(404).build();
+	    }
+	} catch (EncodingException e) {
+	    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+	} catch (DecodingException e) {
+	    return Response.status(Status.BAD_REQUEST).build();
+	} catch (RequiredDataNotFoundException e) {
+	    return Response.status(Status.PRECONDITION_FAILED).build();
+	} catch (OperationRollBackException e) {
+	    return Response.status(Status.NOT_MODIFIED).build();
+	} catch (RecordAlreadyModifiedException e) {
+	    return Response.status(206).build();
+	}
+    }
+
+    @DELETE
+    @Path("/admin-delete")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Delete specific admin", httpMethod = "DELETE", notes = "delete existing admin user", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Admin user successfuly deleted"),
+	    @ApiResponse(code = 404, message = "Given admin user not deleted"),
+	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
+	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
+	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
+	    @ApiResponse(code = 304, message = "Not deleted due to operation rollback"),
+	    @ApiResponse(code = 206, message = "Partial content due to given recode is not the latest modification") })
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "Admin", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    public Response deleteAdmin(String body) {
+
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
+
+	try {
+	    String adminData = "";
+	    // process the JSON type request
+	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
+		adminData = adminService.deleteAdmin(EncoderDecoderType.JSON, body);
 	    }
 	    // TODO: Need to process the XML type requests
 
