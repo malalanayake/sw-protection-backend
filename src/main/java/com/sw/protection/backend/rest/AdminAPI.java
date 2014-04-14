@@ -89,7 +89,7 @@ public class AdminAPI {
     }
 
     @GET
-    @Path("/admin-list/{item_per_list}/{page_number}")
+    @Path("/" + APINames.ADMIN_LIST + "/{item_per_list}/{page_number}")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Get list of admin users", httpMethod = "GET", notes = "Fetch the list of admin users details", response = Response.class)
@@ -211,7 +211,7 @@ public class AdminAPI {
     }
 
     @DELETE
-    @Path("/admin-delete")
+    @Path("/" + APINames.ADMIN_DELETE)
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Delete specific admin", httpMethod = "DELETE", notes = "delete existing admin user", response = Response.class)
