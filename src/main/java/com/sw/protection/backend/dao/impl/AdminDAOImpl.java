@@ -152,6 +152,7 @@ public class AdminDAOImpl implements AdminDAO {
 	    if (admin.getLast_modified().equals(this.getAdmin(admin.getUser_name()).getLast_modified())) {
 		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
+		admin = (Admin) session.get(Admin.class, admin.getId());
 		session.delete(admin);
 		adminReturn = admin;
 		tr.commit();

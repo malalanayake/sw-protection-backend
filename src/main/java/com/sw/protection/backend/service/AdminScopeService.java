@@ -9,27 +9,24 @@ import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.EncoderDecoderType;
 
 /**
- * This interface is used to define the all Admin service operations
+ * This interface is used to define the all AdminScope service operations
  * 
  * @author dinuka
  * 
  */
-public interface AdminService {
-
-    public String saveAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws DuplicateRecordException,
-	    OperationRollBackException, EncodingException, DecodingException, RequiredDataNotFoundException;
-
-    public String getAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws EncodingException,
-	    DecodingException, RequiredDataNotFoundException;
-
-    public String deleteAdmin(EncoderDecoderType encoderDecoderType, String adminString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
+public interface AdminScopeService {
+    public String saveAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException;
 
-    public String updateAdmin(EncoderDecoderType encoderDecoderType, String adminString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
-
-    public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
+    public String getAdminScopes(EncoderDecoderType encoderDecoderType, String adminScopeString)
 	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
+
+    public String deleteAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
+	    RequiredDataNotFoundException;
+
+    public String updateAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
+	    RequiredDataNotFoundException;
 }

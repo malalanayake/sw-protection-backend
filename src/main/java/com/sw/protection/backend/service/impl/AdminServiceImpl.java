@@ -115,6 +115,8 @@ public class AdminServiceImpl implements AdminService {
 			admin.setPass_word(adminData.getPass_word());
 		    }
 		}
+		// load all properties before delete
+		// admin = adminDAO.loadAllPropertiesOfAdmin(admin.getId());
 		admin = adminDAO.deleteAdmin(admin);
 		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	    } else {
@@ -154,6 +156,7 @@ public class AdminServiceImpl implements AdminService {
 			admin.setPass_word(adminData.getPass_word());
 		    }
 		}
+
 		admin = adminDAO.updateAdmin(admin);
 		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
 	    } else {

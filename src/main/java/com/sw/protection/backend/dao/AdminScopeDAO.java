@@ -6,6 +6,7 @@ import com.sw.protection.backend.common.exception.DuplicateRecordException;
 import com.sw.protection.backend.common.exception.OperationRollBackException;
 import com.sw.protection.backend.common.exception.RecordAlreadyModifiedException;
 import com.sw.protection.backend.config.APIOperations;
+import com.sw.protection.backend.entity.Admin;
 import com.sw.protection.backend.entity.AdminScope;
 
 /**
@@ -73,5 +74,21 @@ public interface AdminScopeDAO {
      * @return
      */
     public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation);
+
+    /**
+     * Validating the AdminScope data before save in service level
+     * 
+     * @param admin
+     * @return
+     */
+    public boolean validateAdminScopeforSave(AdminScope adminScope);
+
+    /**
+     * Validating the AdminScope data before update and delete in service level
+     * 
+     * @param admin
+     * @return
+     */
+    public boolean validateAdminScopeforUpdateandDelete(AdminScope adminScope);
 
 }

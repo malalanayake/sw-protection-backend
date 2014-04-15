@@ -302,4 +302,23 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 	return result;
     }
 
+    @Override
+    public boolean validateAdminScopeforSave(AdminScope adminScope) {
+	boolean status = false;
+	if (adminScope.getAdmin() != null && adminScope.getAdmin().getUser_name() != ""
+		&& adminScope.getAdmin().getUser_name() != null && adminScope.getApi_name() != null
+		&& adminScope.getApi_name() != "") {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateAdminScopeforUpdateandDelete(AdminScope adminScope) {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
 }
