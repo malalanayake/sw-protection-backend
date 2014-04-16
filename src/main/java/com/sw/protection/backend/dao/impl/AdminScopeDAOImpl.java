@@ -83,8 +83,8 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		// set latest time on modification
 		adminScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.save(adminScope);
-		adminScopeReturn = adminScope;
 		tr.commit();
+		adminScopeReturn = adminScope;
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Admin scope" + adminScope.toString());
 		}
@@ -116,9 +116,10 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     }
 
     @Override
-    public void deleteAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+    public AdminScope deleteAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
 	    OperationRollBackException {
 	Transaction tr = null;
+	AdminScope adminScopeReturn = null;
 	OperationRollBackException operationRollBackException = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	try {
@@ -136,6 +137,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		tr = session.beginTransaction();
 		session.delete(adminScope);
 		tr.commit();
+		adminScopeReturn = adminScope;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete AdminScope" + adminScope.toString());
 		}
@@ -170,13 +172,15 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		throw operationRollBackException;
 	    }
 	}
+	return adminScopeReturn;
 
     }
 
     @Override
-    public void updateAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
+    public AdminScope updateAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
 	    OperationRollBackException {
 	Transaction tr = null;
+	AdminScope adminScopeReturn = null;
 	OperationRollBackException operationRollBackException = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	try {
@@ -196,6 +200,7 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		adminScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(adminScope);
 		tr.commit();
+		adminScopeReturn = adminScope;
 
 		if (log.isDebugEnabled()) {
 		    log.debug("Update admin scope to " + adminScope.toString());
@@ -233,6 +238,8 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return adminScopeReturn;
 
     }
 
@@ -305,10 +312,13 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
     @Override
     public boolean validateAdminScopeforSave(AdminScope adminScope) {
 	boolean status = false;
-	if (adminScope.getAdmin() != null && adminScope.getAdmin().getUser_name() != ""
-		&& adminScope.getAdmin().getUser_name() != null && adminScope.getApi_name() != null
-		&& adminScope.getApi_name() != "") {
-	    status = true;
+	if (adminScope.getAdmin() != null) {
+	    if (adminScope.getAdmin().getUser_name() != "" && adminScope.getAdmin().getUser_name() != null
+		    && adminScope.getApi_name() != null && adminScope.getApi_name() != "") {
+		status = true;
+	    } else {
+		status = false;
+	    }
 	} else {
 	    status = false;
 	}
@@ -317,8 +327,25 @@ public class AdminScopeDAOImpl implements AdminScopeDAO {
 
     @Override
     public boolean validateAdminScopeforUpdateandDelete(AdminScope adminScope) {
-	// TODO Auto-generated method stub
-	return false;
+	boolean status = false;
+	if (adminScope != null) {
+	    if (adminScope.getAdmin() != null) {
+		if (adminScope.getAdmin().getUser_name() != null && adminScope.getAdmin().getUser_name() != ""
+			&& adminScope.getAdmin().getId() != null && adminScope.getApi_name() != null
+			&& adminScope.getApi_name() != "" && adminScope.getLast_modified() != null
+			&& adminScope.getLast_modified() != "") {
+		    status = true;
+		} else {
+		    status = false;
+		}
+	    } else {
+		// admin is null
+		status = false;
+	    }
+	} else {
+	    // admin scope is null
+	    status = false;
+	}
+	return status;
     }
-
 }

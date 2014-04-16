@@ -92,8 +92,8 @@ public class AdminDAOImpl implements AdminDAO {
 		tr = session.beginTransaction();
 		admin.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(admin);
-		adminReturn = admin;
 		tr.commit();
+		adminReturn = admin;
 
 		if (log.isDebugEnabled()) {
 		    log.debug("Update Admin" + admin.toString());
@@ -154,8 +154,8 @@ public class AdminDAOImpl implements AdminDAO {
 		tr = session.beginTransaction();
 		admin = (Admin) session.get(Admin.class, admin.getId());
 		session.delete(admin);
-		adminReturn = admin;
 		tr.commit();
+		adminReturn = admin;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Admin" + admin.toString());
 		}
@@ -220,8 +220,8 @@ public class AdminDAOImpl implements AdminDAO {
 		    }
 		}
 		session.save(admin);
-		adminReturn = admin;
 		tr.commit();
+		adminReturn = admin;
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Admin" + admin.toString());
 		}
