@@ -385,12 +385,12 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 	    if (companyAll.isEmpty()) {
 		if (log.isDebugEnabled()) {
-		    log.debug("Company users are not exist");
+		    log.debug("Companies are not exist");
 		}
 		return null;
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Found " + companyAll.size() + " Company users");
+		    log.debug("Found " + companyAll.size() + " Companies");
 		}
 		return companyAll;
 	    }

@@ -1,8 +1,10 @@
 package com.sw.protection.backend.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -18,11 +20,13 @@ import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
+import com.sw.protection.backend.service.AdminService;
 import com.sw.protection.backend.service.CompanyService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
@@ -39,6 +43,80 @@ public class CompanyAPI {
     private static final String ACCEPT_HEADERS = "accept";
     @Context
     private HttpHeaders headers;
+
+    @GET
+    @Path("/{userName}")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Get specific company", httpMethod = "GET", notes = "Fetch the company details", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given company found"),
+	    @ApiResponse(code = 404, message = "Given company not found"),
+	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
+	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
+	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found") })
+    public Response getAdmin(
+	    @ApiParam(value = "user_name of company", required = true) @PathParam("userName") String userName) {
+	CompanyService companyService = AppContext.getInstance().getBean(CompanyService.class);
+
+	try {
+	    String companyData = "";
+	    // process the JSON type request
+	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
+		companyData = companyService.getCompany(EncoderDecoderType.JSON, "{user_name:\"" + userName + "\"}");
+	    }
+	    // TODO: Need to process the XML type requests
+
+	    if (companyData != "") {
+		return Response.ok().entity(companyData).build();
+	    } else {
+		return Response.status(404).build();
+	    }
+	} catch (EncodingException e) {
+	    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+	} catch (DecodingException e) {
+	    return Response.status(Status.BAD_REQUEST).build();
+	} catch (RequiredDataNotFoundException e) {
+	    return Response.status(Status.PRECONDITION_FAILED).build();
+	}
+    }
+
+    @GET
+    @Path("/" + APINames.COMPANY_LIST + "/{item_per_list}/{page_number}")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Get list of companies", httpMethod = "GET", notes = "Fetch the list of company details", response = Response.class)
+    @ApiResponses(value = {
+	    @ApiResponse(code = 200, message = "Company list featched"),
+	    @ApiResponse(code = 404, message = "There is no list found according to the given {item_per_list} and {page_number}"),
+	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
+	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
+	    @ApiResponse(code = 412, message = "Pre condition failed due to {item_per_list} or {page_number} is not grater than zero") })
+    public Response getAdminList(
+	    @ApiParam(value = "Max Company to be featched", required = true) @PathParam("item_per_list") int itemPerList,
+	    @ApiParam(value = "Page number of company list", required = true) @PathParam("page_number") int pageNumber) {
+	CompanyService companyService = AppContext.getInstance().getBean(CompanyService.class);
+
+	try {
+	    String companyData = "";
+	    // process the JSON type request
+	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
+		companyData = companyService.getAllCompanies(EncoderDecoderType.JSON, pageNumber, itemPerList);
+	    }
+	    // TODO: Need to process the XML type requests
+
+	    if (companyData != "") {
+		return Response.ok().entity(companyData).build();
+	    } else {
+		return Response.status(404).build();
+	    }
+	} catch (EncodingException e) {
+	    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+	} catch (DecodingException e) {
+	    return Response.status(Status.BAD_REQUEST).build();
+	} catch (RequiredDataNotFoundException e) {
+	    return Response.status(Status.PRECONDITION_FAILED).build();
+	}
+    }
 
     @POST
     @Produces({ MediaType.APPLICATION_JSON })
