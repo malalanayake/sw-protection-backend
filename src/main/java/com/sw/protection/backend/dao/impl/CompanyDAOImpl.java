@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -71,10 +72,11 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public void updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public Company updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	Company companyReturn = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(company.getId());
@@ -90,7 +92,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		company.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(company);
 		tr.commit();
-
+		companyReturn = company;
 		if (log.isDebugEnabled()) {
 		    log.debug("Update Company " + company.toString());
 		}
@@ -126,13 +128,16 @@ public class CompanyDAOImpl implements CompanyDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companyReturn;
     }
 
     @Override
-    public void deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public Company deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	Company companyReturn = null;
 	try {
 	    // Lock by admin ID
 	    LOCK_MAP.lock(company.getId());
@@ -146,6 +151,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		tr = session.beginTransaction();
 		session.delete(company);
 		tr.commit();
+		companyReturn = company;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Company " + company.toString());
 		}
@@ -180,6 +186,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 		throw operationRollBackException;
 	    }
 	}
+	return companyReturn;
     }
 
     @Override
@@ -225,8 +232,8 @@ public class CompanyDAOImpl implements CompanyDAO {
 		}
 
 		session.save(company);
-		companyReturn = company;
 		tr.commit();
+		companyReturn = company;
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company " + company.toString());
 		}
@@ -312,6 +319,87 @@ public class CompanyDAOImpl implements CompanyDAO {
 		log.debug("Is Company " + userName + " Exist: True");
 	    }
 	    return true;
+	}
+    }
+
+    @Override
+    public boolean validateCompanyforSave(Company company) {
+	boolean status = false;
+	if (company.getUser_name() != null && company.getUser_name() != "" && company.getEmail() != null
+		&& company.getEmail() != "") {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateCompanyforUpdateandDelete(Company company) {
+	boolean status = false;
+	if (company.getId() != null && company.getUser_name() != null && company.getUser_name() != ""
+		&& company.getEmail() != null && company.getEmail() != "" && company.getLast_modified() != null
+		&& company.getLast_modified() != "") {
+	    // check whether the data is null or not
+	    if (this.isCompanyUserNameExist(company.getUser_name())) {
+		// check whether the given user name is not changed
+		Company saveCompany = this.getCompany(company.getUser_name());
+		if (saveCompany.getId().equals(company.getId())) {
+		    status = true;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation Pass");
+		    }
+		} else {
+		    status = false;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+				+ saveCompany.getId() + " This is the given ID:" + company.getId());
+		    }
+		}
+	    } else {
+		status = false;
+		if (log.isDebugEnabled()) {
+		    log.debug("Validation fail due to Company userName:" + company.getUser_name() + " doesn't exist");
+		}
+	    }
+	} else {
+	    status = false;
+	    if (log.isDebugEnabled()) {
+		log.debug("Validation fail due to empty or null values");
+	    }
+	}
+	return status;
+    }
+
+    @Override
+    public List<Company> getAllCompaniesWithPagination(int page, int recordePerPage) {
+	Session session = sessionFactory.getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    Criteria cr = session.createCriteria(Company.class);
+	    cr.setFirstResult((page - 1) * recordePerPage);
+	    cr.setMaxResults(recordePerPage);
+	    List<Company> companyAll = cr.list();
+	    tr.commit();
+
+	    if (companyAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Company users are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + companyAll.size() + " Company users");
+		}
+		return companyAll;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
+	    return null;
 	}
     }
 

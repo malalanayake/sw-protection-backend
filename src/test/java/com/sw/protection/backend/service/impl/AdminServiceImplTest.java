@@ -107,6 +107,7 @@ public class AdminServiceImplTest {
 	}
 
 	assertEquals(adminReturn.contains("api_key"), true);
+	assertEquals(adminReturn.contains("pass_word"), false);
     }
 
     @Test(dependsOnMethods = { "getAdmin" })
@@ -193,7 +194,7 @@ public class AdminServiceImplTest {
 	} catch (Exception e) {
 
 	}
-	System.out.print(finalString);
+
 	assertEquals(finalString.contains("New_Name"), true);
 	assertEquals(finalString.contains("test@malalanayake.com"), true);
 
@@ -214,7 +215,7 @@ public class AdminServiceImplTest {
 
     @Test(dependsOnMethods = { "updateAdmin" })
     public void deleteAdmin() {
-	AdminService adminService = new AdminServiceImpl();
+	AdminService adminService = AppContext.getInstance().getBean(AdminService.class);
 	String adminEncoded = "{\"user_name\":\"dinuka\"}";
 	String adminReturn = "";
 	try {
@@ -258,7 +259,7 @@ public class AdminServiceImplTest {
 	} catch (Exception e) {
 
 	}
-	System.out.print(updatedfinalString);
+
 	assertEquals(updatedfinalString.contains("New_Name"), true);
 	assertEquals(updatedfinalString.contains("test@malalanayake.com"), true);
 

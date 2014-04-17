@@ -30,12 +30,23 @@ public interface CompanyDAO {
     public Company getCompany(String companyUserName);
 
     /**
+     * Get all Companies with pagination
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum recodes per page
+     * @return
+     */
+    public List<Company> getAllCompaniesWithPagination(int page, int recordePerPage);
+
+    /**
      * Update company
      * 
      * @param company
      *            - Company object with updated values
      */
-    public void updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public Company updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete specific company
@@ -43,7 +54,7 @@ public interface CompanyDAO {
      * @param company
      *            - Company object to be deleted
      */
-    public void deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public Company deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save company data
@@ -70,4 +81,24 @@ public interface CompanyDAO {
      * @return - true/false
      */
     public boolean isCompanyUserNameExist(String userName);
+
+    /**
+     * This method is used to validate the given Company. This is going to use
+     * in service class before saving the object
+     * 
+     * @param admin
+     *            - given Company object
+     * @return
+     */
+    public boolean validateCompanyforSave(Company company);
+
+    /**
+     * This method is used to validate the given Company. This is going to use
+     * in service class before update or delete the object
+     * 
+     * @param admin
+     *            - given Company object
+     * @return
+     */
+    public boolean validateCompanyforUpdateandDelete(Company company);
 }

@@ -15,80 +15,72 @@ import com.sw.protection.backend.config.APIKeyGenerator;
 import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
 import com.sw.protection.backend.config.ObjectType;
-import com.sw.protection.backend.dao.AdminDAO;
+import com.sw.protection.backend.dao.CompanyDAO;
 import com.sw.protection.backend.decoder.Decoder;
 import com.sw.protection.backend.decoder.DecoderFactory;
 import com.sw.protection.backend.encoder.Encoder;
 import com.sw.protection.backend.encoder.EncoderFactory;
-import com.sw.protection.backend.entity.Admin;
-import com.sw.protection.backend.service.AdminService;
-
-/**
- * Admin service operation implementation.
- * 
- * @author dinuka
- * 
- */
+import com.sw.protection.backend.entity.Company;
+import com.sw.protection.backend.service.CompanyService;
 
 @Service
-public class AdminServiceImpl implements AdminService {
-    public static final Logger log = Logger.getLogger(AdminServiceImpl.class.getName());
+public class CompanyServiceImpl implements CompanyService {
+    public static final Logger log = Logger.getLogger(CompanyServiceImpl.class.getName());
 
     @Override
-    public String saveAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws DuplicateRecordException,
-	    OperationRollBackException, EncodingException, DecodingException, RequiredDataNotFoundException {
+    public String saveCompany(EncoderDecoderType encoderDecoderType, String companyString)
+	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
+	    RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	String encodedString = "";
 
-	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (admin != null) {
-	    if (adminDAO.validateAdminforSave(admin)) {
-		// generate API-KEY
-		admin.setApi_key(APIKeyGenerator.generateAPIKey());
-		admin = adminDAO.saveAdmin(admin);
-		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	Company company = (Company) decoder.decodeObject(ObjectType.COMPANY, companyString);
+	if (company != null) {
+	    if (companyDAO.validateCompanyforSave(company)) {
+		company.setApi_key(APIKeyGenerator.generateAPIKey());
+		company = companyDAO.saveCompany(company);
+		encodedString = encoder.encodeObject(ObjectType.COMPANY, company);
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		    log.debug("Given object doesn't contain expected data:" + company.toString());
 		}
-		throw new RequiredDataNotFoundException("Given object doesn't contain expected data");
+		throw new RequiredDataNotFoundException();
 	    }
 	} else {
 	    if (log.isDebugEnabled()) {
 		log.debug("Given object is null");
 	    }
-	    throw new RequiredDataNotFoundException("Given object is null");
+	    throw new RequiredDataNotFoundException();
 	}
 
 	return encodedString;
-
     }
 
     @Override
-    public String getAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws EncodingException,
+    public String getCompany(EncoderDecoderType encoderDecoderType, String companyString) throws EncodingException,
 	    DecodingException, RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	String encodedString = "";
-	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (admin.getUser_name() != null && admin.getUser_name() != "") {
-	    admin = adminDAO.getAdmin(admin.getUser_name());
-	    if (admin != null) {
-		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+	Company company = (Company) decoder.decodeObject(ObjectType.COMPANY, companyString);
+	if (company.getUser_name() != null && company.getUser_name() != "") {
+	    company = companyDAO.getCompany(company.getUser_name());
+	    if (company != null) {
+		encodedString = encoder.encodeObject(ObjectType.COMPANY, company);
 	    } else {
 		// Recode not found according to the user name
 		encodedString = "";
 	    }
 	} else {
 	    if (log.isDebugEnabled()) {
-		log.debug("Given object doesn't contain expected data:" + admin.toString());
+		log.debug("Given object doesn't contain expected data:" + company.toString());
 	    }
 	    throw new RequiredDataNotFoundException("Given object doesn't contain expected data");
 	}
@@ -96,32 +88,32 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String deleteAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+    public String deleteCompany(EncoderDecoderType encoderDecoderType, String companyString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	String encodedString = "";
-	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (admin != null) {
-	    if (adminDAO.validateAdminforUpdateandDelete(admin)) {
-		if (admin.getPass_word() == null || admin.getPass_word() == "") {
+	Company company = (Company) decoder.decodeObject(ObjectType.COMPANY, companyString);
+	if (company != null) {
+	    if (companyDAO.validateCompanyforUpdateandDelete(company)) {
+		if (company.getPass_word() == null || company.getPass_word() == "") {
 		    // If password is not set then it will automatically get the
 		    // existing one and save it
-		    Admin adminData = adminDAO.getAdmin(admin.getUser_name());
-		    if (adminData.getPass_word() != null) {
-			admin.setPass_word(adminData.getPass_word());
+		    Company companyData = companyDAO.getCompany(company.getUser_name());
+		    if (companyData.getPass_word() != null) {
+			company.setPass_word(companyData.getPass_word());
 		    }
 		}
 
-		admin = adminDAO.deleteAdmin(admin);
-		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+		company = companyDAO.deleteCompany(company);
+		encodedString = encoder.encodeObject(ObjectType.COMPANY, company);
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		    log.debug("Given object doesn't contain expected data:" + company.toString());
 		}
 		throw new RequiredDataNotFoundException("Given object doesn't contain expected data");
 	    }
@@ -136,33 +128,33 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String updateAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+    public String updateCompany(EncoderDecoderType encoderDecoderType, String companyString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	DecoderFactory decoderFactory = AppContext.getInstance().getBean(DecoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	Decoder decoder = decoderFactory.getDecoder(encoderDecoderType);
-	AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
+	CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
 	String encodedString = "";
-	Admin admin = (Admin) decoder.decodeObject(ObjectType.ADMIN, adminString);
-	if (admin != null) {
-	    if (adminDAO.validateAdminforUpdateandDelete(admin)) {
-		if (admin.getPass_word() == null || admin.getPass_word() == "") {
+	Company company = (Company) decoder.decodeObject(ObjectType.COMPANY, companyString);
+	if (company != null) {
+	    if (companyDAO.validateCompanyforUpdateandDelete(company)) {
+		if (company.getPass_word() == null || company.getPass_word() == "") {
 		    // If password is not set then it will automatically get the
 		    // existing one and save it
-		    Admin adminData = adminDAO.getAdmin(admin.getUser_name());
-		    if (adminData.getPass_word() != null) {
-			admin.setPass_word(adminData.getPass_word());
+		    Company companyData = companyDAO.getCompany(company.getUser_name());
+		    if (companyData.getPass_word() != null) {
+			company.setPass_word(companyData.getPass_word());
 		    }
 		}
 		// generate new API-KEY
-		admin.setApi_key(APIKeyGenerator.generateAPIKey());
-		admin = adminDAO.updateAdmin(admin);
-		encodedString = encoder.encodeObject(ObjectType.ADMIN, admin);
+		company.setApi_key(APIKeyGenerator.generateAPIKey());
+		company = companyDAO.updateCompany(company);
+		encodedString = encoder.encodeObject(ObjectType.COMPANY, company);
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Given object doesn't contain expected data:" + admin.toString());
+		    log.debug("Given object doesn't contain expected data:" + company.toString());
 		}
 		throw new RequiredDataNotFoundException("Given object doesn't contain expected data");
 	    }
@@ -177,7 +169,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
+    public String getAllCompanies(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
 	    throws EncodingException, DecodingException, RequiredDataNotFoundException {
 	String encodedString = "";
 	// TODO : set the max recode limitation on this by configurations
@@ -185,13 +177,13 @@ public class AdminServiceImpl implements AdminService {
 	    EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	    Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 
-	    AdminDAO adminDAO = AppContext.getInstance().getBean(AdminDAO.class);
-	    List<Admin> admins = adminDAO.getAllAdminsWithPagination(page, recordePerPage);
-	    if (admins != null) {
-		encodedString = encoder.encodeObjectList(ObjectType.ADMIN, admins);
+	    CompanyDAO companyDAO = AppContext.getInstance().getBean(CompanyDAO.class);
+	    List<Company> companies = companyDAO.getAllCompaniesWithPagination(page, recordePerPage);
+	    if (companies != null) {
+		encodedString = encoder.encodeObjectList(ObjectType.COMPANY, companies);
 	    } else {
 		if (log.isDebugEnabled()) {
-		    log.debug("Admin user list is empty so return empty string as encoded admin user list string");
+		    log.debug("Company list is empty so return empty string as encoded Company list string");
 		}
 	    }
 
@@ -208,4 +200,5 @@ public class AdminServiceImpl implements AdminService {
 
 	return encodedString;
     }
+
 }
