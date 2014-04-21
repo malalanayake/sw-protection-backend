@@ -30,12 +30,23 @@ public interface CompanyUserDAO {
     public CompanyUser getUser(String userName);
 
     /**
+     * Get all CompanyUsers with pagination
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum recodes per page
+     * @return
+     */
+    public List<CompanyUser> getAllCompanyUsersWithPagination(int page, int recordePerPage);
+
+    /**
      * Update specific company user
      * 
      * @param user
      *            - Company user object with updated values
      */
-    public void updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public CompanyUser updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Delete specific user
@@ -43,7 +54,7 @@ public interface CompanyUserDAO {
      * @param user
      *            - Company user object to be deleted
      */
-    public void deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public CompanyUser deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Save user
@@ -70,4 +81,24 @@ public interface CompanyUserDAO {
      * @return - Specific company user
      */
     public CompanyUser loadAllPropertiesOfCompanyUser(Long id);
+
+    /**
+     * This method is used to validate the given CompanyUser. This is going to
+     * use in service class before saving the object
+     * 
+     * @param admin
+     *            - given Company object
+     * @return
+     */
+    public boolean validateCompanyUserforSave(CompanyUser companyUser);
+
+    /**
+     * This method is used to validate the given CompanyUser. This is going to
+     * use in service class before update or delete the object
+     * 
+     * @param admin
+     *            - given Company object
+     * @return
+     */
+    public boolean validateCompanyUserforUpdateandDelete(CompanyUser companyUser);
 }

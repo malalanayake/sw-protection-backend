@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -101,10 +102,11 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
     }
 
     @Override
-    public void updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public CompanyUser updateUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyUser companyUserReturn = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(user.getId());
@@ -120,6 +122,7 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		user.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(user);
 		tr.commit();
+		companyUserReturn = user;
 
 		if (log.isDebugEnabled()) {
 		    log.debug("Update Company user " + user.toString());
@@ -157,13 +160,16 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    }
 
 	}
+
+	return companyUserReturn;
     }
 
     @Override
-    public void deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public CompanyUser deleteUser(CompanyUser user) throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyUser companyUserReturn = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(user.getId());
@@ -177,6 +183,7 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		tr = session.beginTransaction();
 		session.delete(user);
 		tr.commit();
+		companyUserReturn = user;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Company user " + user.toString());
 		}
@@ -212,6 +219,8 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    }
 
 	}
+
+	return companyUserReturn;
     }
 
     @Override
@@ -241,8 +250,8 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 		    }
 		}
 		session.save(user);
-		companyUserReturn = user;
 		tr.commit();
+		companyUserReturn = user;
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company user " + user.toString());
 		}
@@ -295,6 +304,88 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	    return companyUser;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
+	    return null;
+	}
+    }
+
+    @Override
+    public boolean validateCompanyUserforSave(CompanyUser companyUser) {
+	boolean status = false;
+	if (companyUser.getUser_name() != null && companyUser.getUser_name() != "" && companyUser.getEmail() != null
+		&& companyUser.getEmail() != "" && companyUser.getCompany() != null) {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateCompanyUserforUpdateandDelete(CompanyUser companyUser) {
+	boolean status = false;
+	if (companyUser.getId() != null && companyUser.getUser_name() != null && companyUser.getUser_name() != ""
+		&& companyUser.getEmail() != null && companyUser.getEmail() != ""
+		&& companyUser.getLast_modified() != null && companyUser.getLast_modified() != ""
+		&& companyUser.getCompany() != null) {
+	    // check whether the data is null or not
+	    if (this.isCompanyUserNameExist(companyUser.getUser_name())) {
+		// check whether the given user name is not changed
+		CompanyUser saveCompanyUser = this.getUser(companyUser.getUser_name());
+		if (saveCompanyUser.getId().equals(companyUser.getId())) {
+		    status = true;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation Pass");
+		    }
+		} else {
+		    status = false;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+				+ saveCompanyUser.getId() + " This is the given ID:" + companyUser.getId());
+		    }
+		}
+	    } else {
+		status = false;
+		if (log.isDebugEnabled()) {
+		    log.debug("Validation fail due to CompanyUser userName:" + companyUser.getUser_name()
+			    + " doesn't exist");
+		}
+	    }
+	} else {
+	    status = false;
+	    if (log.isDebugEnabled()) {
+		log.debug("Validation fail due to empty or null values");
+	    }
+	}
+	return status;
+    }
+
+    public List<CompanyUser> getAllCompanyUsersWithPagination(int page, int recordePerPage) {
+	Session session = sessionFactory.getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    Criteria cr = session.createCriteria(CompanyUser.class);
+	    cr.setFirstResult((page - 1) * recordePerPage);
+	    cr.setMaxResults(recordePerPage);
+	    List<CompanyUser> companyUserAll = cr.list();
+	    tr.commit();
+
+	    if (companyUserAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Company Users are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + companyUserAll.size() + " Company Users");
+		}
+		return companyUserAll;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    return null;
 	}
     }

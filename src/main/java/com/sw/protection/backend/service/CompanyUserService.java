@@ -9,28 +9,28 @@ import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.EncoderDecoderType;
 
 /**
- * This interface is used to define the all Company service operations
+ * This interface is used to define the all CompanyUser service operations
  * 
  * @author dinuka
  * 
  */
-public interface CompanyService {
+public interface CompanyUserService {
 
-    public String saveCompany(EncoderDecoderType encoderDecoderType, String companyString)
+    public String saveCompanyUser(EncoderDecoderType encoderDecoderType, String companyUserString)
 	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException;
 
-    public String getCompany(EncoderDecoderType encoderDecoderType, String companyString) throws EncodingException,
-	    DecodingException, RequiredDataNotFoundException;
+    public String getCompanyUser(EncoderDecoderType encoderDecoderType, String companyUserString)
+	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
 
-    public String deleteCompany(EncoderDecoderType encoderDecoderType, String companyString)
+    public String deleteCompanyUser(EncoderDecoderType encoderDecoderType, String companyUserString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException;
 
-    public String updateCompany(EncoderDecoderType encoderDecoderType, String companyString)
+    public String updateCompanyUser(EncoderDecoderType encoderDecoderType, String companyUserString)
 	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
 	    RequiredDataNotFoundException;
 
-    public String getAllCompanies(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
+    public String getAllCompanyUsers(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
 	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
 }

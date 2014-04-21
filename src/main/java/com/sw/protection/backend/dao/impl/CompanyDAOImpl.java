@@ -149,6 +149,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 	    if (company.getLast_modified().equals(this.getCompany(company.getUser_name()).getLast_modified())) {
 		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
+		company = (Company) session.get(Company.class, company.getId());
 		session.delete(company);
 		tr.commit();
 		companyReturn = company;
