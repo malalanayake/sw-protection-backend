@@ -86,8 +86,8 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		// set latest time on modification
 		companyUserScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.save(companyUserScope);
-		companyUserScopeReturn = companyUserScope;
 		tr.commit();
+		companyUserScopeReturn = companyUserScope;
 		if (log.isDebugEnabled()) {
 		    log.debug("Save Company user scope" + companyUserScope.toString());
 		}
@@ -120,11 +120,12 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
     }
 
     @Override
-    public void deleteCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException {
+    public CompanyUserScope deleteCompanyUserScope(CompanyUserScope companyUserScope)
+	    throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyUserScope companyUserScopeReturn = null;
 	try {
 	    // Lock by company user scope ID
 	    LOCK_MAP.lock(companyUserScope.getId());
@@ -140,6 +141,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		tr = session.beginTransaction();
 		session.delete(companyUserScope);
 		tr.commit();
+		companyUserScopeReturn = companyUserScope;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Company user scope " + companyUserScope.toString());
 		}
@@ -176,14 +178,16 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 	    }
 	}
 
+	return companyUserScopeReturn;
     }
 
     @Override
-    public void updateCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException {
+    public CompanyUserScope updateCompanyUserScope(CompanyUserScope companyUserScope)
+	    throws RecordAlreadyModifiedException, OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyUserScope companyUserScopeReturn = null;
 	try {
 	    // Lock by company user ID
 	    LOCK_MAP.lock(companyUserScope.getCompanyUser().getId());
@@ -202,7 +206,7 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		companyUserScope.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(companyUserScope);
 		tr.commit();
-
+		companyUserScopeReturn = companyUserScope;
 		if (log.isDebugEnabled()) {
 		    log.debug("Update company user scope to " + companyUserScope.toString());
 		}
@@ -241,6 +245,8 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companyUserScopeReturn;
 
     }
 
@@ -310,6 +316,48 @@ public class CompanyUserScopeDAOImpl implements CompanyUserScopeDAO {
 		    + result);
 	}
 	return result;
+    }
+
+    @Override
+    public boolean validateCompanyUserScopeforSave(CompanyUserScope companyUserScope) {
+	boolean status = false;
+	if (companyUserScope.getCompanyUser() != null) {
+	    if (companyUserScope.getCompanyUser().getUser_name() != ""
+		    && companyUserScope.getCompanyUser().getUser_name() != null
+		    && companyUserScope.getApi_name() != null && companyUserScope.getApi_name() != "") {
+		status = true;
+	    } else {
+		status = false;
+	    }
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateCompanyUserScopeforUpdateandDelete(CompanyUserScope companyUserScope) {
+	boolean status = false;
+	if (companyUserScope != null) {
+	    if (companyUserScope.getCompanyUser() != null) {
+		if (companyUserScope.getCompanyUser().getUser_name() != null
+			&& companyUserScope.getCompanyUser().getUser_name() != ""
+			&& companyUserScope.getCompanyUser().getId() != null && companyUserScope.getApi_name() != null
+			&& companyUserScope.getApi_name() != "" && companyUserScope.getLast_modified() != null
+			&& companyUserScope.getLast_modified() != "") {
+		    status = true;
+		} else {
+		    status = false;
+		}
+	    } else {
+		// admin is null
+		status = false;
+	    }
+	} else {
+	    // admin scope is null
+	    status = false;
+	}
+	return status;
     }
 
 }

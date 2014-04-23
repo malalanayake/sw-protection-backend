@@ -38,8 +38,8 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - the company user scope to be deleted
      */
-    public void deleteCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException;
+    public CompanyUserScope deleteCompanyUserScope(CompanyUserScope companyUserScope)
+	    throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Update Company user scope data
@@ -47,8 +47,8 @@ public interface CompanyUserScopeDAO {
      * @param companyUserScope
      *            - edited company user scope
      */
-    public void updateCompanyUserScope(CompanyUserScope companyUserScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException;
+    public CompanyUserScope updateCompanyUserScope(CompanyUserScope companyUserScope)
+	    throws RecordAlreadyModifiedException, OperationRollBackException;
 
     /**
      * Get specific Company user scope data
@@ -73,4 +73,21 @@ public interface CompanyUserScopeDAO {
      * @return
      */
     public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation);
+
+    /**
+     * Validating the CompanyUserScope data before save in service level
+     * 
+     * @param companyUserScope
+     * @return
+     */
+    public boolean validateCompanyUserScopeforSave(CompanyUserScope companyUserScope);
+
+    /**
+     * Validating the CompanyUserScope data before update and delete in service
+     * level
+     * 
+     * @param companyUserScope
+     * @return
+     */
+    public boolean validateCompanyUserScopeforUpdateandDelete(CompanyUserScope companyUserScope);
 }
