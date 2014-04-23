@@ -46,9 +46,9 @@ public class AdminDAOImplTest {
     @DataProvider(name = "adminData")
     public Object[][] AdminData() {
 	Object[][] IndiaIncomeArray = {
-		{ "Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com", APINames.USER, true, false, true,
-			false },
-		{ "Malinda", "malinda", "pw908", "malinda@yahoo.com", APINames.USER, false, true, false, true } };
+		{ "Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com", APINames.COMPANY_USER, true, false,
+			true, false },
+		{ "Malinda", "malinda", "pw908", "malinda@yahoo.com", APINames.COMPANY_USER, false, true, false, true } };
 	return (IndiaIncomeArray);
     }
 
@@ -92,7 +92,7 @@ public class AdminDAOImplTest {
 	for (AdminScope adminScope : adminScopeSet) {
 	    firstAdminScope = adminScope;
 	}
-	assertEquals(firstAdminScope.getApi_name(), APINames.USER);
+	assertEquals(firstAdminScope.getApi_name(), APINames.COMPANY_USER);
 
     }
 

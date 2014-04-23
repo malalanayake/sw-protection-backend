@@ -119,7 +119,7 @@ public class AdminScopeDAOImplTest {
 
 	AdminScope adminScope = new AdminScope();
 	adminScope.setAdmin(admin);
-	adminScope.setApi_name(APINames.USER);
+	adminScope.setApi_name(APINames.COMPANY_USER);
 	adminScope.setGet(false);
 	adminScope.setPost(false);
 	adminScope.setPut(false);
@@ -162,8 +162,8 @@ public class AdminScopeDAOImplTest {
 	Admin admin = adminDAO.getAdmin("dinuka");
 
 	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
-	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
-	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
+	AdminScope adminScope = adminScopeDAO.getAdminScope("dinuka", APINames.COMPANY_USER);
+	AdminScope adminAlredayModifiedScope = adminScopeDAO.getAdminScope("dinuka", APINames.COMPANY_USER);
 	log.info("Admin Scope :" + adminScope.toString());
 	assertEquals(adminScope.isDel(), false);
 	assertEquals(adminScope.isGet(), false);
@@ -189,7 +189,7 @@ public class AdminScopeDAOImplTest {
 	}
 	assertEquals(checkException, RecordAlreadyModifiedException.class.toString());
 
-	AdminScope latest = adminScopeDAO.getAdminScope("dinuka", APINames.USER);
+	AdminScope latest = adminScopeDAO.getAdminScope("dinuka", APINames.COMPANY_USER);
 	log.info("Uptodate admin Scope :" + latest.toString());
 	assertEquals(latest.isDel(), true);
 	assertEquals(latest.isGet(), true);
@@ -201,10 +201,10 @@ public class AdminScopeDAOImplTest {
     @Test(dependsOnMethods = { "updateAdminScope" })
     public void isAccessGrantedFor() {
 	AdminScopeDAO adminScopeDAO = AppContext.getInstance().getBean(AdminScopeDAO.class);
-	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.GET), true);
-	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.DELETE), true);
-	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.POST), true);
-	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.USER, APIOperations.PUT), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY_USER, APIOperations.GET), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY_USER, APIOperations.DELETE), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY_USER, APIOperations.POST), true);
+	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY_USER, APIOperations.PUT), true);
 
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.GET), false);
 	assertEquals(adminScopeDAO.isAccessGrantedFor("dinuka", APINames.COMPANY, APIOperations.DELETE), true);

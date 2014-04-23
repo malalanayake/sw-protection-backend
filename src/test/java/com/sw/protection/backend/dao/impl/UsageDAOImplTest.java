@@ -57,7 +57,7 @@ public class UsageDAOImplTest {
 	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
 	UsageData usage2 = new UsageData();
-	usage2.setApi_name(APINames.USER);
+	usage2.setApi_name(APINames.COMPANY_USER);
 	usage2.setOperation(APIOperations.POST);
 	usage2.setType(ObjectType.ADMIN);
 	usage2.setType_id(1l);
@@ -108,7 +108,7 @@ public class UsageDAOImplTest {
 	UsageDAO usageDAO = AppContext.getInstance().getBean(UsageDAO.class);
 	List<UsageData> usageList1 = usageDAO.getAllUsagesByAPIName(APINames.ADMIN);
 	assertEquals(usageList1.size(), 1);
-	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY_USER);
 	assertEquals(usageList2.size(), 1);
 	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
 	assertEquals(usageList3.size(), 1);
@@ -199,7 +199,7 @@ public class UsageDAOImplTest {
 
 	    }
 	}
-	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.USER);
+	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY_USER);
 	for (UsageData usage : usageList2) {
 	    try {
 		usageDAO.deleteUsage(usage);
