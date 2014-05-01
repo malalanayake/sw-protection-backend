@@ -180,6 +180,7 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		    this.getCompanyClient(companyClient.getUser_name()).getLast_modified())) {
 		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
+		companyClient = (CompanyClient) session.get(CompanyClient.class, companyClient.getId());
 		session.delete(companyClient);
 		tr.commit();
 		if (log.isDebugEnabled()) {

@@ -68,7 +68,7 @@ public class CompanyUserScopeServiceImpl implements CompanyUserScopeService {
 
     @Override
     public String getCompanyUserScope(EncoderDecoderType encoderDecoderType, String userName, String api_name)
-	    throws EncodingException, DecodingException, RequiredDataNotFoundException {
+	    throws EncodingException, RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
@@ -94,7 +94,7 @@ public class CompanyUserScopeServiceImpl implements CompanyUserScopeService {
 
     @Override
     public String getCompanyUserScopes(EncoderDecoderType encoderDecoderType, String userName)
-	    throws EncodingException, DecodingException, RequiredDataNotFoundException {
+	    throws EncodingException, RequiredDataNotFoundException {
 	EncoderFactory encoderFactory = AppContext.getInstance().getBean(EncoderFactory.class);
 	Encoder encoder = encoderFactory.getEncoder(encoderDecoderType);
 	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);

@@ -145,6 +145,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		    this.getCompanySW(companySW.getCompany().getUser_name(), companySW.getName()).getLast_modified())) {
 		Session session = sessionFactory.getCurrentSession();
 		tr = session.beginTransaction();
+		companySW = (CompanySW) session.get(CompanySW.class, companySW.getId());
 		session.delete(companySW);
 		tr.commit();
 		if (log.isDebugEnabled()) {

@@ -23,7 +23,7 @@ import com.sw.protection.backend.common.exception.RequiredDataNotFoundException;
 import com.sw.protection.backend.config.APINames;
 import com.sw.protection.backend.config.AppContext;
 import com.sw.protection.backend.config.EncoderDecoderType;
-import com.sw.protection.backend.service.AdminScopeService;
+import com.sw.protection.backend.service.CompanyUserScopeService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
@@ -33,15 +33,15 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 /**
- * Rest web service for operate the admin details
+ * Rest web service for operate the company user scope details
  * 
  * @author dinuka
  * 
  */
-@Path("/" + APINames.ADMIN_SCOPE)
-@Api(value = "/" + APINames.ADMIN_SCOPE, description = "Rest api for do operations on admin scopes", produces = MediaType.APPLICATION_JSON)
+@Path("/" + APINames.COMPANY_USER_SCOPE)
+@Api(value = "/" + APINames.COMPANY_USER_SCOPE, description = "Rest api for do operations on company user scopes", produces = MediaType.APPLICATION_JSON)
 @Produces({ MediaType.APPLICATION_JSON })
-public class AdminScopeAPI {
+public class CompanyUserScopeAPI {
     private static final String ACCEPT_HEADERS = "accept";
     @Context
     private HttpHeaders headers;
@@ -50,25 +50,26 @@ public class AdminScopeAPI {
     @Path("/{userName}")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Get admin scope list", httpMethod = "GET", notes = "Fetch the admin user scope details", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given admin user found"),
-	    @ApiResponse(code = 404, message = "Given admin scope list not found"),
+    @ApiOperation(value = "Get company user scope list", httpMethod = "GET", notes = "Fetch the company user scope details", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given company user scope found"),
+	    @ApiResponse(code = 404, message = "Given company user scope list not found"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found") })
-    public Response getAdminScopes(
-	    @ApiParam(value = "user_name of admin", required = true) @PathParam("userName") String userName) {
-	AdminScopeService adminScopeService = AppContext.getInstance().getBean(AdminScopeService.class);
+    public Response getCompanyUserScopes(
+	    @ApiParam(value = "user_name of company user", required = true) @PathParam("userName") String userName) {
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminData = "";
+	    String companyUserScopData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminScopeService.getAdminScopes(EncoderDecoderType.JSON, userName);
+		companyUserScopData = companyUserScopeService.getCompanyUserScopes(EncoderDecoderType.JSON, userName);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminData != "") {
-		return Response.ok().entity(adminData).build();
+	    if (companyUserScopData != "") {
+		return Response.ok().entity(companyUserScopData).build();
 	    } else {
 		return Response.status(404).build();
 	    }
@@ -83,26 +84,28 @@ public class AdminScopeAPI {
     @Path("/{userName}/{apiName}")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Get specific admin scope", httpMethod = "GET", notes = "Fetch the admin user scope details", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given admin scope found"),
-	    @ApiResponse(code = 404, message = "Given admin scope is not found"),
+    @ApiOperation(value = "Get specific company user scope", httpMethod = "GET", notes = "Fetch the company user scope details", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given company user scope found"),
+	    @ApiResponse(code = 404, message = "Given company user scope is not found"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found") })
-    public Response getAdminScope(
-	    @ApiParam(value = "user_name of admin", required = true) @PathParam("userName") String userName,
-	    @ApiParam(value = "API name of admin", required = true) @PathParam("apiName") String apiName) {
-	AdminScopeService adminScopeService = AppContext.getInstance().getBean(AdminScopeService.class);
+    public Response getCompanyUserScope(
+	    @ApiParam(value = "user_name of company user", required = true) @PathParam("userName") String userName,
+	    @ApiParam(value = "API name of company user", required = true) @PathParam("apiName") String apiName) {
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminData = "";
+	    String companyUserScopeData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminScopeService.getAdminScope(EncoderDecoderType.JSON, userName, apiName);
+		companyUserScopeData = companyUserScopeService.getCompanyUserScope(EncoderDecoderType.JSON, userName,
+			apiName);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminData != "") {
-		return Response.ok().entity(adminData).build();
+	    if (companyUserScopeData != "") {
+		return Response.ok().entity(companyUserScopeData).build();
 	    } else {
 		return Response.status(404).build();
 	    }
@@ -117,27 +120,28 @@ public class AdminScopeAPI {
     @Path("/{userName}/{apiName}/{apiOpertaion}")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Check whether the specific admin scope", httpMethod = "GET", notes = "Check the access of given admin user for given operation", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given admin scope found"),
-	    @ApiResponse(code = 404, message = "Given admin scope is not found"),
+    @ApiOperation(value = "Check whether the specific company user scope", httpMethod = "GET", notes = "Check the access of given company user for given operation", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Given company user scope found"),
+	    @ApiResponse(code = 404, message = "Given company user scope is not found"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found") })
-    public Response isAccessGrantForAdmin(
-	    @ApiParam(value = "user_name of admin", required = true) @PathParam("userName") String userName,
-	    @ApiParam(value = "API name of admin", required = true) @PathParam("apiName") String apiName,
-	    @ApiParam(value = "API operation of admin", required = true) @PathParam("apiOpertaion") String apiOpertaion) {
-	AdminScopeService adminScopeService = AppContext.getInstance().getBean(AdminScopeService.class);
+    public Response isAccessGrantForCompanyUser(
+	    @ApiParam(value = "user_name of company user", required = true) @PathParam("userName") String userName,
+	    @ApiParam(value = "API name of company user", required = true) @PathParam("apiName") String apiName,
+	    @ApiParam(value = "API operation of company user", required = true) @PathParam("apiOpertaion") String apiOpertaion) {
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminData = "";
+	    String companyUserScopeData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminScopeService.isAccessGrantedFor(userName, apiName, apiOpertaion);
+		companyUserScopeData = companyUserScopeService.isAccessGrantedFor(userName, apiName, apiOpertaion);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminData != "") {
-		return Response.ok().entity(adminData).build();
+	    if (companyUserScopeData != "") {
+		return Response.ok().entity(companyUserScopeData).build();
 	    } else {
 		return Response.status(404).build();
 	    }
@@ -149,29 +153,30 @@ public class AdminScopeAPI {
     @POST
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Save specific admin scope", httpMethod = "POST", notes = "Add new admin scope data", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Save admin scope successful"),
-	    @ApiResponse(code = 404, message = "Given admin scope not saved"),
+    @ApiOperation(value = "Save specific company user scope", httpMethod = "POST", notes = "Add new company user scope data", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Save company user scope successful"),
+	    @ApiResponse(code = 404, message = "Given company user scope not saved"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
 	    @ApiResponse(code = 409, message = "Duplicate recode"),
 	    @ApiResponse(code = 304, message = "Not modified due to operation rollback") })
-    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "AdminScope", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
-    public Response saveAdminScope(String body) {
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "CompanyUserScope", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    public Response saveCompanyUserScope(String body) {
 
-	AdminScopeService adminScopeService = AppContext.getInstance().getBean(AdminScopeService.class);
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminData = "";
+	    String companyUserScopeData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminScopeService.saveAdminScope(EncoderDecoderType.JSON, body);
+		companyUserScopeData = companyUserScopeService.saveCompanyUserScope(EncoderDecoderType.JSON, body);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminData != "") {
-		return Response.ok().entity(adminData).build();
+	    if (companyUserScopeData != "") {
+		return Response.ok().entity(companyUserScopeData).build();
 	    } else {
 		return Response.status(404).build();
 	    }
@@ -191,29 +196,30 @@ public class AdminScopeAPI {
     @PUT
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Update specific admin scope", httpMethod = "PUT", notes = "update existing admin user scope", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Admin user scope successfuly updated"),
-	    @ApiResponse(code = 404, message = "Given admin scope not updated"),
+    @ApiOperation(value = "Update specific company user scope", httpMethod = "PUT", notes = "update existing company user scope", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Company user scope successfuly updated"),
+	    @ApiResponse(code = 404, message = "Given company user scope not updated"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
 	    @ApiResponse(code = 304, message = "Not modified due to operation rollback"),
 	    @ApiResponse(code = 206, message = "Partial content due to given recode is not the latest modification") })
-    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "Admin", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
-    public Response updateAdminScope(String body) {
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "CompanyUserScope", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    public Response updateCompanyUserScope(String body) {
 
-	AdminScopeService adminService = AppContext.getInstance().getBean(AdminScopeService.class);
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminData = "";
+	    String companyUserScopeData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminData = adminService.updateAdminScope(EncoderDecoderType.JSON, body);
+		companyUserScopeData = companyUserScopeService.updateCompanyUserScope(EncoderDecoderType.JSON, body);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminData != "") {
-		return Response.ok().entity(adminData).build();
+	    if (companyUserScopeData != "") {
+		return Response.ok().entity(companyUserScopeData).build();
 	    } else {
 		return Response.status(404).build();
 	    }
@@ -231,32 +237,33 @@ public class AdminScopeAPI {
     }
 
     @DELETE
-    @Path("/" + APINames.ADMIN_SCOPE_DELETE)
+    @Path("/" + APINames.COMPANY_USER_SCOPE_DELETE)
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Delete specific admin scope", httpMethod = "DELETE", notes = "delete existing admin scope", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Admin scope successfuly deleted"),
-	    @ApiResponse(code = 404, message = "Given admin scope not deleted"),
+    @ApiOperation(value = "Delete specific company user scope", httpMethod = "DELETE", notes = "delete existing company user scope", response = Response.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Company user scope successfuly deleted"),
+	    @ApiResponse(code = 404, message = "Given company user scope not deleted"),
 	    @ApiResponse(code = 500, message = "Internal server error due to encoding the data"),
 	    @ApiResponse(code = 400, message = "Bad request due to decoding the data"),
 	    @ApiResponse(code = 412, message = "Pre condition failed due to required data not found"),
 	    @ApiResponse(code = 304, message = "Not deleted due to operation rollback"),
 	    @ApiResponse(code = 206, message = "Partial content due to given recode is not the latest modification") })
-    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "AdminScope", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
+    @ApiImplicitParams({ @ApiImplicitParam(required = true, dataType = "CompanyUserScope", paramType = "body", allowableValues = MediaType.APPLICATION_JSON) })
     public Response deleteCompany(String body) {
 
-	AdminScopeService adminScopeService = AppContext.getInstance().getBean(AdminScopeService.class);
+	CompanyUserScopeService companyUserScopeService = AppContext.getInstance().getBean(
+		CompanyUserScopeService.class);
 
 	try {
-	    String adminScopeData = "";
+	    String companyUserScopeData = "";
 	    // process the JSON type request
 	    if (headers.getRequestHeaders().get(ACCEPT_HEADERS).contains(MediaType.APPLICATION_JSON)) {
-		adminScopeData = adminScopeService.deleteAdminScope(EncoderDecoderType.JSON, body);
+		companyUserScopeData = companyUserScopeService.deleteCompanyUserScope(EncoderDecoderType.JSON, body);
 	    }
 	    // TODO: Need to process the XML type requests
 
-	    if (adminScopeData != "") {
-		return Response.ok().entity(adminScopeData).build();
+	    if (companyUserScopeData != "") {
+		return Response.ok().entity(companyUserScopeData).build();
 	    } else {
 		return Response.status(404).build();
 	    }

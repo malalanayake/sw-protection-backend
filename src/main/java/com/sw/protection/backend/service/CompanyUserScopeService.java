@@ -20,10 +20,10 @@ public interface CompanyUserScopeService {
 	    RequiredDataNotFoundException;
 
     public String getCompanyUserScope(EncoderDecoderType encoderDecoderType, String userName, String api_name)
-	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
+	    throws EncodingException, RequiredDataNotFoundException;
 
     public String getCompanyUserScopes(EncoderDecoderType encoderDecoderType, String userName)
-	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
+	    throws EncodingException, RequiredDataNotFoundException;
 
     public String isAccessGrantedFor(String userName, String api_name, String api_opertaion)
 	    throws RequiredDataNotFoundException;
