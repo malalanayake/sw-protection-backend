@@ -360,6 +360,7 @@ public class CompanyUserDAOImpl implements CompanyUserDAO {
 	return status;
     }
 
+    @Override
     public List<CompanyUser> getAllCompanyUsersWithPagination(int page, int recordePerPage) {
 	Session session = sessionFactory.getCurrentSession();
 	Transaction tr = null;

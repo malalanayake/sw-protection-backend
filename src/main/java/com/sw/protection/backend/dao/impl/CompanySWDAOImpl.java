@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -70,10 +71,12 @@ public class CompanySWDAOImpl implements CompanySWDAO {
     }
 
     @Override
-    public void updateCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public CompanySW updateCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanySW companySWReturn = null;
 	try {
 	    // Lock by company software ID
 	    LOCK_MAP.lock(companySW.getId());
@@ -90,7 +93,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		companySW.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(companySW);
 		tr.commit();
-
+		companySWReturn = companySW;
 		if (log.isDebugEnabled()) {
 		    log.debug("Update Company software " + companySW.toString());
 		}
@@ -126,13 +129,17 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companySWReturn;
     }
 
     @Override
-    public void deleteCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException {
+    public CompanySW deleteCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException,
+	    OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanySW companySWReturn = null;
 	try {
 	    // Lock by company software ID
 	    LOCK_MAP.lock(companySW.getId());
@@ -148,6 +155,7 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		companySW = (CompanySW) session.get(CompanySW.class, companySW.getId());
 		session.delete(companySW);
 		tr.commit();
+		companySWReturn = companySW;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Company software " + companySW.toString());
 		}
@@ -182,6 +190,8 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companySWReturn;
     }
 
     @Override
@@ -282,6 +292,86 @@ public class CompanySWDAOImpl implements CompanySWDAO {
 		log.debug("Is Company software " + softwareName + " Exist: True");
 	    }
 	    return true;
+	}
+    }
+
+    @Override
+    public boolean validateCompanySWforSave(CompanySW companySW) {
+	boolean status = false;
+	if (companySW.getCompany() != null && companySW.getCompany().getUser_name() != "" && companySW.getName() != "") {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateCompanySWforUpdateandDelete(CompanySW companySW) {
+	boolean status = false;
+	if (companySW.getId() != null && companySW.getCompany().getUser_name() != null && companySW.getName() != ""
+		&& companySW.getLast_modified() != null && companySW.getLast_modified() != ""
+		&& companySW.getCompany() != null) {
+	    // check whether the data is null or not
+	    if (this.isCompanySWExist(companySW.getCompany().getUser_name(), companySW.getName())) {
+		// check whether the given user name is not changed
+		CompanySW saveCompanySw = this.getCompanySW(companySW.getCompany().getUser_name(), companySW.getName());
+		if (saveCompanySw.getId().equals(companySW.getId())) {
+		    status = true;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation Pass");
+		    }
+		} else {
+		    status = false;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+				+ saveCompanySw.getId() + " This is the given ID:" + companySW.getId());
+		    }
+		}
+	    } else {
+		status = false;
+		if (log.isDebugEnabled()) {
+		    log.debug("Validation fail due to CompanySW Name:" + companySW.getName() + " doesn't exist");
+		}
+	    }
+	} else {
+	    status = false;
+	    if (log.isDebugEnabled()) {
+		log.debug("Validation fail due to empty or null values");
+	    }
+	}
+	return status;
+    }
+
+    @Override
+    public List<CompanySW> getAllCompanySWWithPagination(int page, int recordePerPage) {
+	Session session = sessionFactory.getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    Criteria cr = session.createCriteria(CompanySW.class);
+	    cr.setFirstResult((page - 1) * recordePerPage);
+	    cr.setMaxResults(recordePerPage);
+	    List<CompanySW> companySWAll = cr.list();
+	    tr.commit();
+
+	    if (companySWAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Company SW are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + companySWAll.size() + " Company SW");
+		}
+		return companySWAll;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
+	    return null;
 	}
     }
 

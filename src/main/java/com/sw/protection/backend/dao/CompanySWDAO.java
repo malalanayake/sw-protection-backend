@@ -32,12 +32,24 @@ public interface CompanySWDAO {
     public CompanySW getCompanySW(String companyUserName, String softwareName);
 
     /**
+     * Get all companySW according to the company user name
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum record per page
+     * @return
+     */
+    public List<CompanySW> getAllCompanySWWithPagination(int page, int recordePerPage);
+
+    /**
      * Update company software
      * 
      * @param companySW
      *            - software going to be updated
      */
-    public void updateCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public CompanySW updateCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Delete specific company software
@@ -45,7 +57,8 @@ public interface CompanySWDAO {
      * @param companySW
      *            - software going to be deleted
      */
-    public void deleteCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException, OperationRollBackException;
+    public CompanySW deleteCompanySW(CompanySW companySW) throws RecordAlreadyModifiedException,
+	    OperationRollBackException;
 
     /**
      * Save company software
@@ -65,4 +78,24 @@ public interface CompanySWDAO {
      * @return - TRUE/FALSE
      */
     public boolean isCompanySWExist(String companyUserName, String softwareName);
+
+    /**
+     * This method is used to validate the given CompanySW. This is going to use
+     * in service class before saving the object
+     * 
+     * @param companySW
+     *            - given CompanySW object
+     * @return
+     */
+    public boolean validateCompanySWforSave(CompanySW companySW);
+
+    /**
+     * This method is used to validate the given CompanySW. This is going to use
+     * in service class before update or delete the object
+     * 
+     * @param companySW
+     *            - given companySW object
+     * @return
+     */
+    public boolean validateCompanySWforUpdateandDelete(CompanySW companySW);
 }
