@@ -25,5 +25,9 @@ public interface APINames {
     public static final String COMPANY_USER_SCOPE = "company-user-scope";
     public static final String COMPANY_USER_SCOPE_DELETE = "company-user-scope-delete";
 
+    public static final String COMPANY_SW = "company-sw";
+    public static final String COMPANY_SW_LIST = "company-sw-list";
+    public static final String COMPANY_SW_DELETE = "company-sw-delete";
+
     public static final String SOFTWARE = "software";
 }
