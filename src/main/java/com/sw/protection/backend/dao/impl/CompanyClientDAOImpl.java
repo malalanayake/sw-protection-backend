@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -103,11 +104,12 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
     }
 
     @Override
-    public void updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+    public CompanyClient updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
 	    OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyClient companyClientReturn = null;
 	try {
 	    // Lock by company client ID
 	    LOCK_MAP.lock(companyClient.getId());
@@ -124,7 +126,7 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		companyClient.setLast_modified(Formatters.formatDate(new Date()));
 		session.merge(companyClient);
 		tr.commit();
-
+		companyClientReturn = companyClient;
 		if (log.isDebugEnabled()) {
 		    log.debug("Update Company client " + companyClient.toString());
 		}
@@ -160,14 +162,17 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companyClientReturn;
     }
 
     @Override
-    public void deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+    public CompanyClient deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
 	    OperationRollBackException {
 	Transaction tr = null;
 	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
 	OperationRollBackException operationRollBackException = null;
+	CompanyClient companyClientReturn = null;
 	try {
 	    // Lock by company client ID
 	    LOCK_MAP.lock(companyClient.getId());
@@ -183,6 +188,7 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		companyClient = (CompanyClient) session.get(CompanyClient.class, companyClient.getId());
 		session.delete(companyClient);
 		tr.commit();
+		companyClientReturn = companyClient;
 		if (log.isDebugEnabled()) {
 		    log.debug("Delete Company client " + companyClient.toString());
 		}
@@ -217,6 +223,8 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 		throw operationRollBackException;
 	    }
 	}
+
+	return companyClientReturn;
     }
 
     @Override
@@ -301,6 +309,90 @@ public class CompanyClientDAOImpl implements CompanyClientDAO {
 	    return companyClient;
 	} catch (RuntimeException ex) {
 	    log.error(ex);
+	    return null;
+	}
+    }
+
+    @Override
+    public boolean validateCompanyClientforSave(CompanyClient companyClient) {
+	boolean status = false;
+	if (companyClient.getUser_name() != null && companyClient.getUser_name() != ""
+		&& companyClient.getEmail() != null && companyClient.getEmail() != ""
+		&& companyClient.getCompany() != null) {
+	    status = true;
+	} else {
+	    status = false;
+	}
+	return status;
+    }
+
+    @Override
+    public boolean validateCompanyClientforUpdateandDelete(CompanyClient companyClient) {
+	boolean status = false;
+	if (companyClient.getId() != null && companyClient.getUser_name() != null && companyClient.getUser_name() != ""
+		&& companyClient.getEmail() != null && companyClient.getEmail() != ""
+		&& companyClient.getLast_modified() != null && companyClient.getLast_modified() != ""
+		&& companyClient.getCompany() != null) {
+	    // check whether the data is null or not
+	    if (this.isCompanyClientUserNameExist(companyClient.getUser_name())) {
+		// check whether the given user name is not changed
+		CompanyClient saveCompanyClient = this.getCompanyClient(companyClient.getUser_name());
+		if (saveCompanyClient.getId().equals(companyClient.getId())) {
+		    status = true;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation Pass");
+		    }
+		} else {
+		    status = false;
+		    if (log.isDebugEnabled()) {
+			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+				+ saveCompanyClient.getId() + " This is the given ID:" + companyClient.getId());
+		    }
+		}
+	    } else {
+		status = false;
+		if (log.isDebugEnabled()) {
+		    log.debug("Validation fail due to CompanyClient userName:" + companyClient.getUser_name()
+			    + " doesn't exist");
+		}
+	    }
+	} else {
+	    status = false;
+	    if (log.isDebugEnabled()) {
+		log.debug("Validation fail due to empty or null values");
+	    }
+	}
+	return status;
+    }
+
+    @Override
+    public List<CompanyClient> getAllCompanyClientsWithPagination(int page, int recordePerPage) {
+	Session session = sessionFactory.getCurrentSession();
+	Transaction tr = null;
+	try {
+	    tr = session.beginTransaction();
+	    Criteria cr = session.createCriteria(CompanyClient.class);
+	    cr.setFirstResult((page - 1) * recordePerPage);
+	    cr.setMaxResults(recordePerPage);
+	    List<CompanyClient> companyClientAll = cr.list();
+	    tr.commit();
+
+	    if (companyClientAll.isEmpty()) {
+		if (log.isDebugEnabled()) {
+		    log.debug("Company Clients are not exist");
+		}
+		return null;
+	    } else {
+		if (log.isDebugEnabled()) {
+		    log.debug("Found " + companyClientAll.size() + " Company Clients");
+		}
+		return companyClientAll;
+	    }
+	} catch (RuntimeException ex) {
+	    log.error(ex);
+	    if (tr != null) {
+		tr.rollback(); // roll back the transaction due to runtime error
+	    }
 	    return null;
 	}
     }

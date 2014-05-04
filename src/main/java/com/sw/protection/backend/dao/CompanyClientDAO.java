@@ -30,12 +30,23 @@ public interface CompanyClientDAO {
     public CompanyClient getCompanyClient(String userName);
 
     /**
+     * Get all CompanyClients with pagination
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum recodes per page
+     * @return
+     */
+    public List<CompanyClient> getAllCompanyClientsWithPagination(int page, int recordePerPage);
+
+    /**
      * Update specifc client
      * 
      * @param companyClient
      *            - Client object to be updated
      */
-    public void updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+    public CompanyClient updateCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
 	    OperationRollBackException;
 
     /**
@@ -44,7 +55,7 @@ public interface CompanyClientDAO {
      * @param companyClient
      *            - Specific client object to be deleted
      */
-    public void deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
+    public CompanyClient deleteCompanyClient(CompanyClient companyClient) throws RecordAlreadyModifiedException,
 	    OperationRollBackException;
 
     /**
@@ -73,4 +84,24 @@ public interface CompanyClientDAO {
      * @return - Specific company client with all relevant data
      */
     public CompanyClient loadAllPropertiesOfCompanyClient(Long id);
+
+    /**
+     * This method is used to validate the given CompanyClient. This is going to
+     * use in service class before saving the object
+     * 
+     * @param companyClient
+     *            - given Company Client object
+     * @return
+     */
+    public boolean validateCompanyClientforSave(CompanyClient companyClient);
+
+    /**
+     * This method is used to validate the given CompanyClient. This is going to
+     * use in service class before update or delete the object
+     * 
+     * @param companyClient
+     *            - given Company Client object
+     * @return
+     */
+    public boolean validateCompanyClientforUpdateandDelete(CompanyClient companyClient);
 }
