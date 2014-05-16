@@ -30,4 +30,8 @@ public interface APINames {
     public static final String COMPANY_SW_DELETE = "company-sw-delete";
 
     public static final String SOFTWARE = "software";
+
+    public static final String COMPANY_CLIENT = "company-client";
+    public static final String COMPANY_CLIENT_LIST = "company-client-list";
+    public static final String COMPANY_CLIENT_DELETE = "company-client-delete";
 }
