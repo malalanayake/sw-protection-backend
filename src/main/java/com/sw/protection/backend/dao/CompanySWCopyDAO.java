@@ -21,6 +21,17 @@ public interface CompanySWCopyDAO {
     public List<CompanySWCopy> getAllCompanySWCopies();
 
     /**
+     * Get all CompanySWCopies
+     * 
+     * @param page
+     *            - page number
+     * @param recordePerPage
+     *            - maximum record per page
+     * @return
+     */
+    public List<CompanySWCopy> getAllCompanySWCopyWithPagination(int page, int recordePerPage);
+
+    /**
      * Get specific company software copy
      * 
      * @param clientUserName
@@ -44,7 +55,7 @@ public interface CompanySWCopyDAO {
      * @param companySWCopy
      *            - software copy going to be updated
      */
-    public void updateCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
+    public CompanySWCopy updateCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
 	    OperationRollBackException;
 
     /**
@@ -53,7 +64,7 @@ public interface CompanySWCopyDAO {
      * @param companySWCopy
      *            - software copy going to be deleted
      */
-    public void deleteCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
+    public CompanySWCopy deleteCompanySWCopy(CompanySWCopy companySWCopy) throws RecordAlreadyModifiedException,
 	    OperationRollBackException;
 
     /**
@@ -82,4 +93,24 @@ public interface CompanySWCopyDAO {
      */
     public boolean isCompanySWCopyExist(String clientUserName, String softwareName, String motherBoard, String hd,
 	    String mac);
+
+    /**
+     * This method is used to validate the given CompanySWCopy. This is going to
+     * use in service class before saving the object
+     * 
+     * @param companySWCopy
+     *            - given CompanySWCopy object
+     * @return
+     */
+    public boolean validateCompanySWCopyforSave(CompanySWCopy companySWCopy);
+
+    /**
+     * This method is used to validate the given CompanySWCopy. This is going to
+     * use in service class before update or delete the object
+     * 
+     * @param companySWCopy
+     *            - given CompanySWCopy object
+     * @return
+     */
+    public boolean validateCompanySWCopyforUpdateandDelete(CompanySWCopy companySWCopy);
 }
