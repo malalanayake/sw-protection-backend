@@ -27,6 +27,15 @@
 			<version>6.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- You need following dependancy for avoid broken pipe when mysql refresh 
+			the connection every 8 hours -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.0.1.Final</version>
+		</dependency>
+
 		<!-- Start Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
