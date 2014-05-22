@@ -67,7 +67,7 @@ public class CompanyUserDAOImplTest {
 
 	Set<CompanyUserScope> companyUserScopeSet = companyUser.getUserScopeSet();
 	CompanyUserScope companyUserScope = new CompanyUserScope();
-	companyUserScope.setApi_name(APINames.SOFTWARE);
+	companyUserScope.setApi_name(APINames.COMPANY_SW);
 	companyUserScope.setDel(true);
 	companyUserScope.setGet(true);
 	companyUserScope.setPost(true);

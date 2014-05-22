@@ -67,7 +67,7 @@ public class TraceDAOImplTest {
 	traceDAO.saveTrace(trace3);
 
 	Trace trace4 = new Trace();
-	trace4.setApi_name(APINames.SOFTWARE);
+	trace4.setApi_name(APINames.COMPANY_SW);
 	trace4.setOperation(APIOperations.DELETE);
 	trace4.setDate_time(Formatters.formatDate(new Date()));
 	trace4.setType(ObjectType.COMPANY);
@@ -85,7 +85,7 @@ public class TraceDAOImplTest {
 	TraceDAO traceDAO = AppContext.getInstance().getBean(TraceDAO.class);
 	List<Trace> traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList.size(), 2);
-	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
+	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.COMPANY_SW);
 	assertEquals(traceList1.size(), 1);
     }
 
@@ -123,7 +123,7 @@ public class TraceDAOImplTest {
 	traceList = traceDAO.getAllTraceByAPIName(APINames.ADMIN);
 	assertEquals(traceList, null);
 
-	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
+	List<Trace> traceList1 = traceDAO.getAllTraceByAPIName(APINames.COMPANY_SW);
 	assertEquals(traceList1.size(), 1);
 	for (Trace trace : traceList1) {
 	    try {
@@ -132,7 +132,7 @@ public class TraceDAOImplTest {
 
 	    }
 	}
-	traceList1 = traceDAO.getAllTraceByAPIName(APINames.SOFTWARE);
+	traceList1 = traceDAO.getAllTraceByAPIName(APINames.COMPANY_SW);
 	assertEquals(traceList1, null);
 
 	List<Trace> traceList2 = traceDAO.getAllTraceByAPIName(APINames.COMPANY);

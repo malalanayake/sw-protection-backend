@@ -72,7 +72,7 @@ public class UsageDAOImplTest {
 	}
 
 	UsageData usage3 = new UsageData();
-	usage3.setApi_name(APINames.SOFTWARE);
+	usage3.setApi_name(APINames.COMPANY_SW);
 	usage3.setOperation(APIOperations.PUT);
 	usage3.setType(ObjectType.COMPANY);
 	usage3.setType_id(1l);
@@ -110,7 +110,7 @@ public class UsageDAOImplTest {
 	assertEquals(usageList1.size(), 1);
 	List<UsageData> usageList2 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY_USER);
 	assertEquals(usageList2.size(), 1);
-	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
+	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY_SW);
 	assertEquals(usageList3.size(), 1);
 	List<UsageData> usageList4 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY);
 	assertEquals(usageList4.size(), 1);
@@ -207,7 +207,7 @@ public class UsageDAOImplTest {
 
 	    }
 	}
-	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.SOFTWARE);
+	List<UsageData> usageList3 = usageDAO.getAllUsagesByAPIName(APINames.COMPANY_SW);
 	for (UsageData usage : usageList3) {
 	    try {
 		usageDAO.deleteUsage(usage);

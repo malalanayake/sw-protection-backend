@@ -673,7 +673,7 @@ public class EncoderFactoryImplTest {
 	companyUser.setCompany(company);
 
 	CompanyUserScope companyUserScope = new CompanyUserScope();
-	companyUserScope.setApi_name(APINames.SOFTWARE);
+	companyUserScope.setApi_name(APINames.COMPANY_SW);
 	companyUserScope.setDel(true);
 	companyUserScope.setGet(true);
 	companyUserScope.setPost(true);
@@ -688,7 +688,7 @@ public class EncoderFactoryImplTest {
 	}
 	assertEquals(
 		encodedString,
-		"{\"api_name\":\"software\",\"get\":true,\"post\":true,\"put\":true,\"del\":true,"
+		"{\"api_name\":\"company-sw\",\"get\":true,\"post\":true,\"put\":true,\"del\":true,"
 			+ "\"companyUser\":{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"dinuka@gmail.com\"}}");
 
 	// check the class cast exception
@@ -720,7 +720,7 @@ public class EncoderFactoryImplTest {
 	}
 	assertEquals(
 		encodedListString,
-		"[{\"api_name\":\"software\",\"get\":true,\"post\":true,\"put\":true,\"del\":true,"
+		"[{\"api_name\":\"company-sw\",\"get\":true,\"post\":true,\"put\":true,\"del\":true,"
 			+ "\"companyUser\":{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"dinuka@gmail.com\"}},"
 			+ "{\"api_name\":\"company\",\"get\":true,\"post\":true,\"put\":true,\"del\":true,"
 			+ "\"companyUser\":{\"name\":\"Dinuka Malalanayake\",\"user_name\":\"dinuka\",\"api_key\":\"75e70eb1-7940-4234-b6c4-2870ab0bb794\",\"email\":\"dinuka@gmail.com\"}}]");

@@ -29,9 +29,11 @@ public interface APINames {
     public static final String COMPANY_SW_LIST = "company-sw-list";
     public static final String COMPANY_SW_DELETE = "company-sw-delete";
 
-    public static final String SOFTWARE = "software";
-
     public static final String COMPANY_CLIENT = "company-client";
     public static final String COMPANY_CLIENT_LIST = "company-client-list";
     public static final String COMPANY_CLIENT_DELETE = "company-client-delete";
+
+    public static final String COMPANY_SW_COPY = "company-sw-copy";
+    public static final String COMPANY_SW_COPY_LIST = "company-sw-copy-list";
+    public static final String COMPANY_SW_COPY_DELETE = "company-sw-copy-delete";
 }

@@ -74,7 +74,7 @@ public class CompanyUserScopeDAOImplTest {
 	companyUser = companyUserDAO.getUser("dinuka");
 
 	CompanyUserScope companyUserScope = new CompanyUserScope();
-	companyUserScope.setApi_name(APINames.SOFTWARE);
+	companyUserScope.setApi_name(APINames.COMPANY_SW);
 	companyUserScope.setDel(true);
 	companyUserScope.setGet(true);
 	companyUserScope.setPost(true);
@@ -102,10 +102,10 @@ public class CompanyUserScopeDAOImplTest {
     @Test(dependsOnMethods = { "getAllCompanyUserScopes" })
     public void updateCompanyUserScope() {
 	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
-	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.COMPANY_SW);
 	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
-		APINames.SOFTWARE);
-	assertEquals(companyUserScope.getApi_name(), APINames.SOFTWARE);
+		APINames.COMPANY_SW);
+	assertEquals(companyUserScope.getApi_name(), APINames.COMPANY_SW);
 	assertEquals(companyUserScope.isDel(), true);
 	assertEquals(companyUserScope.isPost(), true);
 	assertEquals(companyUserScope.isPut(), true);
@@ -128,8 +128,8 @@ public class CompanyUserScopeDAOImplTest {
 	}
 	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
-	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
-	assertEquals(companyUserScope2.getApi_name(), APINames.SOFTWARE);
+	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.COMPANY_SW);
+	assertEquals(companyUserScope2.getApi_name(), APINames.COMPANY_SW);
 	assertEquals(companyUserScope2.isDel(), false);
 	assertEquals(companyUserScope2.isPost(), true);
 	assertEquals(companyUserScope2.isPut(), false);
@@ -140,9 +140,9 @@ public class CompanyUserScopeDAOImplTest {
     @Test(dependsOnMethods = { "updateCompanyUserScope" })
     public void deleteCompanyUserScope() {
 	CompanyUserScopeDAO companyUserScopeDAO = AppContext.getInstance().getBean(CompanyUserScopeDAO.class);
-	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	CompanyUserScope companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.COMPANY_SW);
 	CompanyUserScope companyUserScopeAlreadyModified = companyUserScopeDAO.getCompanyUserScope("dinuka",
-		APINames.SOFTWARE);
+		APINames.COMPANY_SW);
 	companyUserScopeAlreadyModified.setPost(false);
 
 	// Check the RecordAlreadyModifiedException behavior
@@ -155,14 +155,14 @@ public class CompanyUserScopeDAOImplTest {
 	}
 	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
-	companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	companyUserScope = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.COMPANY_SW);
 	try {
 	    companyUserScopeDAO.deleteCompanyUserScope(companyUserScope);
 	} catch (Exception ex) {
 
 	}
 
-	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.SOFTWARE);
+	CompanyUserScope companyUserScope2 = companyUserScopeDAO.getCompanyUserScope("dinuka", APINames.COMPANY_SW);
 	assertEquals(companyUserScope2, null);
 
 	CompanyUserDAO companyUserDAO = AppContext.getInstance().getBean(CompanyUserDAO.class);
