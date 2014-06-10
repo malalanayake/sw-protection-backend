@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class APIKeyGenerator {
 
-    public static String generateAPIKey() {
-	return UUID.randomUUID().toString();
-    }
+	public static String generateAPIKey() {
+		return UUID.randomUUID().toString();
+	}
 }

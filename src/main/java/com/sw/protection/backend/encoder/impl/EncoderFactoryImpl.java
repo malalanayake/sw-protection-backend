@@ -16,18 +16,18 @@ import com.sw.protection.backend.encoder.EncoderFactory;
 @Service
 public class EncoderFactoryImpl implements EncoderFactory {
 
-    @Override
-    public Encoder getEncoder(EncoderDecoderType encoderDecoderType) {
-	Encoder encoder = null;
-	switch (encoderDecoderType) {
-	case JSON:
-	    encoder = new JSONEncoder();
-	    break;
-	case XML:
-	    encoder = null;
-	    break;
+	@Override
+	public Encoder getEncoder(EncoderDecoderType encoderDecoderType) {
+		Encoder encoder = null;
+		switch (encoderDecoderType) {
+		case JSON:
+			encoder = new JSONEncoder();
+			break;
+		case XML:
+			encoder = null;
+			break;
+		}
+		return encoder;
 	}
-	return encoder;
-    }
 
 }

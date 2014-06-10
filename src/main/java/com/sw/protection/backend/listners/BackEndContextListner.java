@@ -14,23 +14,23 @@ import com.sw.protection.backend.config.SharedInMemoryData;
  * @author dinuka
  */
 public class BackEndContextListner implements ServletContextListener {
-    public static boolean isLocalDeployment = true;
-    Logger log = Logger.getLogger(BackEndContextListner.class.getName());
+	public static boolean isLocalDeployment = true;
+	Logger log = Logger.getLogger(BackEndContextListner.class.getName());
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-	ServletContext ctx = sce.getServletContext();
-	if (log.isDebugEnabled()) {
-	    log.debug("Initalizing the basic configurations");
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		ServletContext ctx = sce.getServletContext();
+		if (log.isDebugEnabled()) {
+			log.debug("Initalizing the basic configurations");
+		}
+		isLocalDeployment = Boolean.valueOf(ctx.getInitParameter("local-deployment"));
+		SharedInMemoryData.getInstance();
+
 	}
-	isLocalDeployment = Boolean.valueOf(ctx.getInitParameter("local-deployment"));
-	SharedInMemoryData.getInstance();
 
-    }
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-
-    }
+	}
 
 }

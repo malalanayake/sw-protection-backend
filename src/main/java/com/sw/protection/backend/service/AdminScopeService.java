@@ -15,24 +15,24 @@ import com.sw.protection.backend.config.EncoderDecoderType;
  * 
  */
 public interface AdminScopeService {
-    public String saveAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
-	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String saveAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+			throws DuplicateRecordException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String getAdminScopes(EncoderDecoderType encoderDecoderType, String userName) throws EncodingException,
-	    RequiredDataNotFoundException;
+	public String getAdminScopes(EncoderDecoderType encoderDecoderType, String userName)
+			throws EncodingException, RequiredDataNotFoundException;
 
-    public String getAdminScope(EncoderDecoderType encoderDecoderType, String userName, String api_name)
-	    throws EncodingException, RequiredDataNotFoundException;
+	public String getAdminScope(EncoderDecoderType encoderDecoderType, String userName,
+			String api_name) throws EncodingException, RequiredDataNotFoundException;
 
-    public String isAccessGrantedFor(String userName, String api_name, String api_opertaion)
-	    throws RequiredDataNotFoundException;
+	public String isAccessGrantedFor(String userName, String api_name, String api_opertaion)
+			throws RequiredDataNotFoundException;
 
-    public String deleteAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String deleteAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String updateAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String updateAdminScope(EncoderDecoderType encoderDecoderType, String adminScopeString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 }

@@ -7,5 +7,5 @@ package com.sw.protection.backend.config;
  * 
  */
 public enum EncoderDecoderType {
-    JSON, XML
+	JSON, XML
 }

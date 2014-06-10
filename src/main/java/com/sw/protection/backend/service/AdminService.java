@@ -16,20 +16,21 @@ import com.sw.protection.backend.config.EncoderDecoderType;
  */
 public interface AdminService {
 
-    public String saveAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws DuplicateRecordException,
-	    OperationRollBackException, EncodingException, DecodingException, RequiredDataNotFoundException;
+	public String saveAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+			throws DuplicateRecordException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String getAdmin(EncoderDecoderType encoderDecoderType, String adminString) throws EncodingException,
-	    DecodingException, RequiredDataNotFoundException;
+	public String getAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+			throws EncodingException, DecodingException, RequiredDataNotFoundException;
 
-    public String deleteAdmin(EncoderDecoderType encoderDecoderType, String adminString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String deleteAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String updateAdmin(EncoderDecoderType encoderDecoderType, String adminString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String updateAdmin(EncoderDecoderType encoderDecoderType, String adminString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
-	    throws EncodingException, DecodingException, RequiredDataNotFoundException;
+	public String getAllAdmins(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
+			throws EncodingException, DecodingException, RequiredDataNotFoundException;
 }

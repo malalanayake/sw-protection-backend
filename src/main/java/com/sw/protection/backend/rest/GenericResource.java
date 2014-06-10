@@ -38,81 +38,83 @@ import com.wordnik.swagger.annotations.ApiResponses;
 @Produces({ "application/json", "application/xml" })
 public class GenericResource {
 
-    @Context
-    private UriInfo context;
+	@Context
+	private UriInfo context;
 
-    public static volatile IMap<String, String> userData = SharedInMemoryData.getInstance().getMap(
-	    SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
+	public static volatile IMap<String, String> userData = SharedInMemoryData.getInstance().getMap(
+			SharedInMemoryData.DB_LOCKS.ADMIN_DAO);
 
-    /**
-     * Creates a new instance of GenericResource
-     */
-    public GenericResource() {
+	/**
+	 * Creates a new instance of GenericResource
+	 */
+	public GenericResource() {
 
-	System.out.println("Initalizing REST API");
-    }
-
-    /**
-     * Retrieves representation of an instance of me.first.rest.GenericResource
-     * 
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Path("/{id}")
-    @Produces("text/plain")
-    @Consumes("application/json")
-    @ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = Response.class)
-    @ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied"),
-	    @ApiResponse(code = 404, message = "Pet not found") })
-    public Response getXml(@Context HttpServletRequest req,
-	    @ApiParam(value = "ID of me to fetch", required = true) @PathParam("id") String id) {
-	// TODO return proper representation object
-	// Monitor mon = MonitorFactory.start(id);
-
-	// get the actual ip
-	String ipAddress = req.getHeader("X-FORWARDED-FOR");
-	if (ipAddress == null) {
-	    ipAddress = req.getRemoteAddr();
-	}
-	// If the server behind the LB or proxy this will take the proxy address
-	String remoteHost = req.getRemoteHost();
-
-	int remotePort = req.getRemotePort();
-	String msg = remoteHost + " (" + ipAddress + ":" + remotePort + ")";
-
-	userData.put(id, id);
-
-	boolean bool = true;
-	System.out.println("Initalizing REST" + id);
-	String ss = "";
-	if (!userData.isEmpty()) {
-	    for (String s : userData.keySet()) {
-		ss = ss + " " + s + "\n";
-	    }
+		System.out.println("Initalizing REST API");
 	}
 
-	for (Member m : SharedInMemoryData.getInstance().getCluster().getMembers()) {
-	    ss = ss + " Member - " + m.getInetSocketAddress();
+	/**
+	 * Retrieves representation of an instance of me.first.rest.GenericResource
+	 * 
+	 * @return an instance of java.lang.String
+	 */
+	@GET
+	@Path("/{id}")
+	@Produces("text/plain")
+	@Consumes("application/json")
+	@ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = Response.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID supplied"),
+			@ApiResponse(code = 404, message = "Pet not found") })
+	public Response getXml(@Context HttpServletRequest req,
+			@ApiParam(value = "ID of me to fetch", required = true) @PathParam("id") String id) {
+		// TODO return proper representation object
+		// Monitor mon = MonitorFactory.start(id);
+
+		// get the actual ip
+		String ipAddress = req.getHeader("X-FORWARDED-FOR");
+		if (ipAddress == null) {
+			ipAddress = req.getRemoteAddr();
+		}
+		// If the server behind the LB or proxy this will take the proxy address
+		String remoteHost = req.getRemoteHost();
+
+		int remotePort = req.getRemotePort();
+		String msg = remoteHost + " (" + ipAddress + ":" + remotePort + ")";
+
+		userData.put(id, id);
+
+		boolean bool = true;
+		System.out.println("Initalizing REST" + id);
+		String ss = "";
+		if (!userData.isEmpty()) {
+			for (String s : userData.keySet()) {
+				ss = ss + " " + s + "\n";
+			}
+		}
+
+		for (Member m : SharedInMemoryData.getInstance().getCluster().getMembers()) {
+			ss = ss + " Member - " + m.getInetSocketAddress();
+		}
+		URI url = context.getBaseUri();
+		UUID idOne = UUID.randomUUID();
+		// UUID idTwo = UUID.fromString("9wXCEmkY-GcwA-Dofe-9uqc-A4ruMdG4bkYN");
+		// mon.stop();
+
+		return Response
+				.ok()
+				.entity("getUserById are called by, ids test : " + ss + url + "/" + idOne + "/"
+						+ msg).build();
+
 	}
-	URI url = context.getBaseUri();
-	UUID idOne = UUID.randomUUID();
-	// UUID idTwo = UUID.fromString("9wXCEmkY-GcwA-Dofe-9uqc-A4ruMdG4bkYN");
-	// mon.stop();
 
-	return Response.ok().entity("getUserById are called by, ids test : " + ss + url + "/" + idOne + "/" + msg)
-		.build();
-
-    }
-
-    /**
-     * PUT method for updating or creating an instance of GenericResource
-     * 
-     * @param content
-     *            representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
-     */
-    @PUT
-    @Consumes("application/xml")
-    public void putXml(String content) {
-    }
+	/**
+	 * PUT method for updating or creating an instance of GenericResource
+	 * 
+	 * @param content
+	 *            representation for the resource
+	 * @return an HTTP response with content of the updated or created resource.
+	 */
+	@PUT
+	@Consumes("application/xml")
+	public void putXml(String content) {
+	}
 }

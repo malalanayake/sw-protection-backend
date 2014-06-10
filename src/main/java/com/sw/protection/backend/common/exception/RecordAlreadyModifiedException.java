@@ -9,10 +9,10 @@ package com.sw.protection.backend.common.exception;
  */
 public class RecordAlreadyModifiedException extends Exception {
 
-    public RecordAlreadyModifiedException() {
-    }
+	public RecordAlreadyModifiedException() {
+	}
 
-    public RecordAlreadyModifiedException(String message) {
-	super(message);
-    }
+	public RecordAlreadyModifiedException(String message) {
+		super(message);
+	}
 }

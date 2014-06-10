@@ -7,5 +7,5 @@ package com.sw.protection.backend.config;
  * 
  */
 public enum APIOperations {
-    GET, POST, PUT, DELETE
+	GET, POST, PUT, DELETE
 }

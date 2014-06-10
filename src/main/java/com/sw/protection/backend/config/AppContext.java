@@ -10,20 +10,20 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * 
  */
 public class AppContext {
-    public static ApplicationContext ctx = null;
+	public static ApplicationContext ctx = null;
 
-    private AppContext() {
+	private AppContext() {
 
-    }
-
-    public static ApplicationContext getInstance() {
-	if (ctx == null) {
-	    synchronized (AppContext.class) {
-		if (ctx == null) {
-		    ctx = new AnnotationConfigApplicationContext(PersistenceConfig.class);
-		}
-	    }
 	}
-	return ctx;
-    }
+
+	public static ApplicationContext getInstance() {
+		if (ctx == null) {
+			synchronized (AppContext.class) {
+				if (ctx == null) {
+					ctx = new AnnotationConfigApplicationContext(PersistenceConfig.class);
+				}
+			}
+		}
+		return ctx;
+	}
 }

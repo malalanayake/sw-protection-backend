@@ -10,12 +10,12 @@ import com.sw.protection.backend.config.EncoderDecoderType;
  */
 public interface DecoderFactory {
 
-    /**
-     * Get the relevant decoder
-     * 
-     * @param encoderDecoderType
-     *            - type of decoder XML, JSON
-     * @return
-     */
-    public Decoder getDecoder(EncoderDecoderType encoderDecoderType);
+	/**
+	 * Get the relevant decoder
+	 * 
+	 * @param encoderDecoderType
+	 *            - type of decoder XML, JSON
+	 * @return
+	 */
+	public Decoder getDecoder(EncoderDecoderType encoderDecoderType);
 }

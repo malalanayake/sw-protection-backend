@@ -7,10 +7,10 @@ package com.sw.protection.backend.common.exception;
  * 
  */
 public class RequiredDataNotFoundException extends Exception {
-    public RequiredDataNotFoundException() {
-    }
+	public RequiredDataNotFoundException() {
+	}
 
-    public RequiredDataNotFoundException(String message) {
-	super(message);
-    }
+	public RequiredDataNotFoundException(String message) {
+		super(message);
+	}
 }

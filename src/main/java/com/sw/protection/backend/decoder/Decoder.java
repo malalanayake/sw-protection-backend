@@ -13,25 +13,27 @@ import com.sw.protection.backend.config.ObjectType;
  */
 public interface Decoder {
 
-    /**
-     * Decoding the string to java object
-     * 
-     * @param objectType
-     *            - the type that we going to decode
-     * @param encodedString
-     *            - Encoded string by proper format XML, JSON
-     * @return - relevant object
-     */
-    public Object decodeObject(ObjectType objectType, String encodedString) throws DecodingException;
+	/**
+	 * Decoding the string to java object
+	 * 
+	 * @param objectType
+	 *            - the type that we going to decode
+	 * @param encodedString
+	 *            - Encoded string by proper format XML, JSON
+	 * @return - relevant object
+	 */
+	public Object decodeObject(ObjectType objectType, String encodedString)
+			throws DecodingException;
 
-    /**
-     * Decoding the list of strings in to objects
-     * 
-     * @param objectType
-     *            - the type of object list
-     * @param encodedString
-     *            - Encoded list of objects by proper format XML, JSON
-     * @return - List of objects
-     */
-    public List<?> decodeObjectList(ObjectType objectType, String encodedString) throws DecodingException;
+	/**
+	 * Decoding the list of strings in to objects
+	 * 
+	 * @param objectType
+	 *            - the type of object list
+	 * @param encodedString
+	 *            - Encoded list of objects by proper format XML, JSON
+	 * @return - List of objects
+	 */
+	public List<?> decodeObjectList(ObjectType objectType, String encodedString)
+			throws DecodingException;
 }

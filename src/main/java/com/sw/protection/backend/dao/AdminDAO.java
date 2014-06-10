@@ -13,101 +13,103 @@ import com.sw.protection.backend.entity.Admin;
  * @author dinuka
  */
 public interface AdminDAO {
-    /**
-     * Get all admin users
-     * 
-     * @return Set of Admins
-     */
-    public List<Admin> getAllAdmins();
+	/**
+	 * Get all admin users
+	 * 
+	 * @return Set of Admins
+	 */
+	public List<Admin> getAllAdmins();
 
-    /**
-     * Get all admin with pagination
-     * 
-     * @param page
-     *            - page number
-     * @param recordePerPage
-     *            - maximum recodes per page
-     * @return
-     */
-    public List<Admin> getAllAdminsWithPagination(int page, int recordePerPage);
+	/**
+	 * Get all admin with pagination
+	 * 
+	 * @param page
+	 *            - page number
+	 * @param recordePerPage
+	 *            - maximum recodes per page
+	 * @return
+	 */
+	public List<Admin> getAllAdminsWithPagination(int page, int recordePerPage);
 
-    /**
-     * Get specific admin user
-     * 
-     * @param userName
-     *            - Admin user name
-     * @return - Specific Admin
-     */
-    public Admin getAdmin(String userName);
+	/**
+	 * Get specific admin user
+	 * 
+	 * @param userName
+	 *            - Admin user name
+	 * @return - Specific Admin
+	 */
+	public Admin getAdmin(String userName);
 
-    /**
-     * Load all properties of specific admin user
-     * 
-     * @param id
-     *            - Admin ID
-     * @return - Specific Admin
-     */
-    public Admin loadAllPropertiesOfAdmin(Long id);
+	/**
+	 * Load all properties of specific admin user
+	 * 
+	 * @param id
+	 *            - Admin ID
+	 * @return - Specific Admin
+	 */
+	public Admin loadAllPropertiesOfAdmin(Long id);
 
-    /**
-     * Update admin user
-     * 
-     * @param admin
-     *            - new Admin with updated values
-     */
-    public Admin updateAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
+	/**
+	 * Update admin user
+	 * 
+	 * @param admin
+	 *            - new Admin with updated values
+	 */
+	public Admin updateAdmin(Admin admin) throws RecordAlreadyModifiedException,
+			OperationRollBackException;
 
-    /**
-     * Delete admin user
-     * 
-     * @param admin
-     *            - Admin to be deleted
-     */
-    public Admin deleteAdmin(Admin admin) throws RecordAlreadyModifiedException, OperationRollBackException;
+	/**
+	 * Delete admin user
+	 * 
+	 * @param admin
+	 *            - Admin to be deleted
+	 */
+	public Admin deleteAdmin(Admin admin) throws RecordAlreadyModifiedException,
+			OperationRollBackException;
 
-    /**
-     * Save admin user
-     * 
-     * @param admin
-     *            - new Admin
-     */
-    public Admin saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException;
+	/**
+	 * Save admin user
+	 * 
+	 * @param admin
+	 *            - new Admin
+	 */
+	public Admin saveAdmin(Admin admin) throws DuplicateRecordException, OperationRollBackException;
 
-    /**
-     * Check whether the admin user name exist
-     * 
-     * @param userName
-     *            - Admin username
-     * @return - True/False
-     */
-    public boolean isAdminUserNameExist(String userName);
+	/**
+	 * Check whether the admin user name exist
+	 * 
+	 * @param userName
+	 *            - Admin username
+	 * @return - True/False
+	 */
+	public boolean isAdminUserNameExist(String userName);
 
-    /**
-     * Check whether the admin user email exist
-     * 
-     * @param email
-     *            - Admin Email
-     * @return - True/False
-     */
-    public boolean isAdminUserEmailExist(String email);
+	/**
+	 * Check whether the admin user email exist
+	 * 
+	 * @param email
+	 *            - Admin Email
+	 * @return - True/False
+	 */
+	public boolean isAdminUserEmailExist(String email);
 
-    /**
-     * This method is used to validate the given Admin. This is going to use in
-     * service class befor saving the object
-     * 
-     * @param admin
-     *            - given admin object
-     * @return
-     */
-    public boolean validateAdminforSave(Admin admin);
+	/**
+	 * This method is used to validate the given Admin. This is going to use in
+	 * service class befor saving the object
+	 * 
+	 * @param admin
+	 *            - given admin object
+	 * @return
+	 */
+	public boolean validateAdminforSave(Admin admin);
 
-    /**
-     * This method is used to validate the given Admin. This is going to use in
-     * service class befor update or delete the object
-     * 
-     * @param admin
-     *            - given admin object
-     * @return
-     */
-    public boolean validateAdminforUpdateandDelete(Admin admin);
+	/**
+	 * This method is used to validate the given Admin. This is going to use in
+	 * service class befor update or delete the object
+	 * 
+	 * @param admin
+	 *            - given admin object
+	 * @return
+	 */
+	public boolean validateAdminforUpdateandDelete(Admin admin);
 }

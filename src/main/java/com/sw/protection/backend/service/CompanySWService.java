@@ -16,21 +16,21 @@ import com.sw.protection.backend.config.EncoderDecoderType;
  */
 public interface CompanySWService {
 
-    public String saveCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
-	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String saveCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
+			throws DuplicateRecordException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String getCompanySW(EncoderDecoderType encoderDecoderType, String companyUserName, String softwareName)
-	    throws EncodingException, RequiredDataNotFoundException;
+	public String getCompanySW(EncoderDecoderType encoderDecoderType, String companyUserName,
+			String softwareName) throws EncodingException, RequiredDataNotFoundException;
 
-    public String deleteCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String deleteCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String updateCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String updateCompanySW(EncoderDecoderType encoderDecoderType, String companySWString)
+			throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException,
+			DecodingException, RequiredDataNotFoundException;
 
-    public String getAllCompanySW(EncoderDecoderType encoderDecoderType, int page, int recordePerPage)
-	    throws EncodingException, RequiredDataNotFoundException;
+	public String getAllCompanySW(EncoderDecoderType encoderDecoderType, int page,
+			int recordePerPage) throws EncodingException, RequiredDataNotFoundException;
 }

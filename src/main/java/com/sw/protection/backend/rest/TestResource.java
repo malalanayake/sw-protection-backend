@@ -23,24 +23,24 @@ import com.wordnik.swagger.annotations.ApiOperation;
 @Api(value = "/test", description = "does fascinating stuff", produces = "text/plain")
 public class TestResource {
 
-    @Context
-    private UriInfo context;
+	@Context
+	private UriInfo context;
 
-    /**
-     * Creates a new instance of TestResource
-     */
-    public TestResource() {
-    }
+	/**
+	 * Creates a new instance of TestResource
+	 */
+	public TestResource() {
+	}
 
-    /**
-     * Retrieves representation of an instance of rest.TestResource
-     * 
-     * @return an instance of java.lang.String
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = String.class)
-    public String getXml() {
-	return "this works...";
-    }
+	/**
+	 * Retrieves representation of an instance of rest.TestResource
+	 * 
+	 * @return an instance of java.lang.String
+	 */
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(value = "XxXx", httpMethod = "GET", notes = "get a useful remark", response = String.class)
+	public String getXml() {
+		return "this works...";
+	}
 }

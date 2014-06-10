@@ -33,273 +33,274 @@ import com.sw.protection.backend.entity.AdminScope;
  */
 @Test(groups = { "AdminDAOImplTest" })
 public class AdminDAOImplTest {
-    public static final Logger log = Logger.getLogger(AdminDAOImplTest.class.getName());
+	public static final Logger log = Logger.getLogger(AdminDAOImplTest.class.getName());
 
-    @BeforeClass()
-    public void setupParamValidation() {
-	SharedInMemoryData.getInstance();
-    }
-
-    public AdminDAOImplTest() {
-    }
-
-    @DataProvider(name = "adminData")
-    public Object[][] AdminData() {
-	Object[][] IndiaIncomeArray = {
-		{ "Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com", APINames.COMPANY_USER, true, false,
-			true, false },
-		{ "Malinda", "malinda", "pw908", "malinda@yahoo.com", APINames.COMPANY_USER, false, true, false, true } };
-	return (IndiaIncomeArray);
-    }
-
-    @AfterClass
-    public void tearDownClass() {
-	log.info("Delete all Admins");
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	for (Admin admin : instance.getAllAdmins()) {
-	    try {
-		instance.deleteAdmin(admin);
-	    } catch (RecordAlreadyModifiedException e) {
-
-		e.printStackTrace();
-	    } catch (OperationRollBackException e) {
-
-		e.printStackTrace();
-	    }
+	@BeforeClass()
+	public void setupParamValidation() {
+		SharedInMemoryData.getInstance();
 	}
-    }
 
-    /**
-     * Test of getAdmin method, of class AdminDAOImpl.
-     */
-    @Test(dependsOnMethods = { "testSaveAdmin" })
-    public void testGetAdmin() {
-	log.info("Start Test Get Admin");
-	String userName = "malalanayake";
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	Admin expResult = new Admin();
-	expResult.setUser_name("malalanayake");
-	expResult.setEmail("dinuka.malalanayake@gmail.com");
-
-	Admin result = instance.getAdmin(userName);
-	assertEquals(result.getUser_name(), expResult.getUser_name());
-	assertEquals(result.getEmail(), expResult.getEmail());
-
-	result = instance.loadAllPropertiesOfAdmin(result.getId());
-
-	Set<AdminScope> adminScopeSet = result.getAdminScopeSet();
-	AdminScope firstAdminScope = new AdminScope();
-	for (AdminScope adminScope : adminScopeSet) {
-	    firstAdminScope = adminScope;
+	public AdminDAOImplTest() {
 	}
-	assertEquals(firstAdminScope.getApi_name(), APINames.COMPANY_USER);
 
-    }
+	@DataProvider(name = "adminData")
+	public Object[][] AdminData() {
+		Object[][] IndiaIncomeArray = {
+				{ "Dinuka", "malalanayake", "pw", "dinuka.malalanayake@gmail.com",
+						APINames.COMPANY_USER, true, false, true, false },
+				{ "Malinda", "malinda", "pw908", "malinda@yahoo.com", APINames.COMPANY_USER, false,
+						true, false, true } };
+		return (IndiaIncomeArray);
+	}
 
-    /**
-     * Test of updateAdmin method, of class AdminDAOImpl.
-     */
-    @Test(dependsOnMethods = { "testGetAdmin" })
-    public void testUpdateAdmin() {
-	log.info("Start Test Update Admin");
-	String userName = "malalanayake";
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	Admin expResult = new Admin();
-	Admin failResult = new Admin();
-	Admin result = new Admin();
-	expResult = instance.getAdmin(userName);
-	expResult = instance.loadAllPropertiesOfAdmin(expResult.getId());
-	failResult = instance.getAdmin(userName);
-	failResult = instance.loadAllPropertiesOfAdmin(failResult.getId());
-	expResult.setEmail("testmail@yahoo.com");
-	expResult.setName("Kasuni");
-	try {
-	    instance.updateAdmin(expResult);
-	} catch (Exception ex) {
+	@AfterClass
+	public void tearDownClass() {
+		log.info("Delete all Admins");
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		for (Admin admin : instance.getAllAdmins()) {
+			try {
+				instance.deleteAdmin(admin);
+			} catch (RecordAlreadyModifiedException e) {
+
+				e.printStackTrace();
+			} catch (OperationRollBackException e) {
+
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Test of getAdmin method, of class AdminDAOImpl.
+	 */
+	@Test(dependsOnMethods = { "testSaveAdmin" })
+	public void testGetAdmin() {
+		log.info("Start Test Get Admin");
+		String userName = "malalanayake";
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		Admin expResult = new Admin();
+		expResult.setUser_name("malalanayake");
+		expResult.setEmail("dinuka.malalanayake@gmail.com");
+
+		Admin result = instance.getAdmin(userName);
+		assertEquals(result.getUser_name(), expResult.getUser_name());
+		assertEquals(result.getEmail(), expResult.getEmail());
+
+		result = instance.loadAllPropertiesOfAdmin(result.getId());
+
+		Set<AdminScope> adminScopeSet = result.getAdminScopeSet();
+		AdminScope firstAdminScope = new AdminScope();
+		for (AdminScope adminScope : adminScopeSet) {
+			firstAdminScope = adminScope;
+		}
+		assertEquals(firstAdminScope.getApi_name(), APINames.COMPANY_USER);
 
 	}
 
-	// Check the RecordAlreadyModifiedException behavior
-	String exceptionClass = "";
-	try {
-	    instance.updateAdmin(failResult);
-	} catch (Exception ex) {
-	    exceptionClass = ex.getClass().toString();
-	}
-	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+	/**
+	 * Test of updateAdmin method, of class AdminDAOImpl.
+	 */
+	@Test(dependsOnMethods = { "testGetAdmin" })
+	public void testUpdateAdmin() {
+		log.info("Start Test Update Admin");
+		String userName = "malalanayake";
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		Admin expResult = new Admin();
+		Admin failResult = new Admin();
+		Admin result = new Admin();
+		expResult = instance.getAdmin(userName);
+		expResult = instance.loadAllPropertiesOfAdmin(expResult.getId());
+		failResult = instance.getAdmin(userName);
+		failResult = instance.loadAllPropertiesOfAdmin(failResult.getId());
+		expResult.setEmail("testmail@yahoo.com");
+		expResult.setName("Kasuni");
+		try {
+			instance.updateAdmin(expResult);
+		} catch (Exception ex) {
 
-	result = instance.getAdmin("malalanayake");
+		}
 
-	assertEquals(result.getId(), expResult.getId());
-	assertEquals(result.getEmail(), expResult.getEmail());
-	assertEquals(result.getUser_name(), expResult.getUser_name());
-	assertEquals(result.getPass_word(), expResult.getPass_word());
-    }
+		// Check the RecordAlreadyModifiedException behavior
+		String exceptionClass = "";
+		try {
+			instance.updateAdmin(failResult);
+		} catch (Exception ex) {
+			exceptionClass = ex.getClass().toString();
+		}
+		assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
 
-    @Test(dependsOnMethods = { "testUpdateAdmin" })
-    public void isAdminUserNameExist() {
-	log.info("getAllAdmins");
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
-	assertEquals(instance.isAdminUserNameExist("dinuka"), false);
-    }
+		result = instance.getAdmin("malalanayake");
 
-    /**
-     * Test of deleteAdmin method, of class AdminDAOImpl.
-     */
-    @Test(dependsOnMethods = { "isAdminUserNameExist" })
-    public void testDeleteAdmin() {
-	log.info("Start Test Delete Admin");
-	String userName1 = "malinda";
-	String userName2 = "malalanayake";
-	String userName3 = "TestAdminWithoutScope";
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	Admin admin1 = new Admin();
-	Admin admin2 = new Admin();
-	Admin admin3 = new Admin();
-	admin1 = instance.getAdmin(userName1);
-	admin2 = instance.getAdmin(userName2);
-	admin3 = instance.getAdmin(userName3);
-	try {
-	    instance.deleteAdmin(admin1);
-	    assertEquals(instance.isAdminUserNameExist(userName1), false);
-	    instance.deleteAdmin(admin2);
-	    assertEquals(instance.isAdminUserNameExist(userName2), false);
-	} catch (Exception ex) {
-
+		assertEquals(result.getId(), expResult.getId());
+		assertEquals(result.getEmail(), expResult.getEmail());
+		assertEquals(result.getUser_name(), expResult.getUser_name());
+		assertEquals(result.getPass_word(), expResult.getPass_word());
 	}
 
-	Admin admin4 = new Admin();
-	admin4 = instance.getAdmin(userName3);
-	admin4 = instance.loadAllPropertiesOfAdmin(admin4.getId());
-	admin4.setEmail("lateModified@gmail.com");
-
-	// Check the RecordAlreadyModifiedException behavior
-	String exceptionClass = "";
-	try {
-	    // update late modified
-	    instance.updateAdmin(admin4);
-	    // going to delete through early loaded admin data
-	    instance.deleteAdmin(admin3);
-	} catch (Exception ex) {
-	    exceptionClass = ex.getClass().toString();
+	@Test(dependsOnMethods = { "testUpdateAdmin" })
+	public void isAdminUserNameExist() {
+		log.info("getAllAdmins");
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		assertEquals(instance.isAdminUserNameExist("malalanayake"), true);
+		assertEquals(instance.isAdminUserNameExist("dinuka"), false);
 	}
-	assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
-	assertEquals(instance.isAdminUserNameExist(userName3), true);
 
-	// Again get load only the Admin data and delete
-	Admin admin5 = new Admin();
-	admin5 = instance.getAdmin(userName3);
-	try {
-	    instance.deleteAdmin(admin5);
-	} catch (Exception ex) {
+	/**
+	 * Test of deleteAdmin method, of class AdminDAOImpl.
+	 */
+	@Test(dependsOnMethods = { "isAdminUserNameExist" })
+	public void testDeleteAdmin() {
+		log.info("Start Test Delete Admin");
+		String userName1 = "malinda";
+		String userName2 = "malalanayake";
+		String userName3 = "TestAdminWithoutScope";
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		Admin admin1 = new Admin();
+		Admin admin2 = new Admin();
+		Admin admin3 = new Admin();
+		admin1 = instance.getAdmin(userName1);
+		admin2 = instance.getAdmin(userName2);
+		admin3 = instance.getAdmin(userName3);
+		try {
+			instance.deleteAdmin(admin1);
+			assertEquals(instance.isAdminUserNameExist(userName1), false);
+			instance.deleteAdmin(admin2);
+			assertEquals(instance.isAdminUserNameExist(userName2), false);
+		} catch (Exception ex) {
 
-	}
-	assertEquals(instance.isAdminUserNameExist(userName3), false);
+		}
 
-    }
+		Admin admin4 = new Admin();
+		admin4 = instance.getAdmin(userName3);
+		admin4 = instance.loadAllPropertiesOfAdmin(admin4.getId());
+		admin4.setEmail("lateModified@gmail.com");
 
-    /**
-     * Test of saveAdmin method, of class AdminDAOImpl.
-     */
-    @Test(dataProvider = "adminData")
-    public void testSaveAdmin(String name, String userName, String pw, String email, String api_name, boolean get,
-	    boolean post, boolean put, boolean del) {
-	log.info("Start Test Save Admin");
-	Admin admin = new Admin();
-	admin.setUser_name(userName);
-	admin.setPass_word(pw);
-	admin.setEmail(email);
-	admin.setName(name);
-	admin.setApi_key(UUID.randomUUID().toString());
+		// Check the RecordAlreadyModifiedException behavior
+		String exceptionClass = "";
+		try {
+			// update late modified
+			instance.updateAdmin(admin4);
+			// going to delete through early loaded admin data
+			instance.deleteAdmin(admin3);
+		} catch (Exception ex) {
+			exceptionClass = ex.getClass().toString();
+		}
+		assertEquals(exceptionClass, RecordAlreadyModifiedException.class.toString());
+		assertEquals(instance.isAdminUserNameExist(userName3), true);
 
-	AdminScope adminScope = new AdminScope();
-	adminScope.setAdmin(admin);
-	adminScope.setApi_name(api_name);
-	adminScope.setDel(del);
-	adminScope.setGet(get);
-	adminScope.setPost(post);
-	adminScope.setPut(put);
+		// Again get load only the Admin data and delete
+		Admin admin5 = new Admin();
+		admin5 = instance.getAdmin(userName3);
+		try {
+			instance.deleteAdmin(admin5);
+		} catch (Exception ex) {
 
-	Set<AdminScope> adminScopSet = admin.getAdminScopeSet();
-	adminScopSet.add(adminScope);
-	admin.setAdminScopeSet(adminScopSet);
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	log.info("" + admin.toString());
-	try {
-	    instance.saveAdmin(admin);
-	} catch (Exception ex) {
+		}
+		assertEquals(instance.isAdminUserNameExist(userName3), false);
 
 	}
 
-	// Check the DuplicateRecordException behavior
-	String exceptionClass = "";
-	try {
-	    instance.saveAdmin(admin);
-	} catch (Exception ex) {
-	    exceptionClass = ex.getClass().toString();
-	}
-	assertEquals(exceptionClass, DuplicateRecordException.class.toString());
+	/**
+	 * Test of saveAdmin method, of class AdminDAOImpl.
+	 */
+	@Test(dataProvider = "adminData")
+	public void testSaveAdmin(String name, String userName, String pw, String email,
+			String api_name, boolean get, boolean post, boolean put, boolean del) {
+		log.info("Start Test Save Admin");
+		Admin admin = new Admin();
+		admin.setUser_name(userName);
+		admin.setPass_word(pw);
+		admin.setEmail(email);
+		admin.setName(name);
+		admin.setApi_key(UUID.randomUUID().toString());
 
-	// Check the DuplicateRecordException behavior
-	String exceptionClass2 = "";
-	try {
-	    admin.setUser_name(UUID.randomUUID().toString());
-	    instance.saveAdmin(admin);
-	} catch (Exception ex) {
-	    exceptionClass2 = ex.getClass().toString();
-	}
-	assertEquals(exceptionClass2, DuplicateRecordException.class.toString());
+		AdminScope adminScope = new AdminScope();
+		adminScope.setAdmin(admin);
+		adminScope.setApi_name(api_name);
+		adminScope.setDel(del);
+		adminScope.setGet(get);
+		adminScope.setPost(post);
+		adminScope.setPut(put);
 
-    }
+		Set<AdminScope> adminScopSet = admin.getAdminScopeSet();
+		adminScopSet.add(adminScope);
+		admin.setAdminScopeSet(adminScopSet);
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		log.info("" + admin.toString());
+		try {
+			instance.saveAdmin(admin);
+		} catch (Exception ex) {
 
-    /**
-     * Test Admin without saving the Scope set
-     */
-    @Test
-    public void testSaveAdminWithoutScope() {
-	log.info("Start Test Save Admin without scope");
-	Admin admin = new Admin();
-	admin.setUser_name("TestAdminWithoutScope");
-	admin.setPass_word("Test");
-	admin.setEmail("dinuka@123.com");
-	admin.setName("Test Admin");
-	admin.setApi_key(UUID.randomUUID().toString());
+		}
 
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	log.info("" + admin.toString());
-	try {
-	    instance.saveAdmin(admin);
-	} catch (Exception ex) {
+		// Check the DuplicateRecordException behavior
+		String exceptionClass = "";
+		try {
+			instance.saveAdmin(admin);
+		} catch (Exception ex) {
+			exceptionClass = ex.getClass().toString();
+		}
+		assertEquals(exceptionClass, DuplicateRecordException.class.toString());
 
-	}
-
-    }
-
-    @Test(dependsOnMethods = { "testDeleteAdmin" })
-    public void testPagination() {
-	log.info("Start Test Pagination");
-	Admin admin = new Admin();
-	admin.setPass_word("Test");
-	admin.setName("Test Admin");
-	admin.setApi_key(UUID.randomUUID().toString());
-
-	AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
-	log.info("" + admin.toString());
-	try {
-	    for (int i = 0; i < 23; i++) {
-		admin.setUser_name("TestUser" + i);
-		admin.setEmail("dinuka" + i + "@123.com");
-		instance.saveAdmin(admin);
-	    }
-	} catch (Exception ex) {
+		// Check the DuplicateRecordException behavior
+		String exceptionClass2 = "";
+		try {
+			admin.setUser_name(UUID.randomUUID().toString());
+			instance.saveAdmin(admin);
+		} catch (Exception ex) {
+			exceptionClass2 = ex.getClass().toString();
+		}
+		assertEquals(exceptionClass2, DuplicateRecordException.class.toString());
 
 	}
 
-	assertEquals(instance.getAllAdminsWithPagination(1, 20).size(), 20);
-	assertEquals(instance.getAllAdminsWithPagination(2, 20).size(), 3);
-	assertEquals(instance.getAllAdminsWithPagination(3, 20), null);
+	/**
+	 * Test Admin without saving the Scope set
+	 */
+	@Test
+	public void testSaveAdminWithoutScope() {
+		log.info("Start Test Save Admin without scope");
+		Admin admin = new Admin();
+		admin.setUser_name("TestAdminWithoutScope");
+		admin.setPass_word("Test");
+		admin.setEmail("dinuka@123.com");
+		admin.setName("Test Admin");
+		admin.setApi_key(UUID.randomUUID().toString());
 
-    }
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		log.info("" + admin.toString());
+		try {
+			instance.saveAdmin(admin);
+		} catch (Exception ex) {
+
+		}
+
+	}
+
+	@Test(dependsOnMethods = { "testDeleteAdmin" })
+	public void testPagination() {
+		log.info("Start Test Pagination");
+		Admin admin = new Admin();
+		admin.setPass_word("Test");
+		admin.setName("Test Admin");
+		admin.setApi_key(UUID.randomUUID().toString());
+
+		AdminDAO instance = AppContext.getInstance().getBean(AdminDAO.class);
+		log.info("" + admin.toString());
+		try {
+			for (int i = 0; i < 23; i++) {
+				admin.setUser_name("TestUser" + i);
+				admin.setEmail("dinuka" + i + "@123.com");
+				instance.saveAdmin(admin);
+			}
+		} catch (Exception ex) {
+
+		}
+
+		assertEquals(instance.getAllAdminsWithPagination(1, 20).size(), 20);
+		assertEquals(instance.getAllAdminsWithPagination(2, 20).size(), 3);
+		assertEquals(instance.getAllAdminsWithPagination(3, 20), null);
+
+	}
 
 }

@@ -9,10 +9,10 @@ package com.sw.protection.backend.common.exception;
  */
 public class DuplicateRecordException extends Exception {
 
-    public DuplicateRecordException() {
-    }
+	public DuplicateRecordException() {
+	}
 
-    public DuplicateRecordException(String message) {
-	super(message);
-    }
+	public DuplicateRecordException(String message) {
+		super(message);
+	}
 }

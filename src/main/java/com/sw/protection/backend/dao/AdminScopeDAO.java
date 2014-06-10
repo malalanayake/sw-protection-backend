@@ -14,80 +14,80 @@ import com.sw.protection.backend.entity.AdminScope;
  * @author dinuka
  */
 public interface AdminScopeDAO {
-    /**
-     * Get all admin scope data
-     * 
-     * @param userName
-     *            - given username
-     * @return - List of Scopes
-     */
-    public List<AdminScope> getAllAdminScopes(String userName);
+	/**
+	 * Get all admin scope data
+	 * 
+	 * @param userName
+	 *            - given username
+	 * @return - List of Scopes
+	 */
+	public List<AdminScope> getAllAdminScopes(String userName);
 
-    /**
-     * Save new admin scope data
-     * 
-     * @param adminScope
-     *            - the admin scope going to be save
-     */
-    public AdminScope saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException,
-	    OperationRollBackException;
+	/**
+	 * Save new admin scope data
+	 * 
+	 * @param adminScope
+	 *            - the admin scope going to be save
+	 */
+	public AdminScope saveNewAdminScope(AdminScope adminScope) throws DuplicateRecordException,
+			OperationRollBackException;
 
-    /**
-     * Delete admin scope data
-     * 
-     * @param adminScope
-     *            - the admin scope to be deleted
-     */
-    public AdminScope deleteAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException;
+	/**
+	 * Delete admin scope data
+	 * 
+	 * @param adminScope
+	 *            - the admin scope to be deleted
+	 */
+	public AdminScope deleteAdminScope(AdminScope adminScope)
+			throws RecordAlreadyModifiedException, OperationRollBackException;
 
-    /**
-     * Update admin scope data
-     * 
-     * @param adminScope
-     *            - edited admin scope
-     */
-    public AdminScope updateAdminScope(AdminScope adminScope) throws RecordAlreadyModifiedException,
-	    OperationRollBackException;
+	/**
+	 * Update admin scope data
+	 * 
+	 * @param adminScope
+	 *            - edited admin scope
+	 */
+	public AdminScope updateAdminScope(AdminScope adminScope)
+			throws RecordAlreadyModifiedException, OperationRollBackException;
 
-    /**
-     * Get specific admin scope data
-     * 
-     * @param userName
-     *            - username
-     * @param apiName
-     *            - API name
-     * @return - specific admin scope
-     */
-    public AdminScope getAdminScope(String userName, String apiName);
+	/**
+	 * Get specific admin scope data
+	 * 
+	 * @param userName
+	 *            - username
+	 * @param apiName
+	 *            - API name
+	 * @return - specific admin scope
+	 */
+	public AdminScope getAdminScope(String userName, String apiName);
 
-    /**
-     * Check whether the admin has correct access
-     * 
-     * @param userName
-     *            - username
-     * @param apiName
-     *            - relevent API name
-     * @param operation
-     *            - operation such as GET,POST,PUT,DELETE
-     * @return
-     */
-    public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation);
+	/**
+	 * Check whether the admin has correct access
+	 * 
+	 * @param userName
+	 *            - username
+	 * @param apiName
+	 *            - relevent API name
+	 * @param operation
+	 *            - operation such as GET,POST,PUT,DELETE
+	 * @return
+	 */
+	public boolean isAccessGrantedFor(String userName, String apiName, APIOperations operation);
 
-    /**
-     * Validating the AdminScope data before save in service level
-     * 
-     * @param admin
-     * @return
-     */
-    public boolean validateAdminScopeforSave(AdminScope adminScope);
+	/**
+	 * Validating the AdminScope data before save in service level
+	 * 
+	 * @param admin
+	 * @return
+	 */
+	public boolean validateAdminScopeforSave(AdminScope adminScope);
 
-    /**
-     * Validating the AdminScope data before update and delete in service level
-     * 
-     * @param admin
-     * @return
-     */
-    public boolean validateAdminScopeforUpdateandDelete(AdminScope adminScope);
+	/**
+	 * Validating the AdminScope data before update and delete in service level
+	 * 
+	 * @param admin
+	 * @return
+	 */
+	public boolean validateAdminScopeforUpdateandDelete(AdminScope adminScope);
 
 }

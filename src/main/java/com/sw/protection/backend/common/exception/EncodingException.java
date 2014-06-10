@@ -7,10 +7,10 @@ package com.sw.protection.backend.common.exception;
  * 
  */
 public class EncodingException extends Exception {
-    public EncodingException() {
-    }
+	public EncodingException() {
+	}
 
-    public EncodingException(String message) {
-	super(message);
-    }
+	public EncodingException(String message) {
+		super(message);
+	}
 }

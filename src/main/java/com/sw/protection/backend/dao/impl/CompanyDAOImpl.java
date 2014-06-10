@@ -32,376 +32,386 @@ import com.sw.protection.backend.entity.CompanyUser;
 @Repository
 public class CompanyDAOImpl implements CompanyDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    public static final Logger log = Logger.getLogger(CompanyDAOImpl.class.getName());
-    /**
-     * Maintain Locks over the cluster
-     */
-    private static volatile IMap<Long, Object> LOCK_MAP = SharedInMemoryData.getInstance().getMap(
-	    SharedInMemoryData.DB_LOCKS.COMPANY_DAO);
+	public static final Logger log = Logger.getLogger(CompanyDAOImpl.class.getName());
+	/**
+	 * Maintain Locks over the cluster
+	 */
+	private static volatile IMap<Long, Object> LOCK_MAP = SharedInMemoryData.getInstance().getMap(
+			SharedInMemoryData.DB_LOCKS.COMPANY_DAO);
 
-    @Override
-    public List<Company> getAllCompanies() {
-	Session session = sessionFactory.getCurrentSession();
-	Transaction tr = null;
-	try {
-	    tr = session.beginTransaction();
-	    List<Company> companyAll = session.getNamedQuery(Company.Constants.NAME_QUERY_FIND_COMPANY_ALL).list();
-	    tr.commit();
-
-	    if (companyAll.isEmpty()) {
-		if (log.isDebugEnabled()) {
-		    log.debug("Company users are not exist");
-		}
-		return null;
-	    } else {
-		if (log.isDebugEnabled()) {
-		    log.debug("Found " + companyAll.size() + " Company users");
-		}
-		return companyAll;
-	    }
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-	    }
-	    return null;
-	}
-    }
-
-    @Override
-    public Company updateCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
-	Transaction tr = null;
-	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
-	OperationRollBackException operationRollBackException = null;
-	Company companyReturn = null;
-	try {
-	    // Lock by admin ID
-	    LOCK_MAP.lock(company.getId());
-	    if (log.isDebugEnabled()) {
-		log.debug("Locked update operation by Company ID " + company.getId());
-	    }
-
-	    // Assume that the username never changed
-	    // check last modification
-	    if (company.getLast_modified().equals(this.getCompany(company.getUser_name()).getLast_modified())) {
+	@Override
+	public List<Company> getAllCompanies() {
 		Session session = sessionFactory.getCurrentSession();
-		tr = session.beginTransaction();
-		company.setLast_modified(Formatters.formatDate(new Date()));
-		session.merge(company);
-		tr.commit();
-		companyReturn = company;
-		if (log.isDebugEnabled()) {
-		    log.debug("Update Company " + company.toString());
+		Transaction tr = null;
+		try {
+			tr = session.beginTransaction();
+			List<Company> companyAll = session.getNamedQuery(
+					Company.Constants.NAME_QUERY_FIND_COMPANY_ALL).list();
+			tr.commit();
+
+			if (companyAll.isEmpty()) {
+				if (log.isDebugEnabled()) {
+					log.debug("Company users are not exist");
+				}
+				return null;
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("Found " + companyAll.size() + " Company users");
+				}
+				return companyAll;
+			}
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+			}
+			return null;
 		}
-	    } else {
-		if (log.isDebugEnabled()) {
-		    log.debug("This is not the latest modification of company " + company.toString()
-			    + " so cannot update");
-		}
-		// create custom RecordAlreadyModifiedException
-		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
-	    }
-
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-		// create custom OperationRollBackException
-		operationRollBackException = new OperationRollBackException(ex);
-	    }
-	} finally {
-	    if (log.isDebugEnabled()) {
-		log.debug("Releasing LOCK by Company ID " + company.getId());
-	    }
-	    // Unlock the lock by admin ID
-	    LOCK_MAP.unlock(company.getId());
-
-	    // throw the captured exceptions
-	    if (recordAlreadyModifiedException != null) {
-		throw recordAlreadyModifiedException;
-	    }
-
-	    if (operationRollBackException != null) {
-		throw operationRollBackException;
-	    }
 	}
 
-	return companyReturn;
-    }
+	@Override
+	public Company updateCompany(Company company) throws RecordAlreadyModifiedException,
+			OperationRollBackException {
+		Transaction tr = null;
+		RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+		OperationRollBackException operationRollBackException = null;
+		Company companyReturn = null;
+		try {
+			// Lock by admin ID
+			LOCK_MAP.lock(company.getId());
+			if (log.isDebugEnabled()) {
+				log.debug("Locked update operation by Company ID " + company.getId());
+			}
 
-    @Override
-    public Company deleteCompany(Company company) throws RecordAlreadyModifiedException, OperationRollBackException {
-	Transaction tr = null;
-	RecordAlreadyModifiedException recordAlreadyModifiedException = null;
-	OperationRollBackException operationRollBackException = null;
-	Company companyReturn = null;
-	try {
-	    // Lock by admin ID
-	    LOCK_MAP.lock(company.getId());
-	    if (log.isDebugEnabled()) {
-		log.debug("Locked delete operation by Company ID " + company.getId());
-	    }
+			// Assume that the username never changed
+			// check last modification
+			if (company.getLast_modified().equals(
+					this.getCompany(company.getUser_name()).getLast_modified())) {
+				Session session = sessionFactory.getCurrentSession();
+				tr = session.beginTransaction();
+				company.setLast_modified(Formatters.formatDate(new Date()));
+				session.merge(company);
+				tr.commit();
+				companyReturn = company;
+				if (log.isDebugEnabled()) {
+					log.debug("Update Company " + company.toString());
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("This is not the latest modification of company "
+							+ company.toString() + " so cannot update");
+				}
+				// create custom RecordAlreadyModifiedException
+				recordAlreadyModifiedException = new RecordAlreadyModifiedException();
+			}
 
-	    // check last modification
-	    if (company.getLast_modified().equals(this.getCompany(company.getUser_name()).getLast_modified())) {
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+				// create custom OperationRollBackException
+				operationRollBackException = new OperationRollBackException(ex);
+			}
+		} finally {
+			if (log.isDebugEnabled()) {
+				log.debug("Releasing LOCK by Company ID " + company.getId());
+			}
+			// Unlock the lock by admin ID
+			LOCK_MAP.unlock(company.getId());
+
+			// throw the captured exceptions
+			if (recordAlreadyModifiedException != null) {
+				throw recordAlreadyModifiedException;
+			}
+
+			if (operationRollBackException != null) {
+				throw operationRollBackException;
+			}
+		}
+
+		return companyReturn;
+	}
+
+	@Override
+	public Company deleteCompany(Company company) throws RecordAlreadyModifiedException,
+			OperationRollBackException {
+		Transaction tr = null;
+		RecordAlreadyModifiedException recordAlreadyModifiedException = null;
+		OperationRollBackException operationRollBackException = null;
+		Company companyReturn = null;
+		try {
+			// Lock by admin ID
+			LOCK_MAP.lock(company.getId());
+			if (log.isDebugEnabled()) {
+				log.debug("Locked delete operation by Company ID " + company.getId());
+			}
+
+			// check last modification
+			if (company.getLast_modified().equals(
+					this.getCompany(company.getUser_name()).getLast_modified())) {
+				Session session = sessionFactory.getCurrentSession();
+				tr = session.beginTransaction();
+				company = (Company) session.get(Company.class, company.getId());
+				session.delete(company);
+				tr.commit();
+				companyReturn = company;
+				if (log.isDebugEnabled()) {
+					log.debug("Delete Company " + company.toString());
+				}
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("This is not the latest modification of company "
+							+ company.toString() + " so cannot delete");
+				}
+				// create custom RecordAlreadyModifiedException
+				recordAlreadyModifiedException = new RecordAlreadyModifiedException();
+			}
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+				// create custom OperationRollBackException
+				operationRollBackException = new OperationRollBackException(ex);
+			}
+		} finally {
+			if (log.isDebugEnabled()) {
+				log.debug("Releasing LOCK by Company ID " + company.getId());
+			}
+			// Unlock the lock by admin ID
+			LOCK_MAP.unlock(company.getId());
+
+			// throw the captured exceptions
+			if (recordAlreadyModifiedException != null) {
+				throw recordAlreadyModifiedException;
+			}
+
+			if (operationRollBackException != null) {
+				throw operationRollBackException;
+			}
+		}
+		return companyReturn;
+	}
+
+	@Override
+	public Company saveCompany(Company company) throws DuplicateRecordException,
+			OperationRollBackException {
+		Transaction tr = null;
+		OperationRollBackException operationRollBackException = null;
+		DuplicateRecordException duplicateRecordException = null;
+		Company companyReturn = null;
+		try {
+			// check whether the admin user name already exist
+			if (this.isCompanyUserNameExist(company.getUser_name())) {
+				if (log.isDebugEnabled()) {
+					log.debug("Company username :" + company.toString() + " already exist");
+				}
+				// create DuplicateRecordException
+				duplicateRecordException = new DuplicateRecordException();
+			} else {
+				Session session = sessionFactory.getCurrentSession();
+				tr = session.beginTransaction();
+				String dateTime = Formatters.formatDate(new Date());
+				company.setDate_time(dateTime);
+				company.setLast_modified(dateTime);
+				// set last modified data if user set is not null
+				if (company.getCompanyUserSet() != null) {
+					for (CompanyUser companyUserScp : company.getCompanyUserSet()) {
+						companyUserScp.setDate_time(dateTime);
+						companyUserScp.setLast_modified(dateTime);
+					}
+				}
+				// set last modified data if client set is not null
+				if (company.getCompanyClientSet() != null) {
+					for (CompanyClient companyClientScp : company.getCompanyClientSet()) {
+						companyClientScp.setDate_time(dateTime);
+						companyClientScp.setLast_modified(dateTime);
+					}
+				}
+				// set last modified data if software set is not null
+				if (company.getCompanySWSet() != null) {
+					for (CompanySW companySW : company.getCompanySWSet()) {
+						companySW.setDate_time(dateTime);
+						companySW.setLast_modified(dateTime);
+					}
+				}
+
+				session.save(company);
+				tr.commit();
+				companyReturn = company;
+				if (log.isDebugEnabled()) {
+					log.debug("Save Company " + company.toString());
+				}
+			}
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+				// create custom OperationRollBackException
+				operationRollBackException = new OperationRollBackException(ex);
+			}
+		} finally {
+			// throw the captured exceptions
+			if (duplicateRecordException != null) {
+				throw duplicateRecordException;
+			}
+
+			if (operationRollBackException != null) {
+				throw operationRollBackException;
+			}
+		}
+
+		return companyReturn;
+	}
+
+	@Override
+	public Company getCompany(String companyUserName) {
 		Session session = sessionFactory.getCurrentSession();
-		tr = session.beginTransaction();
-		company = (Company) session.get(Company.class, company.getId());
-		session.delete(company);
-		tr.commit();
-		companyReturn = company;
-		if (log.isDebugEnabled()) {
-		    log.debug("Delete Company " + company.toString());
-		}
-	    } else {
-		if (log.isDebugEnabled()) {
-		    log.debug("This is not the latest modification of company " + company.toString()
-			    + " so cannot delete");
-		}
-		// create custom RecordAlreadyModifiedException
-		recordAlreadyModifiedException = new RecordAlreadyModifiedException();
-	    }
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-		// create custom OperationRollBackException
-		operationRollBackException = new OperationRollBackException(ex);
-	    }
-	} finally {
-	    if (log.isDebugEnabled()) {
-		log.debug("Releasing LOCK by Company ID " + company.getId());
-	    }
-	    // Unlock the lock by admin ID
-	    LOCK_MAP.unlock(company.getId());
+		Transaction tr = null;
+		try {
+			tr = session.beginTransaction();
+			List<Company> adminAll = session
+					.getNamedQuery(Company.Constants.NAME_QUERY_FIND_BY_COMPANY_USER_NAME)
+					.setParameter(Company.Constants.PARAM_COMPANY_USER_NAME, companyUserName)
+					.list();
+			tr.commit();
 
-	    // throw the captured exceptions
-	    if (recordAlreadyModifiedException != null) {
-		throw recordAlreadyModifiedException;
-	    }
-
-	    if (operationRollBackException != null) {
-		throw operationRollBackException;
-	    }
-	}
-	return companyReturn;
-    }
-
-    @Override
-    public Company saveCompany(Company company) throws DuplicateRecordException, OperationRollBackException {
-	Transaction tr = null;
-	OperationRollBackException operationRollBackException = null;
-	DuplicateRecordException duplicateRecordException = null;
-	Company companyReturn = null;
-	try {
-	    // check whether the admin user name already exist
-	    if (this.isCompanyUserNameExist(company.getUser_name())) {
-		if (log.isDebugEnabled()) {
-		    log.debug("Company username :" + company.toString() + " already exist");
+			if (adminAll.isEmpty()) {
+				if (log.isDebugEnabled()) {
+					log.debug("Company username: " + companyUserName + " is not found");
+				}
+				return null;
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("Company username: " + companyUserName + " found");
+				}
+				return adminAll.get(0);
+			}
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+			}
+			// TODO: Throw exception
+			return null;
 		}
-		// create DuplicateRecordException
-		duplicateRecordException = new DuplicateRecordException();
-	    } else {
-		Session session = sessionFactory.getCurrentSession();
-		tr = session.beginTransaction();
-		String dateTime = Formatters.formatDate(new Date());
-		company.setDate_time(dateTime);
-		company.setLast_modified(dateTime);
-		// set last modified data if user set is not null
-		if (company.getCompanyUserSet() != null) {
-		    for (CompanyUser companyUserScp : company.getCompanyUserSet()) {
-			companyUserScp.setDate_time(dateTime);
-			companyUserScp.setLast_modified(dateTime);
-		    }
-		}
-		// set last modified data if client set is not null
-		if (company.getCompanyClientSet() != null) {
-		    for (CompanyClient companyClientScp : company.getCompanyClientSet()) {
-			companyClientScp.setDate_time(dateTime);
-			companyClientScp.setLast_modified(dateTime);
-		    }
-		}
-		// set last modified data if software set is not null
-		if (company.getCompanySWSet() != null) {
-		    for (CompanySW companySW : company.getCompanySWSet()) {
-			companySW.setDate_time(dateTime);
-			companySW.setLast_modified(dateTime);
-		    }
-		}
-
-		session.save(company);
-		tr.commit();
-		companyReturn = company;
-		if (log.isDebugEnabled()) {
-		    log.debug("Save Company " + company.toString());
-		}
-	    }
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-		// create custom OperationRollBackException
-		operationRollBackException = new OperationRollBackException(ex);
-	    }
-	} finally {
-	    // throw the captured exceptions
-	    if (duplicateRecordException != null) {
-		throw duplicateRecordException;
-	    }
-
-	    if (operationRollBackException != null) {
-		throw operationRollBackException;
-	    }
 	}
 
-	return companyReturn;
-    }
-
-    @Override
-    public Company getCompany(String companyUserName) {
-	Session session = sessionFactory.getCurrentSession();
-	Transaction tr = null;
-	try {
-	    tr = session.beginTransaction();
-	    List<Company> adminAll = session.getNamedQuery(Company.Constants.NAME_QUERY_FIND_BY_COMPANY_USER_NAME)
-		    .setParameter(Company.Constants.PARAM_COMPANY_USER_NAME, companyUserName).list();
-	    tr.commit();
-
-	    if (adminAll.isEmpty()) {
-		if (log.isDebugEnabled()) {
-		    log.debug("Company username: " + companyUserName + " is not found");
+	@Override
+	public Company loadAllPropertiesOfCompany(Long id) {
+		Session session = sessionFactory.openSession();
+		try {
+			Company company = new Company();
+			company = (Company) session.get(Company.class, id);
+			if (log.isDebugEnabled()) {
+				log.debug("Loaded Admin" + company.toString());
+			}
+			return company;
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			return null;
 		}
-		return null;
-	    } else {
-		if (log.isDebugEnabled()) {
-		    log.debug("Company username: " + companyUserName + " found");
-		}
-		return adminAll.get(0);
-	    }
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-	    }
-	    // TODO: Throw exception
-	    return null;
-	}
-    }
 
-    @Override
-    public Company loadAllPropertiesOfCompany(Long id) {
-	Session session = sessionFactory.openSession();
-	try {
-	    Company company = new Company();
-	    company = (Company) session.get(Company.class, id);
-	    if (log.isDebugEnabled()) {
-		log.debug("Loaded Admin" + company.toString());
-	    }
-	    return company;
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    return null;
 	}
 
-    }
-
-    @Override
-    public boolean isCompanyUserNameExist(String userName) {
-	if (this.getCompany(userName) == null) {
-	    if (log.isDebugEnabled()) {
-		log.debug("Is Company " + userName + " Exist: False");
-	    }
-	    return false;
-	} else {
-	    if (log.isDebugEnabled()) {
-		log.debug("Is Company " + userName + " Exist: True");
-	    }
-	    return true;
-	}
-    }
-
-    @Override
-    public boolean validateCompanyforSave(Company company) {
-	boolean status = false;
-	if (company.getUser_name() != null && company.getUser_name() != "" && company.getEmail() != null
-		&& company.getEmail() != "") {
-	    status = true;
-	} else {
-	    status = false;
-	}
-	return status;
-    }
-
-    @Override
-    public boolean validateCompanyforUpdateandDelete(Company company) {
-	boolean status = false;
-	if (company.getId() != null && company.getUser_name() != null && company.getUser_name() != ""
-		&& company.getEmail() != null && company.getEmail() != "" && company.getLast_modified() != null
-		&& company.getLast_modified() != "") {
-	    // check whether the data is null or not
-	    if (this.isCompanyUserNameExist(company.getUser_name())) {
-		// check whether the given user name is not changed
-		Company saveCompany = this.getCompany(company.getUser_name());
-		if (saveCompany.getId().equals(company.getId())) {
-		    status = true;
-		    if (log.isDebugEnabled()) {
-			log.debug("Validation Pass");
-		    }
+	@Override
+	public boolean isCompanyUserNameExist(String userName) {
+		if (this.getCompany(userName) == null) {
+			if (log.isDebugEnabled()) {
+				log.debug("Is Company " + userName + " Exist: False");
+			}
+			return false;
 		} else {
-		    status = false;
-		    if (log.isDebugEnabled()) {
-			log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
-				+ saveCompany.getId() + " This is the given ID:" + company.getId());
-		    }
+			if (log.isDebugEnabled()) {
+				log.debug("Is Company " + userName + " Exist: True");
+			}
+			return true;
 		}
-	    } else {
-		status = false;
-		if (log.isDebugEnabled()) {
-		    log.debug("Validation fail due to Company userName:" + company.getUser_name() + " doesn't exist");
-		}
-	    }
-	} else {
-	    status = false;
-	    if (log.isDebugEnabled()) {
-		log.debug("Validation fail due to empty or null values");
-	    }
 	}
-	return status;
-    }
 
-    @Override
-    public List<Company> getAllCompaniesWithPagination(int page, int recordePerPage) {
-	Session session = sessionFactory.getCurrentSession();
-	Transaction tr = null;
-	try {
-	    tr = session.beginTransaction();
-	    Criteria cr = session.createCriteria(Company.class);
-	    cr.setFirstResult((page - 1) * recordePerPage);
-	    cr.setMaxResults(recordePerPage);
-	    List<Company> companyAll = cr.list();
-	    tr.commit();
-
-	    if (companyAll.isEmpty()) {
-		if (log.isDebugEnabled()) {
-		    log.debug("Companies are not exist");
+	@Override
+	public boolean validateCompanyforSave(Company company) {
+		boolean status = false;
+		if (company.getUser_name() != null && company.getUser_name() != ""
+				&& company.getEmail() != null && company.getEmail() != "") {
+			status = true;
+		} else {
+			status = false;
 		}
-		return null;
-	    } else {
-		if (log.isDebugEnabled()) {
-		    log.debug("Found " + companyAll.size() + " Companies");
-		}
-		return companyAll;
-	    }
-	} catch (RuntimeException ex) {
-	    log.error(ex);
-	    if (tr != null) {
-		tr.rollback(); // roll back the transaction due to runtime error
-	    }
-	    return null;
+		return status;
 	}
-    }
+
+	@Override
+	public boolean validateCompanyforUpdateandDelete(Company company) {
+		boolean status = false;
+		if (company.getId() != null && company.getUser_name() != null
+				&& company.getUser_name() != "" && company.getEmail() != null
+				&& company.getEmail() != "" && company.getLast_modified() != null
+				&& company.getLast_modified() != "") {
+			// check whether the data is null or not
+			if (this.isCompanyUserNameExist(company.getUser_name())) {
+				// check whether the given user name is not changed
+				Company saveCompany = this.getCompany(company.getUser_name());
+				if (saveCompany.getId().equals(company.getId())) {
+					status = true;
+					if (log.isDebugEnabled()) {
+						log.debug("Validation Pass");
+					}
+				} else {
+					status = false;
+					if (log.isDebugEnabled()) {
+						log.debug("Validation fail due to User Name changed in given object- This is the saved ID:"
+								+ saveCompany.getId() + " This is the given ID:" + company.getId());
+					}
+				}
+			} else {
+				status = false;
+				if (log.isDebugEnabled()) {
+					log.debug("Validation fail due to Company userName:" + company.getUser_name()
+							+ " doesn't exist");
+				}
+			}
+		} else {
+			status = false;
+			if (log.isDebugEnabled()) {
+				log.debug("Validation fail due to empty or null values");
+			}
+		}
+		return status;
+	}
+
+	@Override
+	public List<Company> getAllCompaniesWithPagination(int page, int recordePerPage) {
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tr = null;
+		try {
+			tr = session.beginTransaction();
+			Criteria cr = session.createCriteria(Company.class);
+			cr.setFirstResult((page - 1) * recordePerPage);
+			cr.setMaxResults(recordePerPage);
+			List<Company> companyAll = cr.list();
+			tr.commit();
+
+			if (companyAll.isEmpty()) {
+				if (log.isDebugEnabled()) {
+					log.debug("Companies are not exist");
+				}
+				return null;
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("Found " + companyAll.size() + " Companies");
+				}
+				return companyAll;
+			}
+		} catch (RuntimeException ex) {
+			log.error(ex);
+			if (tr != null) {
+				tr.rollback(); // roll back the transaction due to runtime error
+			}
+			return null;
+		}
+	}
 
 }

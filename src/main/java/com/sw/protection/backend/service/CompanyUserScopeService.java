@@ -15,24 +15,27 @@ import com.sw.protection.backend.config.EncoderDecoderType;
  * 
  */
 public interface CompanyUserScopeService {
-    public String saveCompanyUserScope(EncoderDecoderType encoderDecoderType, String companyUserScopeString)
-	    throws DuplicateRecordException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String saveCompanyUserScope(EncoderDecoderType encoderDecoderType,
+			String companyUserScopeString) throws DuplicateRecordException,
+			OperationRollBackException, EncodingException, DecodingException,
+			RequiredDataNotFoundException;
 
-    public String getCompanyUserScope(EncoderDecoderType encoderDecoderType, String userName, String api_name)
-	    throws EncodingException, RequiredDataNotFoundException;
+	public String getCompanyUserScope(EncoderDecoderType encoderDecoderType, String userName,
+			String api_name) throws EncodingException, RequiredDataNotFoundException;
 
-    public String getCompanyUserScopes(EncoderDecoderType encoderDecoderType, String userName)
-	    throws EncodingException, RequiredDataNotFoundException;
+	public String getCompanyUserScopes(EncoderDecoderType encoderDecoderType, String userName)
+			throws EncodingException, RequiredDataNotFoundException;
 
-    public String isAccessGrantedFor(String userName, String api_name, String api_opertaion)
-	    throws RequiredDataNotFoundException;
+	public String isAccessGrantedFor(String userName, String api_name, String api_opertaion)
+			throws RequiredDataNotFoundException;
 
-    public String deleteCompanyUserScope(EncoderDecoderType encoderDecoderType, String companyUserScopeString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String deleteCompanyUserScope(EncoderDecoderType encoderDecoderType,
+			String companyUserScopeString) throws RecordAlreadyModifiedException,
+			OperationRollBackException, EncodingException, DecodingException,
+			RequiredDataNotFoundException;
 
-    public String updateCompanyUserScope(EncoderDecoderType encoderDecoderType, String companyUserScopeString)
-	    throws RecordAlreadyModifiedException, OperationRollBackException, EncodingException, DecodingException,
-	    RequiredDataNotFoundException;
+	public String updateCompanyUserScope(EncoderDecoderType encoderDecoderType,
+			String companyUserScopeString) throws RecordAlreadyModifiedException,
+			OperationRollBackException, EncodingException, DecodingException,
+			RequiredDataNotFoundException;
 }

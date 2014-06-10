@@ -13,25 +13,26 @@ import com.sw.protection.backend.config.ObjectType;
  */
 public interface Encoder {
 
-    /**
-     * Set the object by declaring the object type
-     * 
-     * @param objectType
-     *            - Entity class type provided by ObjectType enum
-     * @param object
-     *            - Entity object
-     */
-    public String encodeObject(ObjectType objectType, Object object) throws ClassCastException, EncodingException;
+	/**
+	 * Set the object by declaring the object type
+	 * 
+	 * @param objectType
+	 *            - Entity class type provided by ObjectType enum
+	 * @param object
+	 *            - Entity object
+	 */
+	public String encodeObject(ObjectType objectType, Object object) throws ClassCastException,
+			EncodingException;
 
-    /**
-     * Set the list of objects by declaring the object type
-     * 
-     * @param objectType
-     *            - Entity class type provided by ObjectType enum
-     * @param objectList
-     *            - List of objects
-     */
-    public String encodeObjectList(ObjectType objectType, List<?> objectList) throws ClassCastException,
-	    EncodingException;
+	/**
+	 * Set the list of objects by declaring the object type
+	 * 
+	 * @param objectType
+	 *            - Entity class type provided by ObjectType enum
+	 * @param objectList
+	 *            - List of objects
+	 */
+	public String encodeObjectList(ObjectType objectType, List<?> objectList)
+			throws ClassCastException, EncodingException;
 
 }

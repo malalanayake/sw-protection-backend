@@ -7,10 +7,11 @@ package com.sw.protection.backend.common.exception;
  * 
  */
 public class DecodingException extends Exception {
-    public DecodingException() {
-    }
 
-    public DecodingException(String message) {
-	super(message);
-    }
+	public DecodingException() {
+	}
+
+	public DecodingException(String message) {
+		super(message);
+	}
 }
