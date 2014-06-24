@@ -1746,7 +1746,7 @@
             <bytes>true</bytes>
           </value>
         </objProp>
-        <stringProp name="filename"></stringProp>
+        <stringProp name="filename">/Volumes/Dev/Result.jtl</stringProp>
       </ResultCollector>
       <hashTree/>
     </hashTree>
